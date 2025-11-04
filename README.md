@@ -12,9 +12,13 @@ Iot programing team project
 
 개발 환경
 Embedded: STM32CubeIDE
+
 Frontend: 
+
 Backend: 
+
 AI:
+
 Version Control: GitHub
 
 팀원 및 역할 분담

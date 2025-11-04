@@ -2,6 +2,7 @@
 Iot programing team project
 
 프로젝트 소개 (Introduction)
+
 본 프로젝트는 STM32보드와 Edge AI 기술을 활용하여 노면 상태를 실시간으로 감지하고, 이를 기반으로 자율주행 및 지능형 청소 기능을 수행하는 로봇 청소기 시스템을 개발하는 것을 목표로 합니다.
 
 핵심 기능 (MVP)
@@ -23,6 +24,7 @@ AI:
 Version Control: GitHub
 
 팀원 및 역할 분담
+
 백승찬	(PM) Edge AI	전체 총괄 및 일정 관리, 노면 분류 모델(TinyML) 개발, 데이터셋 수집, 노선 관리
 이의주	(ESW)	자율주행 보조, 2D 맵핑, Edge AI 보조, GitHub 관리
 박태정	(HW)	자율주행 및 HW 총괄

@@ -57,4 +57,4 @@ feature/[기능이름]: 개인/기능별 작업 공간. (develop에서 분기)
  <img width="368" height="408" alt="image" src="https://github.com/user-attachments/assets/ee0f346e-039b-47d9-bb9c-a656954e04b2" />
 
  
-  현재 브랜치를 develop으로 두신 다음, Find or Create branch...에 feature/[기능이름] 입력 후 create branch ... 클릭하시면 됩니다.
+  현재 브랜치를 develop으로 두신 다음, Find or Create branch...에 feature/기능이름 입력 후 create branch ... 클릭하시면 됩니다.

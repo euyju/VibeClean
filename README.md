@@ -55,7 +55,7 @@ __변정섭(FE)__  FE(React) 대시보드, 자료 조사, 회의록 관리
    4. Pull Request (PR) 생성: feature/[기능이름] -> develop 브랜치로 PR을 생성합니다.
    5. Merge: 리뷰 완료 및 승인 후 develop에 병합합니다.
 
- (PR 생성방법 참고)
+ (브랜치 생성방법 참고)
  
  <img width="368" height="408" alt="image" src="https://github.com/user-attachments/assets/ee0f346e-039b-47d9-bb9c-a656954e04b2" />
 

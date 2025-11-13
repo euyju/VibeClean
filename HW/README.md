@@ -49,10 +49,43 @@ HW/
 
 ### 주변 장치
 - **WiFi 모듈**: ESP8266
-- **센서**: HC-SR04 초음파 센서 (다중)
+- **센서**: HC-SR04 초음파 센서 (x3), 자이로 센서 (I2C)
+- **모터**: DC 모터 (x3) - 좌/우 바퀴, 청소기
 - **통신**: USART2, USART3
 - **타이머**: TIM1, TIM2, TIM4
 - **I2C**: I2C1
+
+## 📌 핀맵 (Pin Mapping)
+
+### 자이로 센서 (Gyro Sensor)
+| 기능 | STM32 핀 | 비고 |
+|------|----------|------|
+| SDA  | PB9      | I2C1 Data |
+| SCL  | PB6      | I2C1 Clock |
+| GND  | PD0      | Ground |
+
+### 초음파 센서 (HC-SR04 Ultrasonic Sensors)
+| 센서 번호 | 신호 | STM32 핀 | 타이머 채널 | 비고 |
+|-----------|------|----------|-------------|------|
+| 센서 1    | TRIG | PC0      | -           | Trigger 출력 |
+|           | ECHO | PA1      | TIM2_CH2    | Echo 입력 (펄스 측정) |
+| 센서 2    | TRIG | PC1      | -           | Trigger 출력 |
+|           | ECHO | PB8      | TIM2_CH1    | Echo 입력 (펄스 측정) |
+| 센서 3    | TRIG | PC2      | -           | Trigger 출력 |
+|           | ECHO | PB10     | TIM2_CH3    | Echo 입력 (펄스 측정) |
+
+### 모터 드라이버 (Motor Driver - L298N)
+| 모터 | 기능 | STM32 핀 | 타이머 채널 | 비고 |
+|------|------|----------|-------------|------|
+| **M1 (왼쪽 바퀴)** | IN1 | PB0 | - | Direction 1 |
+|                    | IN2 | PB1 | - | Direction 2 |
+|                    | ENA | PA8 | TIM1_CH1 | PWM 속도 제어 |
+| **M2 (오른쪽 바퀴)** | IN3 | PB2 | - | Direction 1 |
+|                      | IN4 | PB12 | - | Direction 2 |
+|                      | ENB | PA9 | TIM1_CH2 | PWM 속도 제어 |
+| **M3 (청소기)** | IN1 | PC3 | - | Direction 1 |
+|                 | IN2 | PC4 | - | Direction 2 |
+|                 | ENB | PB7 | TIM4_CH2 | PWM 속도 제어 |
 
 ### 소프트웨어 도구
 - **IDE**: STM32CubeIDE (권장) 또는 Eclipse + GNU ARM Toolchain

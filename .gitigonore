@@ -1,0 +1,21 @@
+# Build directories
+Debug/
+Release/
+
+# IDE files
+*.launch
+*.log
+*.swp
+*.swo
+*.i
+
+# CubeIDE metadata
+.settings/
+*.project
+*.cproject
+
+# Object files
+*.o
+*.elf
+*.bin
+*.hex

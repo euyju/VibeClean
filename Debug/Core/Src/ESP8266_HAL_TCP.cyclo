@@ -1,0 +1,4 @@
+../Core/Src/ESP8266_HAL_TCP.c:14:5:ESP_TCP_Init	3
+../Core/Src/ESP8266_HAL_TCP.c:38:5:ESP_TCP_Send	2
+../Core/Src/ESP8266_HAL_TCP.c:55:5:ESP_TCP_Receive	1
+../Core/Src/ESP8266_HAL_TCP.c:63:5:ESP_TCP_Close	1

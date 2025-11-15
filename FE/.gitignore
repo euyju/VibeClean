@@ -1,0 +1,25 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Node / 패키지 매니저
+/node_modules
+/.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 빌드/테스트
+/coverage
+/build
+
+# 환경설정
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 에디터 / OS
+.vscode/
+.idea/
+Thumbs.db

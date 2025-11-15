@@ -543,39 +543,14 @@ int main(void)
   float d1, d2, d3;
   int16_t Ax, Ay, Az;
   char buf[100];
-  // 1️⃣ Wi-Fi 연결
-     ESP_Init("YOUR_WIFI_SSID", "YOUR_WIFI_PASSWORD");
-     char value[64];  // 서버로부터 받은 값을 저장할 버퍼
 
-     // 2️⃣ GET 요청 및 값 파싱
-     if (ESP_HTTP_Get_Value("192.168.178.61", "/api/manual/speed", "fanSpeed", value))
-     {
-         char msg[128];
-         sprintf(msg, "fanSpeed value = %s\r\n", value);
-         Uart_sendstring(msg, &huart2);
-     }
-     else
-     {
-         Uart_sendstring("HTTP GET Failed\r\n", &huart2);
-     }
-
-  // POST
-//  ESP_HTTP_Post("192.168.178.61", "/data", "{\"id\":1,\"value\":42}");
+  ESP_Init("S24", "dial8787@@");
 
   float distance1, distance2, distance3;
 
 
   while (1)
   {
-
-	  	  	  HAL_Delay(5000);  // 5초마다 재요청 가능
-	          ESP_HTTP_Get_Value("192.168.178.61", "/api/manual/speed", "fanSpeed", value);
-
-	          char msg[128];
-	          sprintf(msg, "fanSpeed = %s\r\n", value);
-	          Uart_sendstring(msg, &huart2);
-
-
 //     MPU6050_Read_Accel(&Ax, &Ay, &Az);
 //
 //         // g 단위 변환

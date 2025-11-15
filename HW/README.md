@@ -4,9 +4,9 @@ VibeClean 프로젝트의 하드웨어 및 임베디드 소프트웨어 디렉�
 
 ## 👥 담당자
 
-- **박태정** - Hardware 설계 및 개발
+- **박태정** - Hardware 설계 및 Embedded Software 개발 
 - **이의주** - Embedded Software 개발
-- **백승찬** - Edge AI 구현
+- **백승찬** - Edge AI 설계 및 Embedded Software 개발
 
 ## 📁 폴더 구조
 
@@ -88,7 +88,7 @@ HW/
 |                 | ENB | PB7 | TIM4_CH2 | PWM 속도 제어 |
 
 ### 소프트웨어 도구
-- **IDE**: STM32CubeIDE (권장) 또는 Eclipse + GNU ARM Toolchain
+- **IDE**: STM32CubeIDE
 - **펌웨어**: STM32 HAL Library
 - **설정 도구**: STM32CubeMX
 - **디버거**: ST-Link
@@ -97,16 +97,11 @@ HW/
 
 ### 1. 개발 환경 설정
 
-#### STM32CubeIDE 사용 (권장)
+#### STM32CubeIDE 사용
 1. [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html) 다운로드 및 설치
 2. STM32CubeIDE 실행
 3. `File` > `Open Projects from File System...`
 4. `HW/STM32` 폴더 선택
-
-#### Eclipse 사용
-1. Eclipse IDE for Embedded C/C++ Developers 설치
-2. GNU ARM Embedded Toolchain 설치
-3. `.project` 파일이 있는 `HW/STM32` 폴더를 workspace로 import
 
 ### 2. 프로젝트 빌드
 
@@ -189,7 +184,7 @@ Run > Debug Configurations...
 - [STM32 HAL Documentation](https://www.st.com/resource/en/user_manual/dm00105879.pdf)
 - [ESP8266 AT Command Set](https://www.espressif.com/sites/default/files/documentation/4a-esp8266_at_instruction_set_en.pdf)
 
-## 🤝 기여 가이드
+## PR 가이드
 
 1. 새로운 기능 개발 시 별도 브랜치 생성
    ```bash
@@ -204,9 +199,3 @@ Run > Debug Configurations...
    ```
 
 4. Pull Request 생성 및 리뷰 요청
-
-## 📞 문의
-
-- **Hardware 관련**: 박태정
-- **Embedded SW 관련**: 이의주
-- **Edge AI 관련**: 백승찬

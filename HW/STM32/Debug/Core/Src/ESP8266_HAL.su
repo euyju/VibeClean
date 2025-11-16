@@ -1,0 +1,4 @@
+../Core/Src/ESP8266_HAL.c:16:6:ESP_Init	144	static
+../Core/Src/ESP8266_HAL.c:56:5:ESP_HTTP_Get	1336	static
+../Core/Src/ESP8266_HAL.c:108:5:ESP_HTTP_Get_Value	1624	static
+../Core/Src/ESP8266_HAL.c:174:5:ESP_HTTP_Post	1616	static

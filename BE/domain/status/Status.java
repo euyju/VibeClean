@@ -29,15 +29,19 @@ public class Status {
     @Column(nullable = false,name="time") // DB 수정하면서 이 부분이 추가되었다.
     private LocalDateTime time;
 
+    @Column (nullable = false, name="mode")
+    private String mode;
+
     protected Status(){} //jpa를 사용하는 경우 entity객체에 이런 식으로 항상 기본 생성자를 작성해야 한다.
 
-    public Status(String power, String currentFloor, int fanSpeed, int x, int y, LocalDateTime time) {
+    public Status(String power, String currentFloor, int fanSpeed, int x, int y, LocalDateTime time, String mode) {
         this.power = power;
         this.currentFloor = currentFloor;
         this.fanSpeed = fanSpeed;
         this.x = x;
         this.y = y;
         this.time=time;
+        this.mode=mode;
     }
 
     public String getPower() {
@@ -54,5 +58,9 @@ public class Status {
 
     public LocalDateTime getTime() {
         return time;
+    }
+
+    public String getMode() {
+        return mode;
     }
 }

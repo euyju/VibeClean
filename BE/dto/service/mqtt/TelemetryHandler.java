@@ -1,6 +1,6 @@
-/*
 package com.Study.vibeclean.dto.service.mqtt;
 
+import com.Study.vibeclean.dto.repository.manual.ManualModeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Study.vibeclean.domain.sensor.Sensor;
 import com.Study.vibeclean.domain.status.Status;
@@ -21,6 +21,7 @@ public class TelemetryHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final StatusRepository statusRepository;
     private final SensorRepository sensorRepository;
+    private final ManualModeRepository manualModeRepository;
 
     public void handleTelemetry(String payload) {
         try {// 이 바로 아래 코드로 json문자열을 java 객체로 만들어준다. 매우 편리 ㅎㅎ
@@ -28,7 +29,8 @@ public class TelemetryHandler {
 
             // 1) status 저장
             Status status = new Status("ON", msg.getCurrentFloor(),msg.getFanSpeed(),
-                    msg.getPosition().getX(),msg.getPosition().getY(),LocalDateTime.now() );
+                    msg.getPosition().getX(),msg.getPosition().getY(),LocalDateTime.now(),
+                    manualModeRepository.findTopByOrderByIdDesc().getMode());
             statusRepository.save(status);
 
             // 2) sensor 저장
@@ -42,4 +44,4 @@ public class TelemetryHandler {
             log.error("Failed to handle telemetry payload: {}", payload, e);
         }
     }
-}*/
+}

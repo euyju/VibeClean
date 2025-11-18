@@ -1,7 +1,12 @@
 package com.Study.vibeclean.controller.manual;
 
+import com.Study.vibeclean.domain.manual.ManualDirection;
+import com.Study.vibeclean.dto.manual.request.ManualDirectionRequest;
+import com.Study.vibeclean.dto.manual.request.ManualModeRequest;
 import com.Study.vibeclean.dto.manual.request.ManualPowerRequest;
 import com.Study.vibeclean.dto.manual.request.ManualSpeedRequest;
+import com.Study.vibeclean.dto.manual.response.ManualDirectionResponse;
+import com.Study.vibeclean.dto.manual.response.ManualModeResponse;
 import com.Study.vibeclean.dto.manual.response.ManualPowerResponse;
 import com.Study.vibeclean.dto.manual.response.ManualSpeedResponse;
 import com.Study.vibeclean.dto.service.manual.ManualControlService;
@@ -26,13 +31,28 @@ public class ManualController {
         manualControlService.setPower(request);
     }
 
-    @GetMapping("/api/manual/speed")
+    @PostMapping("api/manual/mode")
+    public void setMode(@RequestBody ManualModeRequest request){manualControlService.setMode(request); }
+
+    @PostMapping("api/manual/direction")
+    public void setMode(@RequestBody ManualDirectionRequest request){manualControlService.setDirection(request); }
+
+
+
+/*    @GetMapping("/api/manual/speed")
     public ManualSpeedResponse getSpeed(){ return manualControlService.getSpeed();
     }
 
     @GetMapping("/api/manual/power")
     public ManualPowerResponse getPower(){ return manualControlService.getPower();
     }
+
+    @GetMapping("/api/manual/mode")
+    public ManualModeResponse getMode(){return manualControlService.getMode();}
+
+    @GetMapping("api/manual/direction")
+    public ManualDirectionResponse getDirection(){return manualControlService.getDirection();}*/
+
 
 
 }

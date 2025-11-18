@@ -1,0 +1,37 @@
+.pathmap-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pathmap-container h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.map-canvas {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden; /* 캔버스 밖으로 나가는 점은 숨김 */
+}
+
+.pin {
+  /* 위치를 좌표(left, top)로 잡기 */
+  position: absolute;
+  /* 점 세부설정 */
+  width: 6px; 
+  height: 6px;
+  background-color: #ff4d4d; 
+  border-radius: 50%;
+  /* (선택 사항) 점의 중심을 좌표에 맞추기 위해 약간 이동 */
+  transform: translate(-50%, -50%);
+  /* (선택 사항) 부드러운 움직임 */
+  transition: all 0.2s ease;
+}

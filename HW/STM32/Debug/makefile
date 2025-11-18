@@ -60,8 +60,8 @@ all: main-build
 main-build: SoundTest.elf secondary-outputs
 
 # Tool invocations
-SoundTest.elf SoundTest.map: $(OBJS) $(USER_OBJS) C:\Users\82109\stmcode\STM32\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "SoundTest.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\82109\stmcode\STM32\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SoundTest.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+SoundTest.elf SoundTest.map: $(OBJS) $(USER_OBJS) C:\Users\82109\stm32_git\VibeClean\HW\STM32\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SoundTest.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\82109\stm32_git\VibeClean\HW\STM32\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SoundTest.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

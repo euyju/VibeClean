@@ -115,11 +115,6 @@ uint8_t rx_data[100];
 #define PWR_MGMT_1    0x6B
 #define ACCEL_XOUT_H  0x3B
 
-//Odometry 상수
-#define WHEEL_RADIUS_MM     30      // 바퀴 반지름 (mm)
-#define ROBOT_AXLE_LENGTH_MM 160    // 바퀴 축 간 거리 (mm)
-#define ENCODER_RESOLUTION  1000    // 엔코더 해상도 (펄스 수)
-#define TIMER_PERIOD        65536   // TIM3/TIM8 주기
 
 /* USER CODE END PD */
 
@@ -133,19 +128,13 @@ I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
-TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
-TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 TIM_HandleTypeDef htim2;
-//2D 맵핑용 위치변수
-float g_robot_x = 0.0f;     // 현재의 X 좌표
-float g_robot_y = 0.0f;     // 현재의 Y 좌표
-float g_robot_yaw = 0.0f;   // 현재의 방향 각도 (단위: 도 Degree)
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -157,8 +146,6 @@ static void MX_TIM1_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART3_UART_Init(void);
-static void MX_TIM3_Init(void);
-static void MX_TIM8_Init(void);
 /* USER CODE BEGIN PFP */
 void DWT_Init(void);
 void DWT_Delay_us(uint32_t us);
@@ -496,74 +483,6 @@ void MPU6050_Read_Accel(int16_t *Ax, int16_t *Ay, int16_t *Az) {
     *Az = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
 }
 
-// 엔코더 카운터 추적 변수 (이전 값과의 차이를 계산하기 위함)
-static int prev_enc_L = 0;    // 이전 왼쪽 엔코더 값 (TIM3 카운터)
-static int prev_enc_R = 0;    // 이전 오른쪽 엔코더 값 (TIM8 카운터)
-
-/**
-  * 엔코더 및 IMU를 이용해 로봇의 현재 위치(x, y, yaw)를 정수 단위로 업데이트합니다.
-  */
-void update_odometry(void)
-{
-	const float PI = 3.1415926535f;
-	    const int PERIOD = TIMER_PERIOD; // 65536
-
-	    // 1. 엔코더 카운터 값 읽기
-	    int current_enc_L = (int)__HAL_TIM_GET_COUNTER(&htim3);
-	    int current_enc_R = (int)__HAL_TIM_GET_COUNTER(&htim8);
-
-	    // 2. 카운터 변화량 계산 (Delta Pulse) - 랩어라운드 처리 적용
-	    int delta_L_pulse = current_enc_L - prev_enc_L;
-	    int delta_R_pulse = current_enc_R - prev_enc_R;
-
-	    //  랩어라운드 처리
-	    if (delta_L_pulse > (PERIOD / 2)) {
-	        delta_L_pulse -= PERIOD; // 언더플로우 발생 시
-	    } else if (delta_L_pulse < -(PERIOD / 2)) {
-	        delta_L_pulse += PERIOD; // 오버플로우 발생 시
-	    }
-
-	    if (delta_R_pulse > (PERIOD / 2)) {
-	        delta_R_pulse -= PERIOD;
-	    } else if (delta_R_pulse < -(PERIOD / 2)) {
-	        delta_R_pulse += PERIOD;
-	    }
-
-	    prev_enc_L = current_enc_L;
-	    prev_enc_R = current_enc_R;
-
-	    // 3. 펄스 변화량을 실제 이동 거리(mm)로 변환
-	    float distance_L_mm = (float)delta_L_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
-	    float distance_R_mm = (float)delta_R_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
-
-	    // 평균 이동 거리 및 각도 변화 계산
-	    float distance_center_mm = (distance_R_mm + distance_L_mm) / 2.0f;
-	    float delta_theta_rad = (distance_R_mm - distance_L_mm) / ROBOT_AXLE_LENGTH_MM; // 회전 각도(라디안)
-
-
-	    // 4. 좌표 (X, Y) 및 방향 (Yaw) 업데이트 (Middle Point 적분 방식 적용)
-
-	    // 4-1. 현재 Yaw를 라디안으로 변환
-	    float current_yaw_rad = g_robot_yaw * PI / 180.0f;
-
-	    // 4-2. 중간 각도 (Average Yaw) 계산: X, Y 계산에 사용 (정확도 향상)
-	    float avg_yaw_rad = current_yaw_rad + delta_theta_rad / 2.0f;
-
-	    // 4-3. X, Y 좌표 업데이트
-	    float delta_x = distance_center_mm * cosf(avg_yaw_rad);
-	    float delta_y = distance_center_mm * sinf(avg_yaw_rad);
-
-	    g_robot_x += delta_x;
-	    g_robot_y += delta_y;
-
-	    // 4-4. Yaw 각도 업데이트 및 정규화
-	    float next_yaw_rad = current_yaw_rad + delta_theta_rad;
-	    g_robot_yaw = next_yaw_rad * 180.0f / PI;
-
-	    // Yaw 각도 정규화 (0~359.999도)
-	    while (g_robot_yaw >= 360.0f) g_robot_yaw -= 360.0f;
-	    while (g_robot_yaw < 0.0f) g_robot_yaw += 360.0f;
-}
 /* USER CODE END 0 */
 
 /**
@@ -574,10 +493,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-//	//**Putty에서 작동 확인용
-//	int countL, countR; //  엔코더 카운트 저장 변수
-	char debug_msg[100]; // 디버깅 메시지 버퍼
-//	//
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -604,8 +520,6 @@ int main(void)
   MX_TIM4_Init();
   MX_I2C1_Init();
   MX_USART3_UART_Init();
-  MX_TIM3_Init();
-  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   // DWT 초기화 (마이크로초 측정을 위해 필수)
   DWT_Init();
@@ -615,9 +529,6 @@ int main(void)
   motor_control_init(); // <- 반드시 호출 (PWM Start + 초기화)
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 
-  //엔코더 카운팅 시작
-  HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
-  HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
 
   /* USER CODE END 2 */
 
@@ -626,87 +537,20 @@ int main(void)
   int failCount = 0;
   int tempAovoid = 0; // 0 = right, 1 = left
 
-  char post_data_buffer[150]; //json 문자열 버퍼
 
-////  MPU6050_Init();
-//
-//  float d1, d2, d3;
-//  int16_t Ax, Ay, Az;
-//  char buf[100];
-//  // 1️⃣ Wi-Fi 연결
-//     ESP_Init("YOUR_WIFI_SSID", "YOUR_WIFI_PASSWORD");
-//     char value[64];  // 서버로부터 받은 값을 저장할 버퍼
-//
-//     // 2️⃣ GET 요청 및 값 파싱
-//     if (ESP_HTTP_Get_Value("192.168.178.61", "/api/manual/speed", "fanSpeed", value))
-//     {
-//         char msg[128];
-//         sprintf(msg, "fanSpeed value = %s\r\n", value);
-//         Uart_sendstring(msg, &huart2);
-//     }
-//     else
-//     {
-//         Uart_sendstring("HTTP GET Failed\r\n", &huart2);
-//     }
-//
-//  // POST
-//  ESP_HTTP_Post("192.168.178.61", "/data", "{\"id\":1,\"value\":42}");
-//
-//  float distance1, distance2, distance3;
+//  MPU6050_Init();
+
+  float d1, d2, d3;
+  int16_t Ax, Ay, Az;
+  char buf[100];
+
+  ESP_Init("S24", "dial8787@@");
+
+  float distance1, distance2, distance3;
 
 
   while (1)
   {
-//***	  //x,y 좌표 확인 테스트 코드
-	      // 1. 오도메트리 업데이트 (현재 X, Y, Yaw 계산)
-	      update_odometry();
-
-	      // 2. 시리얼 포트로 X, Y 좌표 출력 (테스트용)
-	      // float 값을 소수점 두 자리까지 출력하여 정확도를 확인합니다.
-	      sprintf(debug_msg, "X: %.2f | Y: %.2f | Yaw: %.1f\r\n",
-	              g_robot_x, g_robot_y, g_robot_yaw);
-	      UART_Printf(debug_msg);
-	      HAL_Delay(5000); // ms마다 업데이트 확인
-
-//***	  // 1. 엔코더 카운터 값 읽기 테스트 코드
-//	      countL = (int)__HAL_TIM_GET_COUNTER(&htim3); // 왼쪽 엔코더
-//	      countR = (int)__HAL_TIM_GET_COUNTER(&htim8); // 오른쪽 엔코더
-//
-//	      // 2. 시리얼 포트로 출력 (UART_Printf 함수 사용)
-//	      sprintf(debug_msg, "L: %d | R: %d\r\n", countL, countR);
-//	      UART_Printf(debug_msg);
-//
-//	      // 3. 지연
-//***	  HAL_Delay(100); // 100ms마다 업데이트
-
-
-
-//	  		  HAL_Delay(5000);  // 5초마다 재요청 가능
-//	          ESP_HTTP_Get_Value("192.168.178.61", "/api/manual/speed", "fanSpeed", value);
-//
-//	          char msg[128];
-//	          sprintf(msg, "fanSpeed = %s\r\n", value);
-//	          Uart_sendstring(msg, &huart2);
-//
-//	          // 1. 오도메트리 업데이트 (좌표 계산)
-//	              update_odometry();
-//
-//	          // 2. 백엔드로 보낼 JSON 데이터 생성
-//	              int x_int = (int)roundf(g_robot_x);
-//	              int y_int = (int)roundf(g_robot_y);
-//
-//	          // JSON 형식으로 포맷팅
-//	              sprintf(post_data_buffer,
-//	                      "{\"robotId\":1,\"x\":%d,\"y\":%d}",
-//	                      x_int, y_int);
-//
-//	          // 3. POST 요청으로 서버에 데이터 전송
-//	              ESP_HTTP_Post("192.168.178.61", "/api/robot/location", post_data_buffer);
-//
-//	          // 4. 전송 주기 설정
-//	              HAL_Delay(100); // 100ms (0.1초) 주기로 전송
-//
-//
 //     MPU6050_Read_Accel(&Ax, &Ay, &Az);
 //
 //         // g 단위 변환
@@ -1062,55 +906,6 @@ static void MX_TIM2_Init(void)
 }
 
 /**
-  * @brief TIM3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM3_Init(void)
-{
-
-  /* USER CODE BEGIN TIM3_Init 0 */
-
-  /* USER CODE END TIM3_Init 0 */
-
-  TIM_Encoder_InitTypeDef sConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-
-  /* USER CODE BEGIN TIM3_Init 1 */
-
-  /* USER CODE END TIM3_Init 1 */
-  htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
-  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 65535;
-  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
-  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
-  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
-  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
-  sConfig.IC1Filter = 0;
-  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
-  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
-  sConfig.IC2Filter = 0;
-  if (HAL_TIM_Encoder_Init(&htim3, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM3_Init 2 */
-
-  /* USER CODE END TIM3_Init 2 */
-
-}
-
-/**
   * @brief TIM4 Initialization Function
   * @param None
   * @retval None
@@ -1156,56 +951,6 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 2 */
   HAL_TIM_MspPostInit(&htim4);
-
-}
-
-/**
-  * @brief TIM8 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM8_Init(void)
-{
-
-  /* USER CODE BEGIN TIM8_Init 0 */
-
-  /* USER CODE END TIM8_Init 0 */
-
-  TIM_Encoder_InitTypeDef sConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-
-  /* USER CODE BEGIN TIM8_Init 1 */
-
-  /* USER CODE END TIM8_Init 1 */
-  htim8.Instance = TIM8;
-  htim8.Init.Prescaler = 0;
-  htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim8.Init.Period = 65535;
-  htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim8.Init.RepetitionCounter = 0;
-  htim8.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
-  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
-  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
-  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
-  sConfig.IC1Filter = 0;
-  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
-  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
-  sConfig.IC2Filter = 0;
-  if (HAL_TIM_Encoder_Init(&htim8, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim8, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM8_Init 2 */
-
-  /* USER CODE END TIM8_Init 2 */
 
 }
 

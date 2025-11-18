@@ -1,0 +1,36 @@
+.switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.switch:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.switch.checked {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.switch.checked .switch-thumb {
+  transform: translateX(20px);
+}

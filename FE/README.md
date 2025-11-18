@@ -10,7 +10,6 @@ VibeClean 프로젝트의 프론트엔드 대시보드 디렉토리입니다.
 
 ```
 FE/
-├── node_modules/       # NPM 패키지 (Git 무시됨)
 ├── public/             # 정적 파일
 │   ├── index.html      # React 앱의 진입점 HTML
 │   └── logo.png        # 로고 이미지

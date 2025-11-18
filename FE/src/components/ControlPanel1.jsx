@@ -9,11 +9,11 @@ function ControlPanel1({ className, isPowerOn, setIsPowerOn }) {
             <h2>시스템 전원</h2>
 
             <div className="content-wrapper">
-                {/* Power Icon */}
+                {/* 전원 아이콘 */}
                 <div className={`power-icon-container ${isPowerOn ? 'active' : ''}`}>
                     <PowerIcon className="power-icon" strokeWidth={2} />
                 </div>
-                {/* Status Text */}
+                {/* 상태 구문 */}
                 <div className="status-text-container">
                     <p className="status-label">전원 상태</p>
                     <p className={`status-text ${isPowerOn ? 'active' : ''}`}>

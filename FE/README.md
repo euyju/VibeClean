@@ -10,26 +10,45 @@ VibeClean 프로젝트의 프론트엔드 대시보드 디렉토리입니다.
 
 ```
 FE/
-├── public/             # 정적 파일
-│   ├── index.html      # React 앱의 진입점 HTML
-│   └── logo.png        # 로고 이미지
-├── src/
-│   ├── components/     # 재사용 가능한 UI 컴포넌트
-│   │   ├── StatusDisplay.jsx     # 실시간 상태창
-│   │   ├── ControlPanel1.jsx     # 시스템 전원 패널
-│   │   ├── ControlPanel2.jsx     # 팬 속도 조절 패널
-│   │   ├── PathMap.jsx         # 주행 경로 맵
-│   │   ├── Icons.jsx           # SVG 아이콘 컴포넌트
-│   │   └── Switch.jsx          # 토글 스위치 컴포넌트
-│   ├── App.jsx         # 메인 애플리케이션 (레이아웃, 핵심 로직)
-│   ├── App.module.css  # App 전용 CSS 모듈 (그리드 레이아웃)
-│   ├── index.js        # React DOM 렌더링 진입점
-│   ├── index.css       # 전역 CSS 스타일 (배경, 폰트 등)
-│   └── (각 컴포넌트별 .css) # 각 컴포넌트 세부 스타일
-├── .gitignore          # Git 무시 파일 목록
-├── package.json        # 프로젝트 정보 및 의존성 목록
-├── package-lock.json   # 의존성 버전 고정
-└── README.md           # 이 파일
+├── public/                    # 정적 파일 보관함
+│   ├── 1.ico                  # 파비콘
+│   ├── 1.png                  # 로고 이미지
+│   ├── index.html             # React 앱의 진입점 HTML
+│   ├── manifest.json          # PWA 설정 파일
+│   └── robots.txt             # 검색 엔진 설정
+│
+├── src/                       # React 개발 소스 코드 폴더
+│   ├── 1.png                  # import용 로고 이미지
+│   ├── App.js                 # 메인 컴포넌트, 상태 및 API 관리
+│   ├── App.module.css         # 대시보드 전체 그리드 레이아웃 및 공통 스타일
+│   ├── background1.jpg        # 배경 이미지
+│   ├── index.css              # 전역 스타일 (Global CSS)
+│   ├── index.js               # React 실행 진입점 (Entry Point)
+│   ├── reportWebVitals.js     # 성능 측정 도구
+│   │
+│   └── components/            # 재사용 가능한 UI '부품' 폴더
+│           ControlPanel1.css      # '시스템 전원' 패널 스타일
+│           ControlPanel1.jsx      # '시스템 전원' 패널 컴포넌트
+│           ControlPanel2.css      # '팬 속도 조절' 패널 스타일
+│           ControlPanel2.jsx      # '팬 속도 조절' 패널 컴포넌트
+│           ControlPanel3.css      # '수동 주행 조작' 패널 스타일
+│           ControlPanel3.jsx      # '수동 주행 조작' 패널 컴포넌트
+│           Graph1.css             # '노면 감지 통계' 그래프 스타일
+│           Graph1.jsx             # '노면 감지 통계' 그래프 컴포넌트
+│           Graph2.css             # '실시간 센서 데이터' 그래프 스타일
+│           Graph2.jsx             # '실시간 센서 데이터' 그래프 컴포넌트
+│           Icons.jsx              # SVG 아이콘 컴포넌트 모음
+│           PathMap.css            # '주행 경로' 맵 스타일
+│           PathMap.jsx            # '주행 경로' 맵 컴포넌트
+│           StatusDisplay.jsx      # '실시간 상태창' 컴포넌트
+│           StatusDisplay.module.css # StatusDisplay 전용 스타일 (Module)
+│           Switch.css             # 토글 스위치 스타일
+│           Switch.jsx             # 토글 스위치 컴포넌트
+│
+├── .gitignore                 # Git 무시 파일 목록
+├── package.json               # 프로젝트 정보 및 의존성 목록
+├── package-lock.json          # 의존성 버전 고정
+└── README.md                  # 이 파일
 ```
 
 ## 💻 개발 환경 및 기술 스택
@@ -37,16 +56,19 @@ FE/
   * **Framework**: React.js
   * **Language**: JavaScript (ES6+)
   * **API Communication**: axios
-  * **Styling**: CSS Modules, 순수 CSS (Flexbox, Grid)
+  * **Styling**: CSS Modules, 순수 CSS (Flexbox, Grid), Glassmorphism Design
   * **Package Manager**: npm
   * **Runtime**: Node.js (v16+)
 
 ## 🚀 주요 기능
 
-  * **실시간 대시보드**: 백엔드 API를 주기적으로 폴링(polling)하여 로봇의 상태(전원, 팬 속도, 바닥 상태, 경로)를 실시간으로 시각화합니다.
-  * **양방향 수동 제어**: 사용자가 UI(스위치, 버튼)를 조작하면, `axios`를 통해 BE 서버로 제어 명령(API 4, 5)을 전송합니다.
-  * **컴포넌트 기반 UI**: 대시보드의 각 패널(`StatusDisplay`, `ControlPanel` 등)을 재사용 가능한 컴포넌트로 모듈화하여 관리합니다.
-  * **동적 스타일링**: 로봇의 상태(`isPowerOn`, `fanSpeed`)에 따라 아이콘, 버튼, 인디케이터의 스타일이 동적으로 변경됩니다.
+  * **실시간 대시보드**: 백엔드 API를 주기적으로 폴링(polling)하여 로봇의 상태(전원, 팬 속도, 바닥 상태, 경로, 센서 값)를 실시간으로 시각화합니다.
+  * **양방향 수동 제어**: 사용자가 UI(스위치, 버튼, 십자키)를 조작하면, `axios`를 통해 BE 서버로 제어 명령을 전송합니다.
+  * **동적 그래프 시각화**:
+      * **Graph1**: 노면 상태별 통계를 막대 그래프로 시각화
+      * **Graph2**: 3축(X, Y, Z) 센서 데이터를 실시간 꺾은선 그래프(SVG)로 시각화
+  * **주행 경로 맵핑**: 로봇이 이동한 경로 좌표를 누적하여 실시간으로 지도에 그립니다.
+  * **글래스모피즘 UI**: 현대적이고 세련된 반투명 유리 효과 디자인을 적용했습니다.
 
 -----
 
@@ -91,52 +113,53 @@ npm start
 
 FE 대시보드는 다음의 주요 API를 호출하여 작동합니다.
 
-### **API 1: 실시간 상태 조회 (핵심)**
+### **조회 (Polling)**
 
-  * `GET /api/robot/status`
-  * **설명**: 2초마다 주기적으로 호출하여 로봇의 모든 실시간 상태(전원, 바닥, 팬, 경로)를 받아와 `App.jsx`의 메인 `state`에 저장합니다.
+  * **API 1: 실시간 상태 조회** (`GET /api/robot/status`)
+      * 로봇의 전원, 모드, 바닥 상태, 팬 속도, 주행 경로를 조회합니다.
+  * **API 2: 노면 감지 통계** (`GET /api/robot/stats`)
+      * 누적 청소 시간과 바닥 종류별(카펫, 일반, 먼지) 비율 통계를 조회합니다.
+  * **API 3: 실시간 센서 데이터** (`GET /api/robot/sensor`)
+      * 로봇의 X, Y, Z 센서 값을 실시간으로 조회합니다.
 
-### **API 5: 전원 상태 수동 설정**
+### **제어 (Control)**
 
-  * `POST /api/manual/power`
-  * **설명**: '시스템 전원' 패널의 스위치 조작 시 호출됩니다. `{"power": "ON"}` 또는 `{"power": "OFF"}` 데이터를 전송합니다.
-
-### **API 4: 팬 속도 수동 설정**
-
-  * `POST /api/manual/speed`
-  * **설명**: '팬 속도 조절' 패널의 버튼 클릭 시 호출됩니다. `{"fanSpeed": 2}`와 같이 0\~3 사이의 정수를 전송합니다.
+  * **API 4: 팬 속도 설정** (`POST /api/manual/speed`)
+      * 팬 속도를 1\~3단으로 조절합니다.
+  * **API 5: 전원 제어** (`POST /api/manual/power`)
+      * 로봇의 전원을 ON/OFF 합니다.
+  * **API 6: 모드 변경** (`POST /api/manual/mode`)
+      * 주행 모드를 AUTO 또는 MANUAL로 변경합니다.
+  * **API 7: 방향 제어** (`POST /api/manual/direction`)
+      * 수동 모드에서 로봇의 이동 방향(FWD, BACK, LEFT, RIGHT, STOP)을 제어합니다.
 
 -----
 
 ## 🧩 주요 컴포넌트 설명
 
-### `App.jsx` (중앙 관제실)
+### `App.js` (중앙 관제실)
 
-  * **역할**: 프로젝트의 '두뇌'입니다. 모든 핵심 상태(`robotStatus`, `isPowerOn`, `fanSpeed`)를 `useState`로 관리합니다.
-  * **핵심 로직**:
-    1.  `useEffect`를 사용해 API 1번을 2초마다 주기적으로 호출(폴링)하고, `robotStatus` 상태를 업데이트합니다.
-    2.  `handlePowerChange`, `handleFanChange` 함수를 정의하여 API 4, 5번을 `axios.post`로 전송합니다.
-    3.  모든 자식 컴포넌트에게 필요한 `state`와 '핸들러 함수'를 `props`로 전달합니다.
+  * **역할**: 프로젝트의 최상위 컴포넌트입니다.
+  * **기능**: `useState`로 모든 상태를 관리하고, `useEffect`로 API 폴링을 수행하며, 자식 컴포넌트들에게 데이터와 제어 함수를 `props`로 전달합니다.
 
-### `StatusDisplay.jsx` (전광판)
+### `StatusDisplay.jsx`
 
-  * **역할**: `App.jsx`로부터 받은 `props`(status, isPowerOn, fanSpeed)를 화면에 표시합니다.
-  * **특징**: 자체적인 로직이나 상태가 없는 '멍청한' 컴포넌트로, 부모가 주는 데이터가 바뀌면 자동으로 리렌더링됩니다.
+  * 로봇의 핵심 상태(전원, 모드, 배터리 등)를 요약해서 보여주는 패널입니다.
 
-### `ControlPanel1.jsx` (시스템 전원)
+### `ControlPanel 시리즈`
 
-  * **역할**: 전원 스위치 UI를 제공합니다.
-  * **특징**: `App.jsx`로부터 `isPowerOn`(현재 상태)과 `handlePowerChange`(변경 함수)를 `props`로 받아 `Switch` 컴포넌트와 연결합니다.
+  * **CP1**: 시스템 전원 ON/OFF 토글 스위치
+  * **CP2**: 팬 속도(0\~3단) 조절 버튼 및 인디케이터
+  * **CP3**: AUTO/MANUAL 모드 전환 및 수동 주행용 십자키 컨트롤러
 
-### `ControlPanel2.jsx` (팬 속도 조절)
+### `PathMap.jsx`
 
-  * **역할**: 팬 속도 조절 UI를 제공합니다.
-  * **특징**: `App.jsx`로부터 `fanSpeed`(현재 속도)와 `handleFanChange`(변경 함수)를 `props`로 받아 버튼과 인디케이터를 동적으로 렌더링합니다.
+  * 로봇의 이동 경로(`pathHistory`)를 시각적으로 보여주는 맵 컴포넌트입니다.
 
-### `PathMap.jsx` (지도)
+### `Graph 시리즈`
 
-  * **역할**: `App.jsx`로부터 `pathHistory` 배열을 `props`로 받아 `.map()`을 통해 화면에 점을 그립니다.
-  * **특징**: API 1번이 갱신될 때마다 새로운 `pathHistory` 배열을 받아, 기존 점들을 포함한 모든 경로를 다시 그립니다.
+  * **Graph1**: 노면 감지 통계(비율)를 막대 그래프로 시각화
+  * **Graph2**: 실시간 센서 데이터(X, Y, Z)를 SVG 꺾은선 그래프로 시각화
 
 -----
 
@@ -144,10 +167,11 @@ FE 대시보드는 다음의 주요 API를 호출하여 작동합니다.
 
   * [React 공식 문서](https://reactjs.org/)
   * [axios 공식 문서](https://axios-http.com/)
+  * [MDN Web Docs (CSS Grid/Flexbox)](https://developer.mozilla.org/ko/)
 
 ## PR 가이드
 
 1.  새로운 기능 개발 시 `develop` 브랜치에서 별도 브랜치 생성 (`feature/fe-new-feature`)
 2.  코드 변경 후 로컬 테스트 완료 확인 (`npm start`)
-3.  커밋 메시지 명확하게 작성 (`git commit -m "Feat: 팬 속도 조절 패널(CP2) UI 구현"`)
+3.  커밋 메시지 명확하게 작성 (`git commit -m "Feat: 실시간 센서 그래프(Graph2) 구현"`)
 4.  `develop` 브랜치로 Pull Request 생성 및 리뷰 요청

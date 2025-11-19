@@ -1,0 +1,20 @@
+# STM32 Build outputs
+Debug/
+Release/
+*.o
+*.d
+*.su
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.cyclo
+
+# IDE settings
+.settings/
+*.launch
+
+# STM32CubeIDE metadata
+.metadata/
+.recommenders/

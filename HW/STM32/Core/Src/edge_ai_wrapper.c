@@ -1,6 +1,21 @@
 #include "edge_ai_wrapper.h"
 #include "../../Edge-AI/edge-impulse-sdk/classifier/ei_run_classifier.h"
 #include "../../Edge-AI/model-parameters/model_metadata.h"
+#include <string.h>
+
+// 전역 버퍼 포인터 (C 콜백 함수에서 사용)
+static float *g_signal_buffer = NULL;
+
+/**
+ * @brief  Signal 콜백 함수 (C 스타일)
+ */
+static int get_signal_data(size_t offset, size_t length, float *out_ptr)
+{
+    for (size_t i = 0; i < length; i++) {
+        out_ptr[i] = g_signal_buffer[offset + i];
+    }
+    return 0;
+}
 
 /**
  * @brief  Edge Impulse 분류기 초기화
@@ -35,15 +50,12 @@ int edge_ai_classify(float *input_buffer, int buffer_size, surface_classificatio
         return -1;
     }
 
-    // Signal 구조체 설정 (입력 데이터)
+    // 전역 버퍼 포인터 설정
+    g_signal_buffer = input_buffer;
+
+    // Signal 구조체 설정 (C 스타일 함수 포인터)
     signal.total_length = buffer_size;
-    signal.get_data = [](size_t offset, size_t length, float *out_ptr, void *data) {
-        float *buffer = (float *)data;
-        for (size_t i = 0; i < length; i++) {
-            out_ptr[i] = buffer[offset + i];
-        }
-        return 0;
-    };
+    signal.get_data = &get_signal_data;
 
     // Edge Impulse 분류기 실행
     EI_IMPULSE_ERROR res = run_classifier(&signal, &ei_result, false);

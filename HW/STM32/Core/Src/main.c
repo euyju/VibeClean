@@ -27,6 +27,8 @@
 #include "ESP8266_HAL.h"
 #include <string.h>   // strlen 사용을 위해
 #include "stm32f4xx_hal.h" // HAL 함수 사용을 위해
+#include "mpu6050.h"  // Edge-AI용 MPU6050 드라이버
+#include "edge_ai_wrapper.h"  // Edge Impulse SDK Wrapper
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -121,6 +123,10 @@ uint8_t rx_data[100];
 #define ENCODER_RESOLUTION  1000    // 엔코더 해상도 (펄스 수)
 #define TIMER_PERIOD        65536   // TIM3/TIM8 주기
 
+// Edge-AI 관련 상수
+#define EDGE_AI_SAMPLE_COUNT    200    // 2초 @ 100Hz
+#define EDGE_AI_AXES            3      // 3축 가속도
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -135,6 +141,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
+TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart2;
@@ -146,6 +153,11 @@ TIM_HandleTypeDef htim2;
 float g_robot_x = 0.0f;     // 현재의 X 좌표
 float g_robot_y = 0.0f;     // 현재의 Y 좌표
 float g_robot_yaw = 0.0f;   // 현재의 방향 각도 (단위: 도 Degree)
+
+// Edge-AI 데이터 버퍼
+float edge_ai_buffer[EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES];
+volatile uint16_t edge_ai_sample_index = 0;
+volatile uint8_t edge_ai_buffer_ready = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -159,6 +171,7 @@ static void MX_I2C1_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM8_Init(void);
+static void MX_TIM6_Init(void);
 /* USER CODE BEGIN PFP */
 void DWT_Init(void);
 void DWT_Delay_us(uint32_t us);
@@ -606,6 +619,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_TIM3_Init();
   MX_TIM8_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   // DWT 초기화 (마이크로초 측정을 위해 필수)
   DWT_Init();
@@ -618,6 +632,29 @@ int main(void)
   //엔코더 카운팅 시작
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
+
+  // Edge-AI 초기화
+  UART_Printf("\r\n=== VibeClean Edge-AI Test ===\r\n");
+
+  // MPU6050 센서 초기화
+  if (MPU6050_Init(&hi2c1) == HAL_OK) {
+      UART_Printf("MPU6050 Init: OK (WHO_AM_I = 0x%02X)\r\n", MPU6050_WhoAmI(&hi2c1));
+  } else {
+      UART_Printf("MPU6050 Init: FAILED!\r\n");
+  }
+
+  // Edge Impulse 분류기 초기화
+  if (edge_ai_init() == 0) {
+      UART_Printf("Edge Impulse Init: OK\r\n");
+  } else {
+      UART_Printf("Edge Impulse Init: FAILED!\r\n");
+  }
+
+  // TIM6 100Hz 인터럽트 시작
+  HAL_TIM_Base_Start_IT(&htim6);
+  UART_Printf("TIM6 100Hz Timer: Started\r\n");
+  UART_Printf("Collecting %d samples (%.1f seconds)...\r\n\r\n",
+              EDGE_AI_SAMPLE_COUNT, EDGE_AI_SAMPLE_COUNT / 100.0f);
 
   /* USER CODE END 2 */
 
@@ -657,18 +694,22 @@ int main(void)
 
   while (1)
   {
-     	  //x,y 좌표 확인 Putty 테스트 코드2
-	  	  // main 함수 시작부분의 Putty 작동 테스트용 변수와 이하 코드 주석 해제한 후,
-	  	  // 이외 while (1) 내용 주석처리 하면 Putty 테스트 가능합니다.
-	      // 1. 오도메트리 업데이트 (현재 X, Y, Yaw 계산)
-	      update_odometry();
+      // === Edge-AI 테스트 코드 ===
+      if (edge_ai_buffer_ready) {
+          surface_classification_t result = {0};
 
-	      // 2. 시리얼 포트로 X, Y 좌표 출력 (테스트용)
-	      // float 값을 소수점 두 자리까지 출력하여 정확도를 확인합니다.
-	      sprintf(debug_msg, "X: %.2f | Y: %.2f | Yaw: %.1f\r\n",
-	              g_robot_x, g_robot_y, g_robot_yaw);
-	      UART_Printf(debug_msg);
-	      HAL_Delay(100); // ms마다 업데이트 확인
+          // Edge Impulse 분류기 실행
+          if (edge_ai_classify(edge_ai_buffer, EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES, &result) == 0) {
+              // 판별 결과 출력 (Hard, Carpet, Dusty - 대문자 시작)
+              UART_Printf("Hard: %.2f, Carpet: %.2f, Dusty: %.2f\r\n",
+                         result.Hard, result.Carpet, result.Dusty);
+          } else {
+              UART_Printf("Classification FAILED\r\n");
+          }
+
+          // 버퍼 준비 완료 플래그 리셋
+          edge_ai_buffer_ready = 0;
+      }
 
 
 
@@ -890,7 +931,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.ClockSpeed = 400000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -1152,6 +1193,44 @@ static void MX_TIM4_Init(void)
 }
 
 /**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 4999;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 99;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
   * @brief TIM8 Initialization Function
   * @param None
   * @retval None
@@ -1356,6 +1435,34 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+/**
+  * @brief  TIM6 인터럽트 콜백 - Edge-AI 100Hz 데이터 수집
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM6) {
+        if (!edge_ai_buffer_ready) {
+            float ax, ay, az;
+
+            // MPU6050에서 가속도 읽기
+            if (MPU6050_ReadAccel(&hi2c1, &ax, &ay, &az) == HAL_OK) {
+                // 버퍼에 저장
+                edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax;
+                edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay;
+                edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az;
+
+                edge_ai_sample_index++;
+
+                // 버퍼가 가득 찼으면 플래그 설정
+                if (edge_ai_sample_index >= EDGE_AI_SAMPLE_COUNT) {
+                    edge_ai_buffer_ready = 1;
+                    edge_ai_sample_index = 0;
+                }
+            }
+        }
+    }
+}
 
 /* USER CODE END 4 */
 

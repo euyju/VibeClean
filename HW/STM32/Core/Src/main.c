@@ -487,27 +487,28 @@ void motor_control_init(void)
 
 }
 
-void MPU6050_Init(void) {
-    uint8_t check;
-    uint8_t data;
-
-    // WHO_AM_I register read
-    HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, 0x75, 1, &check, 1, 1000);
-
-    if (check == 104) {  // 0x68
-        data = 0;
-        HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, PWR_MGMT_1, 1, &data, 1, 1000);
-    }
-}
-
-void MPU6050_Read_Accel(int16_t *Ax, int16_t *Ay, int16_t *Az) {
-    uint8_t Rec_Data[6];
-    HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, ACCEL_XOUT_H, 1, Rec_Data, 6, 1000);
-
-    *Ax = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
-    *Ay = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
-    *Az = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
-}
+// 구 MPU6050 함수들 (mpu6050.c의 새 드라이버로 대체됨)
+//void MPU6050_Init(void) {
+//    uint8_t check;
+//    uint8_t data;
+//
+//    // WHO_AM_I register read
+//    HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, 0x75, 1, &check, 1, 1000);
+//
+//    if (check == 104) {  // 0x68
+//        data = 0;
+//        HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, PWR_MGMT_1, 1, &data, 1, 1000);
+//    }
+//}
+//
+//void MPU6050_Read_Accel(int16_t *Ax, int16_t *Ay, int16_t *Az) {
+//    uint8_t Rec_Data[6];
+//    HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, ACCEL_XOUT_H, 1, Rec_Data, 6, 1000);
+//
+//    *Ax = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
+//    *Ay = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
+//    *Az = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
+//}
 
 // 엔코더 카운터 추적 변수 (이전 값과의 차이를 계산하기 위함)
 static int prev_enc_L = 0;    // 이전 왼쪽 엔코더 값 (TIM3 카운터)

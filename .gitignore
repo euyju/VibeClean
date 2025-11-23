@@ -1,21 +1,20 @@
-# Build directories
+# STM32 Build outputs
 Debug/
 Release/
-
-# IDE files
-*.launch
-*.log
-*.swp
-*.swo
-*.i
-
-# CubeIDE metadata
-.settings/
-*.project
-*.cproject
-
-# Object files
 *.o
+*.d
+*.su
 *.elf
 *.bin
 *.hex
+*.map
+*.list
+*.cyclo
+
+# IDE settings
+.settings/
+*.launch
+
+# STM32CubeIDE metadata
+.metadata/
+.recommenders/

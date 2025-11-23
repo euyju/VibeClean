@@ -1,279 +1,177 @@
-//ESP8266_HAL.c
-
-#include "UartRingbuffer_multi.h"
-#include "ESP8266_HAL.h"
-#include "stdio.h"
-#include "string.h"
-
-extern UART_HandleTypeDef huart3;
-extern UART_HandleTypeDef huart2;
-
-#define wifi_uart &huart3
-#define pc_uart   &huart2
-
-char buffer[512];
-
-void ESP_Init(char *SSID, char *PASSWD)
-{
-    char data[128];
-    Ringbuf_init();
-
-    Uart_sendstring("AT+RST\r\n", wifi_uart);
-    Uart_sendstring("RESETTING...\r\n", pc_uart);
-    HAL_Delay(3000);
-
-    // Test AT
-    Uart_sendstring("AT\r\n", wifi_uart);
-    if (Wait_for("OK", wifi_uart))
-        Uart_sendstring("AT OK\r\n", pc_uart);
-    else
-        Uart_sendstring("AT FAIL\r\n", pc_uart);
-
-    // Station mode
-    Uart_sendstring("AT+CWMODE=1\r\n", wifi_uart);
-    Wait_for("OK", wifi_uart);
-    Uart_sendstring("CWMODE=1 OK\r\n", pc_uart);
-
-    // Connect to AP
-    sprintf(data, "AT+CWJAP=\"%s\",\"%s\"\r\n", SSID, PASSWD);
-    Uart_sendstring(data, wifi_uart);
-    Uart_sendstring("Connecting to Wi-Fi...\r\n", pc_uart);
-
-    if (Wait_for("WIFI GOT IP", wifi_uart))
-        Uart_sendstring("Connected to Wi-Fi\r\n", pc_uart);
-    else
-        Uart_sendstring("Wi-Fi Connect Failed\r\n", pc_uart);
-
-    // Get IP
-    Uart_sendstring("AT+CIFSR\r\n", wifi_uart);
-    Wait_for("STAIP,\"", wifi_uart);
-    Copy_upto("\"", buffer, wifi_uart);
-    sprintf(data, "IP Address: %s\r\n", buffer);
-    Uart_sendstring(data, pc_uart);
-}
-
-/* HTTP GET 요청 */
-int ESP_HTTP_Get(char *host, char *path)
-{
-    char cmd[256];
-    char rx[1024] = {0};
-
-    // Connect TCP
-    sprintf(cmd, "AT+CIPSTART=\"TCP\",\"%s\",8080\r\n", host);
-    Uart_sendstring(cmd, wifi_uart);
-
-    if (!Wait_for("CONNECT", wifi_uart)) {
-        Uart_sendstring("TCP Connect Failed\r\n", pc_uart);
-        return 0;
-    }
-    Uart_sendstring("TCP Connected\r\n", pc_uart);
-
-    // Build GET request
-    sprintf(cmd,
-            "GET %s HTTP/1.1\r\n"
-            "Host: %s\r\n"
-            "User-Agent: STM32-ESP8266\r\n"
-            "Connection: close\r\n\r\n",
-            path, host);
-
-    int len = strlen(cmd);
-
-    // Send length
-    char sendcmd[32];
-    sprintf(sendcmd, "AT+CIPSEND=%d\r\n", len);
-    Uart_sendstring(sendcmd, wifi_uart);
-
-    if (!Wait_for(">", wifi_uart)) {
-        Uart_sendstring("CIPSEND Fail\r\n", pc_uart);
-        return 0;
-    }
-
-    Uart_sendstring(cmd, wifi_uart);
-    Uart_sendstring("HTTP GET Sent\r\n", pc_uart);
-
-    // Wait and read response
-    Copy_upto("CLOSED", rx, wifi_uart);
-    Uart_sendstring("Response:\r\n", pc_uart);
-    Uart_sendstring(rx, pc_uart);
-
-    // Close connection
-    Uart_sendstring("AT+CIPCLOSE\r\n", wifi_uart);
-    Wait_for("OK", wifi_uart);
-
-    Uart_sendstring("\r\n--- END ---\r\n", pc_uart);
-    return 1;
-}
-
-
-int ESP_HTTP_Get_Value(char *host, char *path, char *key, char *value_out)
-{
-    char cmd[256];
-    char rx[1024] = {0};
-    char *start, *end;
-
-    sprintf(cmd, "AT+CIPSTART=\"TCP\",\"%s\",8080\r\n", host);
-    Uart_sendstring(cmd, wifi_uart);
-
-    if (!Wait_for("CONNECT", wifi_uart)) {
-        Uart_sendstring("TCP Connect Failed\r\n", pc_uart);
-        return 0;
-    }
-
-    sprintf(cmd,
-            "GET %s HTTP/1.1\r\n"
-            "Host: %s\r\n"
-            "User-Agent: STM32-ESP8266\r\n"
-            "Connection: close\r\n\r\n",
-            path, host);
-
-    int len = strlen(cmd);
-    char sendcmd[32];
-    sprintf(sendcmd, "AT+CIPSEND=%d\r\n", len);
-    Uart_sendstring(sendcmd, wifi_uart);
-
-    if (!Wait_for(">", wifi_uart)) return 0;
-
-    Uart_sendstring(cmd, wifi_uart);
-    Copy_upto("CLOSED", rx, wifi_uart);
-
-    // JSON 부분 추출
-    start = strchr(rx, '{');
-    end   = strrchr(rx, '}');
-    if (start && end && (end > start)) {
-        *end = '\0';
-        char json[256];
-        strcpy(json, start);
-
-        // 간단 파싱: "key": value 형식 찾기
-        char *keypos = strstr(json, key);
-        if (keypos) {
-            keypos += strlen(key) + 2; // "key":
-            while (*keypos == ' ' || *keypos == '\"') keypos++; // 공백/따옴표 제거
-
-            int i = 0;
-            while (*keypos && *keypos != '\"' && *keypos != ',' && *keypos != '}') {
-                value_out[i++] = *keypos++;
-            }
-            value_out[i] = '\0';
-        } else {
-            strcpy(value_out, "N/A");
-        }
-
-        Uart_sendstring("Parsed value: ", pc_uart);
-        Uart_sendstring(value_out, pc_uart);
-        Uart_sendstring("\r\n", pc_uart);
-    }
-
-    Uart_sendstring("AT+CIPCLOSE\r\n", wifi_uart);
-    Wait_for("OK", wifi_uart);
-    return 1;
-}
-
-int ESP_HTTP_Post_JSON(char *host, char *path, char *json_body)
-{
-    char cmd[256];
-    char rx[1024] = {0};
-
-    // 1️⃣ TCP 연결
-    sprintf(cmd, "AT+CIPSTART=\"TCP\",\"%s\",8080\r\n", host);
-    Uart_sendstring(cmd, wifi_uart);
-
-    if (!Wait_for("CONNECT", wifi_uart)) {
-        Uart_sendstring("TCP Connect Failed\r\n", pc_uart);
-        return 0;
-    }
-
-    // 2️⃣ HTTP POST 요청 헤더 작성
-    sprintf(cmd,
-            "POST %s HTTP/1.1\r\n"
-            "Host: %s\r\n"
-            "User-Agent: STM32-ESP8266\r\n"
-            "Content-Type: application/json\r\n"
-            "Content-Length: %d\r\n"
-            "Connection: close\r\n\r\n"
-            "%s",
-            path, host, strlen(json_body), json_body);
-
-    int len = strlen(cmd);
-
-    // 3️⃣ CIPSEND로 전송 길이 지정
-    char sendcmd[32];
-    sprintf(sendcmd, "AT+CIPSEND=%d\r\n", len);
-    Uart_sendstring(sendcmd, wifi_uart);
-
-    if (!Wait_for(">", wifi_uart)) {
-        Uart_sendstring("CIPSEND Fail\r\n", pc_uart);
-        return 0;
-    }
-
-    // 4️⃣ 본문 전송
-    Uart_sendstring(cmd, wifi_uart);
-    Uart_sendstring("HTTP POST Sent\r\n", pc_uart);
-
-    // 5️⃣ 응답 수신
-    Copy_upto("CLOSED", rx, wifi_uart);
-
-    // 응답 내용 UART2로 출력
-    Uart_sendstring("Response:\r\n", pc_uart);
-    Uart_sendstring(rx, pc_uart);
-    Uart_sendstring("\r\n--- END ---\r\n", pc_uart);
-
-    // 6️⃣ TCP 연결 종료
-    Uart_sendstring("AT+CIPCLOSE\r\n", wifi_uart);
-    Wait_for("OK", wifi_uart);
-
-    return 1;
-}
-
-
-/* HTTP POST 요청 */
-int ESP_HTTP_Post(char *host, char *path, char *json)
-{
-    char cmd[512];
-    char rx[1024] = {0};
-
-    sprintf(cmd, "AT+CIPSTART=\"TCP\",\"%s\",80\r\n", host);
-    Uart_sendstring(cmd, wifi_uart);
-
-    if (!Wait_for("CONNECT", wifi_uart)) {
-        Uart_sendstring("TCP Connect Failed\r\n", pc_uart);
-        return 0;
-    }
-    Uart_sendstring("TCP Connected\r\n", pc_uart);
-
-    // Build POST request
-    sprintf(cmd,
-            "POST %s HTTP/1.1\r\n"
-            "Host: %s\r\n"
-            "Content-Type: application/json\r\n"
-            "User-Agent: STM32-ESP8266\r\n"
-            "Content-Length: %d\r\n"
-            "Connection: close\r\n\r\n"
-            "%s",
-            path, host, (int)strlen(json), json);
-
-    int len = strlen(cmd);
-
-    char sendcmd[32];
-    sprintf(sendcmd, "AT+CIPSEND=%d\r\n", len);
-    Uart_sendstring(sendcmd, wifi_uart);
-
-    if (!Wait_for(">", wifi_uart)) {
-        Uart_sendstring("CIPSEND Fail\r\n", pc_uart);
-        return 0;
-    }
-
-    Uart_sendstring(cmd, wifi_uart);
-    Uart_sendstring("HTTP POST Sent\r\n", pc_uart);
-
-    Copy_upto("CLOSED", rx, wifi_uart);
-    Uart_sendstring("Response:\r\n", pc_uart);
-    Uart_sendstring(rx, pc_uart);
-
-    // Close connection
-    Uart_sendstring("AT+CIPCLOSE\r\n", wifi_uart);
-    Wait_for("OK", wifi_uart);
-
-    Uart_sendstring("\r\n--- END ---\r\n", pc_uart);
-    return 1;
-}
+///*
+// * ESP8266_HAL.c
+// *
+// *  Created on: Apr 14, 2020
+// *      Author: Controllerstech
+// */
+//
+//
+//#include "UartRingbuffer_multi.h"
+//#include "ESP8266_HAL.h"
+//#include "stdio.h"
+//#include "string.h"
+//
+//extern UART_HandleTypeDef huart3;
+//extern UART_HandleTypeDef huart2;
+//
+//#define wifi_uart &huart3
+//#define pc_uart &huart2
+//
+//
+//char buffer[20];
+//
+//
+//char *Basic_inclusion = "<!DOCTYPE html> <html>\n<head><meta name=\"viewport\"\
+//		content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n\
+//		<title>LED CONTROL</title>\n<style>html { font-family: Helvetica; \
+//		display: inline-block; margin: 0px auto; text-align: center;}\n\
+//		body{margin-top: 50px;} h1 {color: #444444;margin: 50px auto 30px;}\
+//		h3 {color: #444444;margin-bottom: 50px;}\n.button {display: block;\
+//		width: 80px;background-color: #1abc9c;border: none;color: white;\
+//		padding: 13px 30px;text-decoration: none;font-size: 25px;\
+//		margin: 0px auto 35px;cursor: pointer;border-radius: 4px;}\n\
+//		.button-on {background-color: #1abc9c;}\n.button-on:active \
+//		{background-color: #16a085;}\n.button-off {background-color: #34495e;}\n\
+//		.button-off:active {background-color: #2c3e50;}\np {font-size: 14px;color: #888;margin-bottom: 10px;}\n\
+//		</style>\n</head>\n<body>\n<h1>ESP8266 LED CONTROL</h1>\n";
+//
+//char *LED_ON = "<p>LED Status: ON</p><a class=\"button button-off\" href=\"/ledoff\">OFF</a>";
+//char *LED_OFF = "<p>LED1 Status: OFF</p><a class=\"button button-on\" href=\"/ledon\">ON</a>";
+//char *Terminate = "</body></html>";
+//
+//
+//
+///*****************************************************************************************************************************************/
+//
+//void ESP_Init (char *SSID, char *PASSWD)
+//{
+//	char data[80];
+//
+//	Ringbuf_init();
+//
+//	Uart_sendstring("AT+RST\r\n", wifi_uart);
+//	Uart_sendstring("RESETTING.", pc_uart);
+//	for (int i=0; i<5; i++)
+//	{
+//		Uart_sendstring(".", pc_uart);
+//		HAL_Delay(1000);
+//	}
+//
+//	/********* AT **********/
+//	Uart_sendstring("AT\r\n", wifi_uart);
+//	while(!(Wait_for("AT\r\r\n\r\nOK\r\n", wifi_uart)));
+//	Uart_sendstring("AT---->OK\n\n", pc_uart);
+//
+//
+//	/********* AT+CWMODE=1 **********/
+//	Uart_sendstring("AT+CWMODE=1\r\n", wifi_uart);
+//	while (!(Wait_for("AT+CWMODE=1\r\r\n\r\nOK\r\n", wifi_uart)));
+//	Uart_sendstring("CW MODE---->1\n\n", pc_uart);
+//
+//
+//	/********* AT+CWJAP="SSID","PASSWD" **********/
+//	Uart_sendstring("connecting... to the provided AP\n", pc_uart);
+//	sprintf (data, "AT+CWJAP=\"%s\",\"%s\"\r\n", SSID, PASSWD);
+//	Uart_sendstring(data, wifi_uart);
+//	while (!(Wait_for("WIFI GOT IP\r\n\r\nOK\r\n", wifi_uart)));
+//	sprintf (data, "Connected to,\"%s\"\n\n", SSID);
+//	Uart_sendstring(data,pc_uart);
+//
+//
+//	/********* AT+CIFSR **********/
+//	Uart_sendstring("AT+CIFSR\r\n", wifi_uart);
+//	while (!(Wait_for("CIFSR:STAIP,\"", wifi_uart)));
+//	while (!(Copy_upto("\"",buffer, wifi_uart)));
+//	while (!(Wait_for("OK\r\n", wifi_uart)));
+//	int len = strlen (buffer);
+//	buffer[len-1] = '\0';
+//	sprintf (data, "IP ADDR: %s\n\n", buffer);
+//	Uart_sendstring(data, pc_uart);
+//
+//
+//	Uart_sendstring("AT+CIPMUX=1\r\n", wifi_uart);
+//	while (!(Wait_for("AT+CIPMUX=1\r\r\n\r\nOK\r\n", wifi_uart)));
+//	Uart_sendstring("CIPMUX---->OK\n\n", pc_uart);
+//
+//	Uart_sendstring("AT+CIPSERVER=1,80\r\n", wifi_uart);
+//	while (!(Wait_for("OK\r\n", wifi_uart)));
+//	Uart_sendstring("CIPSERVER---->OK\n\n", pc_uart);
+//
+//	Uart_sendstring("Now Connect to the IP ADRESS\n\n", pc_uart);
+//
+//}
+//
+//
+//
+//
+//int Server_Send (char *str, int Link_ID)
+//{
+//	int len = strlen (str);
+//	char data[80];
+//	sprintf (data, "AT+CIPSEND=%d,%d\r\n", Link_ID, len);
+//	Uart_sendstring(data, wifi_uart);
+//	while (!(Wait_for(">", wifi_uart)));
+//	Uart_sendstring (str, wifi_uart);
+//	while (!(Wait_for("SEND OK", wifi_uart)));
+//	sprintf (data, "AT+CIPCLOSE=5\r\n");
+//	Uart_sendstring(data, wifi_uart);
+//	while (!(Wait_for("OK\r\n", wifi_uart)));
+//	return 1;
+//}
+//
+//void Server_Handle (char *str, int Link_ID)
+//{
+//	char datatosend[1024] = {0};
+//	if (!(strcmp (str, "/ledon")))
+//	{
+//		sprintf (datatosend, Basic_inclusion);
+//		strcat(datatosend, LED_ON);
+//		strcat(datatosend, Terminate);
+//		Server_Send(datatosend, Link_ID);
+//	}
+//
+//	else if (!(strcmp (str, "/ledoff")))
+//	{
+//		sprintf (datatosend, Basic_inclusion);
+//		strcat(datatosend, LED_OFF);
+//		strcat(datatosend, Terminate);
+//		Server_Send(datatosend, Link_ID);
+//	}
+//
+//	else
+//	{
+//		sprintf (datatosend, Basic_inclusion);
+//		strcat(datatosend, LED_OFF);
+//		strcat(datatosend, Terminate);
+//		Server_Send(datatosend, Link_ID);
+//	}
+//
+//}
+//
+//void Server_Start (void)
+//{
+//	char buftocopyinto[64] = {0};
+//	char Link_ID;
+//	while (!(Get_after("+IPD,", 1, &Link_ID, wifi_uart)));
+//	Link_ID -= 48;
+//	while (!(Copy_upto(" HTTP/1.1", buftocopyinto, wifi_uart)));
+//	if (Look_for("/ledon", buftocopyinto) == 1)
+//	{
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
+//		Server_Handle("/ledon",Link_ID);
+//	}
+//
+//	else if (Look_for("/ledoff", buftocopyinto) == 1)
+//	{
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
+//		Server_Handle("/ledoff",Link_ID);
+//	}
+//
+//	else if (Look_for("/favicon.ico", buftocopyinto) == 1);
+//
+//	else
+//	{
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
+//		Server_Handle("/ ", Link_ID);
+//	}
+//}

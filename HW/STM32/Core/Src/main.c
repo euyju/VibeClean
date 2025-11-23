@@ -158,6 +158,11 @@ float g_robot_yaw = 0.0f;   // 현재의 방향 각도 (단위: 도 Degree)
 float edge_ai_buffer[EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES];
 volatile uint16_t edge_ai_sample_index = 0;
 volatile uint8_t edge_ai_buffer_ready = 0;
+
+// IMU 센서 디버깅용 변수
+volatile uint8_t imu_debug_counter = 0;  // 0.1초마다 출력하기 위한 카운터
+volatile uint8_t imu_debug_ready = 0;    // 출력 준비 플래그
+float imu_debug_ax, imu_debug_ay, imu_debug_az;  // 마지막 측정값 저장
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -695,6 +700,13 @@ int main(void)
 
   while (1)
   {
+      // === IMU 센서 디버깅 출력 (0.1초마다) ===
+      if (imu_debug_ready) {
+          UART_Printf("[IMU] Ax: %.3fg, Ay: %.3fg, Az: %.3fg\r\n",
+                     imu_debug_ax, imu_debug_ay, imu_debug_az);
+          imu_debug_ready = 0;  // 플래그 리셋
+      }
+
       // === Edge-AI 테스트 코드 ===
       if (edge_ai_buffer_ready) {
           surface_classification_t result = {0};
@@ -702,15 +714,55 @@ int main(void)
           // Edge Impulse 분류기 실행
           if (edge_ai_classify(edge_ai_buffer, EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES, &result) == 0) {
               // 판별 결과 출력 (Hard, Carpet, Dusty - 대문자 시작)
-              UART_Printf("Hard: %.2f, Carpet: %.2f, Dusty: %.2f\r\n",
+              UART_Printf("[AI] Hard: %.2f, Carpet: %.2f, Dusty: %.2f\r\n",
                          result.Hard, result.Carpet, result.Dusty);
           } else {
-              UART_Printf("Classification FAILED\r\n");
+              UART_Printf("[AI] Classification FAILED\r\n");
           }
 
           // 버퍼 준비 완료 플래그 리셋
           edge_ai_buffer_ready = 0;
       }
+
+      // === 주행 코드 ===
+      // 전진 유지
+      move_forward_pwm(BASE_SPEED);
+
+      // 초음파 센서로 거리 측정
+      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
+      DWT_Delay_us(5000);
+      float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
+      DWT_Delay_us(5000);
+      float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
+
+      // UART_Printf("[USS] S1: %.1fcm | S2: %.1fcm | S3: %.1fcm\r\n", d1, d2, d3);
+
+      // 장애물 감지 및 회피
+      if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
+                || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
+                || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
+          failCount++;
+          if (failCount > 5) { // 연속 5회 이상이면 진짜 장애물
+              stop_all_motors();
+              HAL_Delay(50);
+
+              UART_Printf("[AVOID] Obstacle detected! Avoiding...\r\n");
+
+              if(tempAovoid == 0){
+                 R_avoidance_sequence();
+                 tempAovoid = 1;
+              }
+              else{
+                 L_avoidance_sequence();
+                 tempAovoid = 0;
+              }
+              failCount = 0;
+          }
+      } else {
+          failCount = 0;
+      }
+
+      HAL_Delay(100);
 
 
 
@@ -1438,7 +1490,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /**
-  * @brief  TIM6 인터럽트 콜백 - Edge-AI 100Hz 데이터 수집
+  * @brief  TIM6 인터럽트 콜백 - Edge-AI 100Hz 데이터 수집 + IMU 디버깅
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -1448,10 +1500,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
             // MPU6050에서 가속도 읽기
             if (MPU6050_ReadAccel(&hi2c1, &ax, &ay, &az) == HAL_OK) {
-                // 버퍼에 저장
-                edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax;
-                edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay;
-                edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az;
+                // Edge-AI 버퍼에 저장(현재 ax는 1.0g 단위이므로, 다시 16384.0f를 곱함)
+                edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+                edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+                edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
+
+                // 디버깅용 - 10번마다 한 번씩(0.1초) 센서값 저장
+                imu_debug_counter++;
+                if (imu_debug_counter >= 10) {
+                    imu_debug_ax = ax;
+                    imu_debug_ay = ay;
+                    imu_debug_az = az;
+                    imu_debug_ready = 1;  // 출력 준비 완료
+                    imu_debug_counter = 0;
+                }
 
                 edge_ai_sample_index++;
 

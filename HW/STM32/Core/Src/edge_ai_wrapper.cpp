@@ -1,21 +1,13 @@
+/* edge_ai_wrapper.cpp */
 #include "edge_ai_wrapper.h"
 #include "../../Edge-AI/edge-impulse-sdk/classifier/ei_run_classifier.h"
+#include "../../Edge-AI/edge-impulse-sdk/classifier/ei_classifier_types.h"
 #include "../../Edge-AI/model-parameters/model_metadata.h"
 #include <string.h>
+#include <cstdint>
 
-// 전역 버퍼 포인터 (C 콜백 함수에서 사용)
-static float *g_signal_buffer = NULL;
-
-/**
- * @brief  Signal 콜백 함수 (C 스타일)
- */
-static int get_signal_data(size_t offset, size_t length, float *out_ptr)
-{
-    for (size_t i = 0; i < length; i++) {
-        out_ptr[i] = g_signal_buffer[offset + i];
-    }
-    return 0;
-}
+// C++ 컴파일러야, 이 부분은 C언어 친구들도 알아들을 수 있게 처리해줘!
+extern "C" {
 
 /**
  * @brief  Edge Impulse 분류기 초기화
@@ -50,17 +42,29 @@ int edge_ai_classify(float *input_buffer, int buffer_size, surface_classificatio
         return -1;
     }
 
-    // 전역 버퍼 포인터 설정
-    g_signal_buffer = input_buffer;
-
-    // Signal 구조체 설정 (C 스타일 함수 포인터)
+    // Signal 구조체 설정 (C++ lambda 사용 가능)
     signal.total_length = buffer_size;
-    signal.get_data = &get_signal_data;
+    signal.get_data = [input_buffer](size_t offset, size_t length, float *out_ptr) -> int {
+        for (size_t i = 0; i < length; i++) {
+            out_ptr[i] = input_buffer[offset + i];
+        }
+        return 0;
+    };
 
     // Edge Impulse 분류기 실행
     EI_IMPULSE_ERROR res = run_classifier(&signal, &ei_result, false);
     if (res != EI_IMPULSE_OK) {
         return -1;
+    }
+
+    // 🔍 디버깅: Edge Impulse 원본 출력 확인
+    ei_printf("\r\n[DEBUG] Edge Impulse Raw Output:\r\n");
+    ei_printf("Label Count: %d\r\n", EI_CLASSIFIER_LABEL_COUNT);
+    for (uint8_t i = 0; i < EI_CLASSIFIER_LABEL_COUNT; i++) {
+        ei_printf("  [%d] Label='%s', Value=%.4f\r\n",
+                 i,
+                 ei_result.classification[i].label ? ei_result.classification[i].label : "NULL",
+                 ei_result.classification[i].value);
     }
 
     // 결과 복사 (Hard, Carpet, Dusty 순서)
@@ -76,13 +80,23 @@ int edge_ai_classify(float *input_buffer, int buffer_size, surface_classificatio
 
             if (strcmp(label, "Hard") == 0) {
                 result->Hard = value;
+                ei_printf("  ✓ Matched 'Hard' = %.4f\r\n", value);
             } else if (strcmp(label, "Carpet") == 0) {
                 result->Carpet = value;
+                ei_printf("  ✓ Matched 'Carpet' = %.4f\r\n", value);
             } else if (strcmp(label, "Dusty") == 0) {
                 result->Dusty = value;
+                ei_printf("  ✓ Matched 'Dusty' = %.4f\r\n", value);
+            } else {
+                ei_printf("  ⚠ Unknown label: '%s'\r\n", label);
             }
         }
     }
 
+    ei_printf("[DEBUG] Final Result: Hard=%.2f, Carpet=%.2f, Dusty=%.2f\r\n\r\n",
+             result->Hard, result->Carpet, result->Dusty);
+
     return 0;
 }
+
+} // extern "C" 끝

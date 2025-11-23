@@ -18,17 +18,22 @@ HW/
 │   │   │   ├── main.h
 │   │   │   ├── ESP8266_HAL.h         # ESP8266 WiFi 모듈 드라이버
 │   │   │   ├── UartRingbuffer_multi.h # UART 멀티채널 링 버퍼
+│   │   │   ├── edge_ai_wrapper.h      # Edge AI 래퍼
 │   │   │   ├── stm32f4xx_hal_conf.h   # HAL 설정
 │   │   │   └── stm32f4xx_it.h         # 인터럽트 핸들러
 │   │   ├── Src/               # 소스 파일
 │   │   │   ├── main.c                 # 메인 프로그램
 │   │   │   ├── ESP8266_HAL.c          # ESP8266 드라이버 구현
 │   │   │   ├── UartRingbuffer_multi.c # UART 버퍼 구현
+│   │   │   ├── edge_ai_wrapper.cpp    # Edge AI 래퍼 구현
+│   │   │   ├── ei_classifier_porting.cpp # Edge Impulse 포팅 레이어
 │   │   │   ├── stm32f4xx_hal_msp.c    # HAL MSP 초기화
 │   │   │   ├── stm32f4xx_it.c         # 인터럽트 핸들러
 │   │   │   └── system_stm32f4xx.c     # 시스템 초기화
 │   │   └── Startup/           # 시작 코드
 │   │       └── startup_stm32f446retx.s
+│   ├── Edge-AI/               # Edge Impulse SDK
+│   │   └── edge-impulse-sdk/  # Edge Impulse 라이브러리
 │   ├── Drivers/               # STM32 HAL 드라이버 (자동 생성)
 │   ├── SoundTest.ioc          # STM32CubeMX 프로젝트 파일
 │   ├── STM32F446RETX_FLASH.ld # 링커 스크립트 (FLASH)
@@ -36,6 +41,10 @@ HW/
 │   ├── .cproject              # Eclipse 프로젝트 설정
 │   ├── .project               # Eclipse 프로젝트 파일
 │   └── .gitignore             # STM32 전용 gitignore
+├── AI_dataset/                # Edge AI 학습 데이터셋
+│   ├── Carpet.json           # 카펫 표면 데이터
+│   ├── Dusty.json            # 먼지 많은 표면 데이터
+│   └── Hard.json             # 딱딱한 표면 데이터
 └── README.md                  # 이 파일
 ```
 
@@ -49,11 +58,16 @@ HW/
 
 ### 주변 장치
 - **WiFi 모듈**: ESP8266
-- **센서**: HC-SR04 초음파 센서 (x3), 자이로 센서 (I2C)
+- **센서**: HC-SR04 초음파 센서 (x3), MPU6050 자이로/가속도 센서 (I2C)
 - **모터**: DC 모터 (x3) - 좌/우 바퀴, 청소기
 - **통신**: USART2, USART3
 - **타이머**: TIM1, TIM2, TIM4
 - **I2C**: I2C1
+
+### 소프트웨어
+- **Edge AI**: Edge Impulse SDK를 활용한 표면 분류
+  - MPU6050 진동 센서 데이터 기반 머신러닝 모델
+  - 3가지 표면 유형 분류: 카펫(Carpet), 먼지(Dusty), 딱딱한 표면(Hard)
 
 ## 📌 핀맵 (Pin Mapping)
 
@@ -148,6 +162,15 @@ Run > Debug Configurations...
 - 거리 측정 및 데이터 수집
 - 타이머 기반 정밀 측정
 
+### Edge AI 표면 분류
+- Edge Impulse SDK 기반 실시간 추론
+- MPU6050 센서 데이터를 활용한 표면 유형 분류
+- 3가지 표면 유형 감지:
+  - **Carpet (카펫)**: 부드러운 카펫이나 러그 표면
+  - **Dusty (먼지)**: 먼지가 많은 표면
+  - **Hard (딱딱한 표면)**: 나무, 타일 등 단단한 바닥
+- 분류 결과를 WiFi 모듈을 통해 서버로 전송
+
 ### UART 멀티채널 링 버퍼
 - 효율적인 UART 데이터 관리
 - 논블로킹 통신
@@ -183,6 +206,8 @@ Run > Debug Configurations...
 - [STM32F446 Datasheet](https://www.st.com/resource/en/datasheet/stm32f446re.pdf)
 - [STM32 HAL Documentation](https://www.st.com/resource/en/user_manual/dm00105879.pdf)
 - [ESP8266 AT Command Set](https://www.espressif.com/sites/default/files/documentation/4a-esp8266_at_instruction_set_en.pdf)
+- [Edge Impulse Documentation](https://docs.edgeimpulse.com/)
+- [MPU6050 Datasheet](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf)
 
 ## PR 가이드
 

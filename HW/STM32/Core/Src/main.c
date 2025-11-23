@@ -29,6 +29,7 @@
 #include "stm32f4xx_hal.h" // HAL 함수 사용을 위해
 #include "mpu6050.h"  // Edge-AI용 MPU6050 드라이버
 #include "edge_ai_wrapper.h"  // Edge Impulse SDK Wrapper
+#include "mqtt_comm.h"  // MQTT 통신 함수
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -164,15 +165,7 @@ volatile uint8_t imu_debug_counter = 0;  // 0.1초마다 출력하기 위한 카
 volatile uint8_t imu_debug_ready = 0;    // 출력 준비 플래그
 float imu_debug_ax, imu_debug_ay, imu_debug_az;  // 마지막 측정값 저장
 
-// MQTT control 상태 변수
-int g_powerOn = -1;          // 0 = OFF, 1 = ON
-int g_fanSpeed = -1;         // 0~3
-int g_modeManual = -1;       // 0 = AUTO, 1 = MANUAL
-char g_direction[8] = "NULL";  // "FWD","BACK","LEFT","RIGHT","STOP"
-
-// MQTT 수신 라인 버퍼
-char mqtt_rx_buf[256];
-int  mqtt_rx_len = 0;
+// MQTT 변수들은 mqtt_comm.c에 정의됨 (extern으로 접근)
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -194,30 +187,7 @@ float HCSR04_Read(GPIO_TypeDef *trigPort, uint16_t trigPin,
                   GPIO_TypeDef *echoPort, uint16_t echoPin);
 void UART_Printf(const char *format, ...);
 
-// MQTT 관련 함수 프로토타입
-void Send_AT_Command(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term,
-                     const char *command, uint8_t *response_buffer, uint16_t buffer_size, uint32_t timeout);
-void WizFi_SendOnly(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term, const char *command);
-static void Debug_PrintControlState(const char *topic, const char *json);
-uint8_t MQTT_SetConfig(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term,
-                       const char *user, const char *pass, const char *clientID, int aliveTime,
-                       uint8_t *resp, uint16_t resp_size);
-uint8_t MQTT_SetTopics(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term,
-                       const char *pubTopic, const char *subTopic, uint8_t *resp, uint16_t resp_size);
-uint8_t MQTT_SetQos(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term,
-                    int qos, uint8_t *resp, uint16_t resp_size);
-uint8_t MQTT_ConnectBroker(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term,
-                           const char *brokerIP, int port, uint8_t *resp, uint16_t resp_size);
-uint8_t MQTT_PublishJSON(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term,
-                         const char *jsonMsg, uint8_t *resp, uint16_t resp_size);
-uint8_t MQTT_Init_All(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term);
-void MQTT_ProcessIncoming(void);
-void MQTT_ProcessResponseBuffer(uint8_t *buf, uint16_t len);
-void ParseMqttLine(char *line, int len);
-void HandleControlJson(const char *topic, const char *json);
-
-
-
+// MQTT 함수는 mqtt_comm.h에 선언됨
 
 /* USER CODE END PFP */
 

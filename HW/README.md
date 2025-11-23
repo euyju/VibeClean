@@ -17,16 +17,20 @@ HW/
 │   │   ├── Inc/               # 헤더 파일
 │   │   │   ├── main.h
 │   │   │   ├── ESP8266_HAL.h         # ESP8266 WiFi 모듈 드라이버
+│   │   │   ├── ESP8266_HAL_TCP.h     # ESP8266 TCP 통신
 │   │   │   ├── UartRingbuffer_multi.h # UART 멀티채널 링 버퍼
 │   │   │   ├── edge_ai_wrapper.h      # Edge AI 래퍼
+│   │   │   ├── mqtt_comm.h            # MQTT 통신 함수
 │   │   │   ├── stm32f4xx_hal_conf.h   # HAL 설정
 │   │   │   └── stm32f4xx_it.h         # 인터럽트 핸들러
 │   │   ├── Src/               # 소스 파일
 │   │   │   ├── main.c                 # 메인 프로그램
 │   │   │   ├── ESP8266_HAL.c          # ESP8266 드라이버 구현
+│   │   │   ├── ESP8266_HAL_TCP.c      # ESP8266 TCP 통신 구현
 │   │   │   ├── UartRingbuffer_multi.c # UART 버퍼 구현
 │   │   │   ├── edge_ai_wrapper.cpp    # Edge AI 래퍼 구현
 │   │   │   ├── ei_classifier_porting.cpp # Edge Impulse 포팅 레이어
+│   │   │   ├── mqtt_comm.c            # MQTT 통신 함수 구현
 │   │   │   ├── stm32f4xx_hal_msp.c    # HAL MSP 초기화
 │   │   │   ├── stm32f4xx_it.c         # 인터럽트 핸들러
 │   │   │   └── system_stm32f4xx.c     # 시스템 초기화
@@ -170,6 +174,13 @@ Run > Debug Configurations...
   - **Dusty (먼지)**: 먼지가 많은 표면
   - **Hard (딱딱한 표면)**: 나무, 타일 등 단단한 바닥
 - 분류 결과를 WiFi 모듈을 통해 서버로 전송
+
+### MQTT 통신
+- WizFi360 (ESP8266 호환) 모듈을 통한 MQTT 프로토콜 지원
+- 실시간 원격 제어 및 모니터링
+- 제어 명령 수신: 전원, 팬 속도, 모드, 방향
+- 텔레메트리 데이터 전송: 위치, 센서 데이터, 상태 정보
+- 모듈화된 설계 (mqtt_comm.c/h)
 
 ### UART 멀티채널 링 버퍼
 - 효율적인 UART 데이터 관리

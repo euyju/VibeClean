@@ -20,6 +20,10 @@ char g_direction[8] = "NULL";
 char mqtt_rx_buf[256];
 int mqtt_rx_len = 0;
 
+/* WizFi360 응답 버퍼 */
+#define WIZFI360_MAX_RESPONSE_SIZE 512
+static uint8_t wizfi_rx_buffer[WIZFI360_MAX_RESPONSE_SIZE];
+
 /* 외부 UART 핸들 참조 */
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart3;
@@ -227,13 +231,12 @@ uint8_t MQTT_PublishJSON(
     const char *jsonMsg,
     uint8_t *resp, uint16_t resp_size
 ) {
-    char cmd[256];
-    snprintf(cmd, sizeof(cmd),
-             "AT+MQTTPUB=\"%s\"", jsonMsg);
+    char cmd[512];
+    char escaped_json[400];
 
-    //Send_AT_Command(huart_wiz, huart_term, cmd, resp, resp_size, 3000);
+    snprintf(cmd, sizeof(cmd), "AT+MQTTPUB=\"%s\"", escaped_json);
+
     WizFi_SendOnly(huart_wiz, huart_term, cmd);
-    //return strstr((char*)resp, "OK") != NULL;
     return 1;
 }
 
@@ -411,24 +414,3 @@ void MQTT_ProcessResponseBuffer(uint8_t *buf, uint16_t len)
         }
     }
 }
-
-
-/*void ApplyManualControl(void)
-{
-    if (!g_powerOn) {
-        // 전원 OFF면 무조건 정지
-        stop_all_motors();
-        return;
-    }
-
-    if (!g_modeManual) {
-        // AUTO 모드에서는 수동 방향 명령 무시
-        return;
-    }
-
-    // fanSpeed(0~3)를 PWM으로 단순 매핑 (원하는 대로 조정 가능)
-    uint16_t pwm = 0;
-    switch (g_fanSpeed) {
-        case 0: pwm = 0;                break;
-        case 1: pwm = BASE_SPEED / 2;   break;
-        case 2: pwm = BASE_SPEED;       break;

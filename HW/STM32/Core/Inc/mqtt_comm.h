@@ -75,4 +75,7 @@ void MQTT_ProcessResponseBuffer(uint8_t *buf, uint16_t len);
 void ParseMqttLine(char *line, int len);
 void HandleControlJson(const char *topic, const char *json);
 
+/* MQTT 메시지 전송 */
+void Publish_Message(void);
+
 #endif /* INC_MQTT_COMM_H_ */

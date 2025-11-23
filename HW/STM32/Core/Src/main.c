@@ -661,6 +661,14 @@ int main(void)
   UART_Printf("Collecting %d samples (%.1f seconds)...\r\n\r\n",
               EDGE_AI_SAMPLE_COUNT, EDGE_AI_SAMPLE_COUNT / 100.0f);
 
+  // MQTT 초기화 (WiFi + MQTT 연결)
+  // 주석 처리: 필요 시 주석 해제하여 사용
+  if (MQTT_Init_All(&huart3, &huart2)) {
+      UART_Printf("MQTT Init: OK\r\n");
+  } else {
+      UART_Printf("MQTT Init: FAILED!\r\n");
+  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -699,6 +707,9 @@ int main(void)
 
   while (1)
   {
+      // === MQTT 수신 처리 (논블로킹) ===
+      MQTT_ProcessIncoming();
+
       // === IMU 센서 디버깅 출력 (0.1초마다) ===
       if (imu_debug_ready) {
           UART_Printf("[IMU] Ax: %.3fg, Ay: %.3fg, Az: %.3fg\r\n",
@@ -715,6 +726,19 @@ int main(void)
               // 판별 결과 출력 (Hard, Carpet, Dusty - 대문자 시작)
               UART_Printf("[AI] Hard: %.2f, Carpet: %.2f, Dusty: %.2f\r\n",
                          result.Hard, result.Carpet, result.Dusty);
+
+              // 가장 높은 확률의 표면 유형 결정
+              const char *surface_type = "Unknown";
+              if (result.Hard > result.Carpet && result.Hard > result.Dusty) {
+                  surface_type = "Hard";
+              } else if (result.Carpet > result.Dusty) {
+                  surface_type = "Carpet";
+              } else {
+                  surface_type = "Dusty";
+              }
+
+              // MQTT 텔레메트리 전송
+              Publish_Message();
           } else {
               UART_Printf("[AI] Classification FAILED\r\n");
           }

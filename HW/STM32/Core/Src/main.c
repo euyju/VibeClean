@@ -84,6 +84,35 @@ uint8_t rx_data[100];
 #define M3_IN2_PORT GPIOC
 #define M3_IN2_PIN  GPIO_PIN_4
 
+// RGB LED 핀 정의
+#define LED_R_PORT GPIOB
+#define LED_R_PIN  GPIO_PIN_13
+#define LED_G_PORT GPIOB
+#define LED_G_PIN  GPIO_PIN_14
+#define LED_B_PORT GPIOB
+#define LED_B_PIN  GPIO_PIN_15
+
+// RGB LED 색상 정의 (Common Cathode: Active High)
+#define RGB_OFF         0, 0, 0
+#define RGB_RED         1, 0, 0
+#define RGB_GREEN       0, 1, 0
+#define RGB_BLUE        0, 0, 1
+#define RGB_YELLOW      1, 1, 0
+#define RGB_MAGENTA     1, 0, 1
+#define RGB_CYAN        0, 1, 1
+#define RGB_WHITE       1, 1, 1
+
+// LED 상태 타이밍 (ms)
+#define LED_BLINK_INTERVAL_BASE    1000  // 베이스 색상 표시 시간 (모드 색상)
+#define LED_BLINK_INTERVAL_FLOOR   500   // 바닥 색상 표시 시간
+#define LED_BLINK_INTERVAL_OBSTACLE 1000 // 장애물 회피 깜빡임
+
+// LED 우선순위 상태 정의
+typedef enum {
+    LED_STATE_NORMAL = 0,        // 일반 동작 (모드/바닥 교차 깜빡임)
+    LED_STATE_OBSTACLE = 1,      // 장애물 회피 (빨간색 깜빡임)
+    LED_STATE_STANDBY = 2        // 대기 (빨간색 고정)
+} LED_Priority_State_t;
 
 // 모터 ID 및 방향 정의
 #define MOTOR_A     1
@@ -171,6 +200,11 @@ char g_direction[8] = "NULL";  // "FWD","BACK","LEFT","RIGHT","STOP"
 
 // Edge-AI 판별 결과 저장 (실시간 업데이트)
 char g_current_floor[16] = "Unknown";  // "Hard", "Carpet", "Dusty", "Unknown"
+
+// LED 제어 상태 변수
+LED_Priority_State_t g_led_priority_state = LED_STATE_NORMAL;
+uint32_t g_led_last_update_tick = 0;
+uint8_t g_led_toggle_state = 0;  // 0 or 1 (교차 깜빡임용)
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -194,6 +228,11 @@ void UART_Printf(const char *format, ...);
 
 // MQTT 함수 선언
 void MQTT_ProcessResponseBuffer(uint8_t *buf, uint16_t len);
+
+// RGB LED 제어 함수 선언
+void set_rgb_led(uint8_t r, uint8_t g, uint8_t b);
+void update_led_state(void);
+void set_led_priority_state(LED_Priority_State_t state);
 
 /* USER CODE END PFP */
 
@@ -405,6 +444,9 @@ void perform_u_turn(void)
 */
 void R_avoidance_sequence(void)
 {
+    // LED 상태를 장애물 회피 모드로 설정
+    set_led_priority_state(LED_STATE_OBSTACLE);
+
     // 1) 정지
     stop_all_motors();
     HAL_Delay(50);
@@ -427,15 +469,21 @@ void R_avoidance_sequence(void)
     stop_all_motors();
     HAL_Delay(50);
 
-    // 3) 제자리 우회전 90도
-        rotate_right_inplace(TURN_SPEED);
-        HAL_Delay(TURN_90_TIME_MS);
-        stop_all_motors();
-        HAL_Delay(50);
+    // 5) 제자리 우회전 90도
+    rotate_right_inplace(TURN_SPEED);
+    HAL_Delay(TURN_90_TIME_MS);
+    stop_all_motors();
+    HAL_Delay(50);
+
+    // 회피 완료 후 일반 모드로 복귀
+    set_led_priority_state(LED_STATE_NORMAL);
 }
 
 void L_avoidance_sequence(void)
 {
+    // LED 상태를 장애물 회피 모드로 설정
+    set_led_priority_state(LED_STATE_OBSTACLE);
+
     // 1) 정지
     stop_all_motors();
     HAL_Delay(50);
@@ -458,13 +506,123 @@ void L_avoidance_sequence(void)
     stop_all_motors();
     HAL_Delay(50);
 
-    // 3) 제자리 좌회전 90도
-        rotate_left_inplace(TURN_SPEED);
-        HAL_Delay(TURN_90_TIME_MS);
-        stop_all_motors();
-        HAL_Delay(50);
+    // 5) 제자리 좌회전 90도
+    rotate_left_inplace(TURN_SPEED);
+    HAL_Delay(TURN_90_TIME_MS);
+    stop_all_motors();
+    HAL_Delay(50);
 
+    // 회피 완료 후 일반 모드로 복귀
+    set_led_priority_state(LED_STATE_NORMAL);
+}
 
+/**
+  * @brief RGB LED 색상 설정 함수
+  * @param r: Red 상태 (0=OFF, 1=ON)
+  * @param g: Green 상태 (0=OFF, 1=ON)
+  * @param b: Blue 상태 (0=OFF, 1=ON)
+  * @retval None
+  */
+void set_rgb_led(uint8_t r, uint8_t g, uint8_t b)
+{
+    HAL_GPIO_WritePin(LED_R_PORT, LED_R_PIN, r ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED_G_PORT, LED_G_PIN, g ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED_B_PORT, LED_B_PIN, b ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
+
+/**
+  * @brief LED 우선순위 상태 설정 함수
+  * @param state: LED_STATE_NORMAL, LED_STATE_OBSTACLE, LED_STATE_STANDBY
+  * @retval None
+  */
+void set_led_priority_state(LED_Priority_State_t state)
+{
+    g_led_priority_state = state;
+    g_led_toggle_state = 0;  // 상태 변경 시 토글 상태 초기화
+    g_led_last_update_tick = HAL_GetTick();  // 타이머 리셋
+}
+
+/**
+  * @brief LED 상태 업데이트 함수 (메인 루프에서 주기적으로 호출)
+  * @retval None
+  * @note 우선순위: STANDBY(최고) > OBSTACLE > NORMAL
+  * @note 일반 모드: 베이스 색상(1000ms) ↔ 바닥 색상(500ms) 2:1 비율
+  */
+void update_led_state(void)
+{
+    uint32_t current_tick = HAL_GetTick();
+    uint32_t interval;
+
+    // 우선순위 1: 대기 상태 (모터 정지) - 빨간색 고정
+    if (g_led_priority_state == LED_STATE_STANDBY) {
+        set_rgb_led(RGB_RED);
+        return;
+    }
+
+    // 우선순위 2: 장애물 회피 - 빨간색 깜빡임 (1000ms)
+    if (g_led_priority_state == LED_STATE_OBSTACLE) {
+        interval = LED_BLINK_INTERVAL_OBSTACLE;
+
+        if (current_tick - g_led_last_update_tick >= interval) {
+            g_led_toggle_state = !g_led_toggle_state;
+            g_led_last_update_tick = current_tick;
+
+            if (g_led_toggle_state) {
+                set_rgb_led(RGB_RED);
+            } else {
+                set_rgb_led(RGB_OFF);
+            }
+        }
+        return;
+    }
+
+    // 우선순위 3: 일반 동작 - 모드와 바닥 타입에 따른 교차 깜빡임 (2:1 비율)
+    // g_led_toggle_state: 0 = 베이스 색상(1000ms), 1 = 바닥 색상(500ms)
+    if (g_led_toggle_state == 0) {
+        interval = LED_BLINK_INTERVAL_BASE;  // 베이스 색상 표시 시간 (1000ms)
+    } else {
+        interval = LED_BLINK_INTERVAL_FLOOR; // 바닥 색상 표시 시간 (500ms)
+    }
+
+    if (current_tick - g_led_last_update_tick >= interval) {
+        g_led_toggle_state = !g_led_toggle_state;
+        g_led_last_update_tick = current_tick;
+
+        // 베이스 색상 결정 (모드에 따라)
+        uint8_t base_r, base_g, base_b;
+        if (g_modeManual == 1) {
+            // Manual Mode -> Blue
+            base_r = 0; base_g = 0; base_b = 1;
+        } else {
+            // Auto Mode -> White
+            base_r = 1; base_g = 1; base_b = 1;
+        }
+
+        // 바닥 색상 결정 (Edge-AI 판별 결과에 따라)
+        uint8_t floor_r, floor_g, floor_b;
+        if (strcmp(g_current_floor, "Hard") == 0) {
+            // Hard Floor -> Green
+            floor_r = 0; floor_g = 1; floor_b = 0;
+        } else if (strcmp(g_current_floor, "Carpet") == 0) {
+            // Carpet -> Magenta
+            floor_r = 1; floor_g = 0; floor_b = 1;
+        } else if (strcmp(g_current_floor, "Dusty") == 0) {
+            // Dusty -> Yellow
+            floor_r = 1; floor_g = 1; floor_b = 0;
+        } else {
+            // Unknown -> Off (또는 베이스 색상만 표시)
+            floor_r = 0; floor_g = 0; floor_b = 0;
+        }
+
+        // 교차 깜빡임: 토글 상태에 따라 베이스 색상 또는 바닥 색상 표시
+        // toggle_state = 0 → 베이스 색상 표시 (1000ms)
+        // toggle_state = 1 → 바닥 색상 표시 (500ms)
+        if (g_led_toggle_state == 0) {
+            set_rgb_led(base_r, base_g, base_b);
+        } else {
+            set_rgb_led(floor_r, floor_g, floor_b);
+        }
+    }
 }
 
 /**
@@ -878,6 +1036,10 @@ int main(void)
   UART_Printf("Collecting %d samples (%.1f seconds)...\r\n\r\n",
               EDGE_AI_SAMPLE_COUNT, EDGE_AI_SAMPLE_COUNT / 100.0f);
 
+  // RGB LED 초기화 (초기 상태: OFF)
+  set_rgb_led(RGB_OFF);
+  UART_Printf("RGB LED: Initialized\r\n");
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -898,6 +1060,9 @@ int main(void)
   
   while (1)
   {
+      // === RGB LED 상태 업데이트 (논블로킹 방식) ===
+      update_led_state();
+
       // === IMU 센서 디버깅 출력 (0.1초마다) ===
       if (imu_debug_ready) {
           UART_Printf("[IMU] Ax: %.3fg, Ay: %.3fg, Az: %.3fg\r\n",
@@ -1601,6 +1766,13 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PB0 PB1 PB2 PB12 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure RGB LED pins : PB13(R) PB14(G) PB15(B) */
+  GPIO_InitStruct.Pin = LED_R_PIN | LED_G_PIN | LED_B_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

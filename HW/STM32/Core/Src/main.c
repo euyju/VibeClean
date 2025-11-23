@@ -105,21 +105,28 @@ uint8_t rx_data[100];
 #define WALL_DISTANCE_THRESHOLD 30.0f
 // 직진 속도 및 회전 속도 (PWM 값)
 #define BASE_SPEED          300
-#define TURN_SPEED          300
+#define TURN_SPEED          350
 // 회전 시간 상수 (90도 회전에 필요한 시간, 보정 필요)
-#define TURN_90_TIME_MS     3200 // (모터와 바퀴에 따라 크게 달라짐)
+#define TURN_90_TIME_MS     2900 // (모터와 바퀴에 따라 크게 달라짐)
 // 유턴 시 전진/후진 거리 시간 (본체 폭만큼 이동하기 위한 시간, 보정 필요)
 #define BODY_MOVE_TIME_MS   800 // 예시 값 (본체 폭에 따라 조절)
 
 #define MPU6050_ADDR  (0x68 << 1)
 #define PWR_MGMT_1    0x6B
 #define ACCEL_XOUT_H  0x3B
+//MPU6050 자이로 출력 주소
+#define GYRO_XOUT_H 0x43
+
 
 //Odometry 상수
 #define WHEEL_RADIUS_MM     30      // 바퀴 반지름 (mm)
 #define ROBOT_AXLE_LENGTH_MM 160    // 바퀴 축 간 거리 (mm)
 #define ENCODER_RESOLUTION  1000    // 엔코더 해상도 (펄스 수)
 #define TIMER_PERIOD        65536   // TIM3/TIM8 주기
+//IMU 융합 및 제어 관련 상수
+#define MPU6050_GYRO_SCALE 16.4 // ±2000 deg/s 기준
+#define ODOMETRY_DT 0.1         // 오도메트리 업데이트 주기 (초)
+#define FUSION_ALPHA 0.98       // 상보 필터 자이로 가중치 (0.0~1.0)
 
 /* USER CODE END PD */
 
@@ -146,6 +153,7 @@ TIM_HandleTypeDef htim2;
 float g_robot_x = 0.0f;     // 현재의 X 좌표
 float g_robot_y = 0.0f;     // 현재의 Y 좌표
 float g_robot_yaw = 0.0f;   // 현재의 방향 각도 (단위: 도 Degree)
+float gyro_bias_Z = 0.0f;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -484,6 +492,10 @@ void MPU6050_Init(void) {
     if (check == 104) {  // 0x68
         data = 0;
         HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, PWR_MGMT_1, 1, &data, 1, 1000);
+        //**자이로 감도 설정 추가(이의주)
+        data = 0x18;
+        HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, 0x1B, 1, &data, 1, 1000);
+        //*
     }
 }
 
@@ -494,6 +506,18 @@ void MPU6050_Read_Accel(int16_t *Ax, int16_t *Ay, int16_t *Az) {
     *Ax = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
     *Ay = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
     *Az = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
+}
+
+//자이로 데이터 읽기 함수
+void MPU6050_Read_Gyro(int16_t *Gx, int16_t *Gy, int16_t *Gz) {
+	uint8_t Rec_Data[6];
+
+	// GYRO_XOUT_H (0x43)부터 6바이트 (Gx, Gy, Gz)를 읽어옴
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, GYRO_XOUT_H, 1, Rec_Data, 6, 100); // I2C 핸들러 (hi2c1)
+
+	*Gx = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
+	*Gy = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
+	*Gz = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
 }
 
 // 엔코더 카운터 추적 변수 (이전 값과의 차이를 계산하기 위함)
@@ -538,8 +562,38 @@ void update_odometry(void)
 
 	    // 평균 이동 거리 및 각도 변화 계산
 	    float distance_center_mm = (distance_R_mm + distance_L_mm) / 2.0f;
-	    float delta_theta_rad = (distance_R_mm - distance_L_mm) / ROBOT_AXLE_LENGTH_MM; // 회전 각도(라디안)
+	    float delta_theta_rad = (distance_R_mm - distance_L_mm) / ROBOT_AXLE_LENGTH_MM; // 회전 각도(엔코더only)
 
+	    // =========================================================================
+	    	// [IMU 융합 시작] - 자이로 Yaw 데이터를 엔코더 Yaw에 융합하여 오차 보정
+	    	// =========================================================================
+	    	int16_t Gx_raw, Gy_raw, Gz_raw;
+	    	MPU6050_Read_Gyro(&Gx_raw, &Gy_raw, &Gz_raw);
+
+	    	// 1. Raw Data를 deg/s (DPS)로 변환
+	    	float angular_vel_gyro_dps = (float)Gz_raw / MPU6050_GYRO_SCALE;
+
+	    	// 2. DPS를 rad/s로 변환
+	    	float angular_vel_gyro_rps = angular_vel_gyro_dps * (PI / 180.0f);
+
+	    	// 3. 자이로 바이어스 제거 (반드시 캘리브레이션 필요!)
+	    	angular_vel_gyro_rps -= gyro_bias_Z;
+
+	    	// 4. 자이로 기반의 각도 변화량 (delta_theta_gyro) 계산
+	    	float delta_theta_gyro = angular_vel_gyro_rps * ODOMETRY_DT;
+	    	// 직접 추가
+	    	float delta_theta_enc = (distance_R_mm - distance_L_mm) / ROBOT_AXLE_LENGTH_MM;
+
+	    	// 5. 상보 필터(Complementary Filter)로 융합
+	    	// FUSION_ALPHA (예: 0.98)를 자이로에 높게 주어 드리프트를 방지함
+	    	float delta_theta_fused = (FUSION_ALPHA * delta_theta_gyro) +
+	    	                          ((1.0f - FUSION_ALPHA) * delta_theta_enc);
+
+	        // 기존 엔코더 각도 변화 대신 융합된 각도 변화 사용
+	        delta_theta_rad = delta_theta_fused;
+	    	// =========================================================================
+	    	// [IMU 융합 끝]
+	    	// =========================================================================
 
 	    // 4. 좌표 (X, Y) 및 방향 (Yaw) 업데이트 (Middle Point 적분 방식 적용)
 
@@ -564,6 +618,33 @@ void update_odometry(void)
 	    while (g_robot_yaw >= 360.0f) g_robot_yaw -= 360.0f;
 	    while (g_robot_yaw < 0.0f) g_robot_yaw += 360.0f;
 }
+
+//yaw 초기값 조절 함수
+void calculate_gyro_bias(void) {
+    long long sum_raw = 0;
+    const int CAL_COUNT = 1000; // 1000회 측정
+    int16_t Gx, Gy, Gz;
+
+    UART_Printf("Starting Gyro Z-axis Calibration (1000 samples)...\r\n");
+
+    // 1. N회 반복하며 Z축 Raw 값 누적
+    for (int i = 0; i < CAL_COUNT; i++) {
+        MPU6050_Read_Gyro(&Gx, &Gy, &Gz);
+        sum_raw += Gz;
+        HAL_Delay(5); // 측정 간격 (5ms)
+    }
+
+    // 2. 평균 Raw 값 계산 및 DPS 변환
+    float avg_raw = (float)sum_raw / CAL_COUNT;
+    float avg_dps = avg_raw / MPU6050_GYRO_SCALE;
+
+    // 3. Rad/s 단위로 변환하여 전역 바이어스 변수에 저장
+    const float PI = 3.1415926535f;
+    gyro_bias_Z = avg_dps * (PI / 180.0f);
+
+    UART_Printf("Calibration Done. Gyro Bias Z: %.5f rad/s\r\n", gyro_bias_Z);
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -618,6 +699,8 @@ int main(void)
   //엔코더 카운팅 시작
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
+  MPU6050_Init(); //초기화
+  calculate_gyro_bias();//yaw 초기값 보정
 
   /* USER CODE END 2 */
 
@@ -628,9 +711,8 @@ int main(void)
 
   char post_data_buffer[150]; //json 문자열 버퍼
 
-////  MPU6050_Init();
 //
-//  float d1, d2, d3;
+  float d1, d2, d3;
 //  int16_t Ax, Ay, Az;
 //  char buf[100];
 //  // 1️⃣ Wi-Fi 연결
@@ -698,7 +780,7 @@ int main(void)
 //	          // 4. 전송 주기 설정
 //	              HAL_Delay(100); // 100ms (0.1초) 주기로 전송
 
-
+//	MPU 테스트 코드
 //     MPU6050_Read_Accel(&Ax, &Ay, &Az);
 //
 //         // g 단위 변환
@@ -717,41 +799,42 @@ int main(void)
 //
 //         HAL_Delay(500);
 //      //전진 유지
-//     move_forward_pwm(BASE_SPEED);
+     move_forward_pwm(BASE_SPEED);
 //
-//         d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
-//         DWT_Delay_us(5000);
-//         d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
-//         DWT_Delay_us(5000);
-//         d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
-//
-//         UART_Printf("S1: %.1f cm | S2: %.1f cm | S3: %.1f cm\r\n", d1, d2, d3);
-//
-//         // 센서값 모두 0이면 일시적인 에러로 간주
-//         if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
-//                   || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
-//                   || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
-//             failCount++;
-//             if (failCount > 5) { // 연속 3회 이상이면 진짜 장애물일 수도 있음
-//                 stop_all_motors();
-//                 HAL_Delay(50);
-//                 if(tempAovoid == 0){
-//                    R_avoidance_sequence();
-//                    tempAovoid = 1;
-//                 }
-//                 else{
-//                    L_avoidance_sequence();
-//                    tempAovoid = 0;
-//
-//                 }
-//                 failCount = 0;
-//             }
-//         } else {
-//             failCount = 0;
-//         }
-//
-//
-//         HAL_Delay(100);
+//	자율주행 코드
+         d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
+         DWT_Delay_us(5000);
+         d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
+         DWT_Delay_us(5000);
+         d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
+
+         UART_Printf("S1: %.1f cm | S2: %.1f cm | S3: %.1f cm\r\n", d1, d2, d3);
+
+         // 센서값 모두 0이면 일시적인 에러로 간주
+         if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
+                   || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
+                   || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
+             failCount++;
+             if (failCount > 5) { // 연속 3회 이상이면 진짜 장애물일 수도 있음
+                 stop_all_motors();
+                 HAL_Delay(50);
+                 if(tempAovoid == 0){
+                    R_avoidance_sequence();
+                    tempAovoid = 1;
+                 }
+                 else{
+                    L_avoidance_sequence();
+                    tempAovoid = 0;
+
+                 }
+                 failCount = 0;
+             }
+         } else {
+             failCount = 0;
+         }
+
+
+         HAL_Delay(100);
 //
 //
 
@@ -1373,8 +1456,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

@@ -21,14 +21,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdio.h>    // printf, sprintf 사용을 위해
-#include <stdarg.h>   // 가변 인자 사용을 위해
+#include <stdio.h>    // printf, sprintf 사용
+#include <stdarg.h>   // 가변 인자 사용
 #include <math.h>
 #include "ESP8266_HAL.h"
-#include <string.h>   // strlen 사용을 위해
-#include "stm32f4xx_hal.h" // HAL 함수 사용을 위해
+#include <string.h>   // strlen 사용
+#include "stm32f4xx_hal.h" // HAL 함수 사용
 #include "mpu6050.h"  // Edge-AI용 MPU6050 드라이버
-#include "edge_ai_wrapper.h"  // Edge Impulse SDK Wrapper
+#include "edge_ai_wrapper.h"  // Edge Impulse SDK Wrapper 헤더
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +56,6 @@
 
 uint8_t rx_data[100];
 
-
 // 클럭 설정 (SystemClock_Config 기준 HCLK = 84MHz)
 // 1초 = 84,000,000 사이클 -> 1us = 84 사이클
 #define DWT_DELAY_UNIT (HAL_RCC_GetHCLKFreq() / 1000000)
@@ -64,8 +63,6 @@ uint8_t rx_data[100];
 // HC-SR04 관련 상수
 #define SOUND_SPEED_CM_PER_US 0.0343 // 음속: 343m/s = 0.0343 cm/us
 #define MAX_TIMEOUT_US 30000 // 30ms (HC-SR04 최대 측정 거리 고려)
-
-
 
 // 모터 1 (A) - ENA: TIM1_CH1 (PA8)
 // 방향 핀
@@ -93,7 +90,6 @@ uint8_t rx_data[100];
 #define MOTOR_B     2
 #define MOTOR_C     3
 
-
 #define FORWARD     1
 #define BACKWARD    2
 #define RIGHT    3 // 우회전
@@ -116,12 +112,6 @@ uint8_t rx_data[100];
 #define MPU6050_ADDR  (0x68 << 1)
 #define PWR_MGMT_1    0x6B
 #define ACCEL_XOUT_H  0x3B
-
-//Odometry 상수
-#define WHEEL_RADIUS_MM     30      // 바퀴 반지름 (mm)
-#define ROBOT_AXLE_LENGTH_MM 160    // 바퀴 축 간 거리 (mm)
-#define ENCODER_RESOLUTION  1000    // 엔코더 해상도 (펄스 수)
-#define TIMER_PERIOD        65536   // TIM3/TIM8 주기
 
 // Edge-AI 관련 상수
 #define EDGE_AI_SAMPLE_COUNT    200    // 2초 @ 100Hz
@@ -163,6 +153,24 @@ volatile uint8_t edge_ai_buffer_ready = 0;
 volatile uint8_t imu_debug_counter = 0;  // 0.1초마다 출력하기 위한 카운터
 volatile uint8_t imu_debug_ready = 0;    // 출력 준비 플래그
 float imu_debug_ax, imu_debug_ay, imu_debug_az;  // 마지막 측정값 저장
+
+// MQTT 관련 전역 변수
+#define WIZFI360_MAX_RESPONSE_SIZE 512
+char wizfi_rx_buffer[WIZFI360_MAX_RESPONSE_SIZE];
+
+// MQTT Subscribe 수신 버퍼
+#define MQTT_RX_BUF_SIZE 256
+char mqtt_rx_buf[MQTT_RX_BUF_SIZE];
+int mqtt_rx_len = 0;
+
+// MQTT control 상태 변수
+int g_powerOn = -1;          // 0 = OFF, 1 = ON
+int g_fanSpeed = -1;         // 0~3
+int g_modeManual = -1;       // 0 = AUTO, 1 = MANUAL
+char g_direction[8] = "NULL";  // "FWD","BACK","LEFT","RIGHT","STOP"
+
+// Edge-AI 판별 결과 저장 (실시간 업데이트)
+char g_current_floor[16] = "Unknown";  // "Hard", "Carpet", "Dusty", "Unknown"
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -184,11 +192,8 @@ float HCSR04_Read(GPIO_TypeDef *trigPort, uint16_t trigPin,
                   GPIO_TypeDef *echoPort, uint16_t echoPin);
 void UART_Printf(const char *format, ...);
 
-
-
-
-
-
+// MQTT 함수 선언
+void MQTT_ProcessResponseBuffer(uint8_t *buf, uint16_t len);
 
 /* USER CODE END PFP */
 
@@ -427,8 +432,6 @@ void R_avoidance_sequence(void)
         HAL_Delay(TURN_90_TIME_MS);
         stop_all_motors();
         HAL_Delay(50);
-
-
 }
 
 void L_avoidance_sequence(void)
@@ -464,9 +467,6 @@ void L_avoidance_sequence(void)
 
 }
 
-
-
-
 /**
   * @brief 모터 제어를 위해 필요한 초기 설정을 수행합니다.
   * @retval None
@@ -492,96 +492,301 @@ void motor_control_init(void)
 
 }
 
-// 구 MPU6050 함수들 (mpu6050.c의 새 드라이버로 대체됨)
-//void MPU6050_Init(void) {
-//    uint8_t check;
-//    uint8_t data;
-//
-//    // WHO_AM_I register read
-//    HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, 0x75, 1, &check, 1, 1000);
-//
-//    if (check == 104) {  // 0x68
-//        data = 0;
-//        HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, PWR_MGMT_1, 1, &data, 1, 1000);
-//    }
-//}
-//
-//void MPU6050_Read_Accel(int16_t *Ax, int16_t *Ay, int16_t *Az) {
-//    uint8_t Rec_Data[6];
-//    HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, ACCEL_XOUT_H, 1, Rec_Data, 6, 1000);
-//
-//    *Ax = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
-//    *Ay = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
-//    *Az = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
-//}
-
-// 엔코더 카운터 추적 변수 (이전 값과의 차이를 계산하기 위함)
-static int prev_enc_L = 0;    // 이전 왼쪽 엔코더 값 (TIM3 카운터)
-static int prev_enc_R = 0;    // 이전 오른쪽 엔코더 값 (TIM8 카운터)
-
-/**
-  * 엔코더 및 IMU를 이용해 로봇의 현재 위치(x, y, yaw)를 정수 단위로 업데이트합니다.
-  */
-void update_odometry(void)
+// 현재 control 상태를 PuTTY(USART2)에 출력하는 디버그용 함수
+void Send_AT_Command(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term, const char *command, uint8_t *response_buffer, uint16_t buffer_size, uint32_t timeout)
 {
-	const float PI = 3.1415926535f;
-	    const int PERIOD = TIMER_PERIOD; // 65536
+    // 1. 터미널(huart_term, PuTTY)로 전송할 명령 표시
+    char tx_log[64];
+    int len = snprintf(tx_log, sizeof(tx_log), "\r\n[CMD] Sending: %s\r\n", command);
+    HAL_UART_Transmit(huart_term, (uint8_t *)tx_log, len, HAL_MAX_DELAY);
 
-	    // 1. 엔코더 카운터 값 읽기
-	    int current_enc_L = (int)__HAL_TIM_GET_COUNTER(&htim3);
-	    int current_enc_R = (int)__HAL_TIM_GET_COUNTER(&htim8);
+    // 2. WizFi360 (huart_wiz)에 명령 전송 (명령어 끝에 CR+LF(\r\n) 필수)
+    char cmd_with_crlf[128];
+    snprintf(cmd_with_crlf, sizeof(cmd_with_crlf), "%s\r\n", command);
+    HAL_UART_Transmit(huart_wiz, (uint8_t *)cmd_with_crlf, strlen(cmd_with_crlf), 500);
 
-	    // 2. 카운터 변화량 계산 (Delta Pulse) - 랩어라운드 처리 적용
-	    int delta_L_pulse = current_enc_L - prev_enc_L;
-	    int delta_R_pulse = current_enc_R - prev_enc_R;
+    // 3. 응답 수신 준비
+    memset(response_buffer, 0, buffer_size); // 버퍼 초기화
+    uint16_t index = 0;
+    uint32_t start_tick = HAL_GetTick();
 
-	    //  랩어라운드 처리
-	    if (delta_L_pulse > (PERIOD / 2)) {
-	        delta_L_pulse -= PERIOD; // 언더플로우 발생 시
-	    } else if (delta_L_pulse < -(PERIOD / 2)) {
-	        delta_L_pulse += PERIOD; // 오버플로우 발생 시
-	    }
+    // 4. WizFi360으로부터 응답 수신 (간단한 타임아웃 폴링 방식)
+    while ((HAL_GetTick() - start_tick) < timeout)
+    {
+        uint8_t rx_byte;
+        // HAL_UART_Receive는 지정된 타임아웃 내에 1바이트를 수신합니다.
+        if (HAL_UART_Receive(huart_wiz, &rx_byte, 1, 100) == HAL_OK)
+        {
+            if (index < buffer_size - 1)
+            {
+                response_buffer[index++] = rx_byte;
+            }
+            // 새로운 바이트를 수신할 때마다 타임아웃을 연장합니다.
+            start_tick = HAL_GetTick();
+        }
+    }
 
-	    if (delta_R_pulse > (PERIOD / 2)) {
-	        delta_R_pulse -= PERIOD;
-	    } else if (delta_R_pulse < -(PERIOD / 2)) {
-	        delta_R_pulse += PERIOD;
-	    }
+    // 5. 수신된 응답을 터미널(huart_term, PuTTY)로 출력
+    char *rx_header = "[RSP] Response Received:\r\n";
+    HAL_UART_Transmit(huart_term, (uint8_t *)rx_header, strlen(rx_header), HAL_MAX_DELAY);
 
-	    prev_enc_L = current_enc_L;
-	    prev_enc_R = current_enc_R;
+    MQTT_ProcessResponseBuffer(response_buffer, index);
 
-	    // 3. 펄스 변화량을 실제 이동 거리(mm)로 변환
-	    float distance_L_mm = (float)delta_L_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
-	    float distance_R_mm = (float)delta_R_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+    // 수신된 raw 데이터를 그대로 터미널로 출력
+    HAL_UART_Transmit(huart_term, response_buffer, index, HAL_MAX_DELAY);
 
-	    // 평균 이동 거리 및 각도 변화 계산
-	    float distance_center_mm = (distance_R_mm + distance_L_mm) / 2.0f;
-	    float delta_theta_rad = (distance_R_mm - distance_L_mm) / ROBOT_AXLE_LENGTH_MM; // 회전 각도(라디안)
+    char *rx_footer = "\r\n[END] ----------------------------------\r\n";
+    HAL_UART_Transmit(huart_term, (uint8_t *)rx_footer, strlen(rx_footer), HAL_MAX_DELAY);
+}
+
+// 현재 control 상태를 PuTTY(USART2)에 출력하는 디버그용 함수
+static void Debug_PrintControlState(const char *topic, const char *json)
+{
+    char buf[160];
+
+    int len = snprintf(buf, sizeof(buf),
+                       "\r\n[CONTROL] topic = %s\r\n"
+                       "          json  = %s\r\n"
+                       "          power = %d, speed = %d, mode = %d, dir = %s\r\n",
+                       topic,
+                       json,
+                       g_powerOn,
+                       g_fanSpeed,
+                       g_modeManual,
+                       g_direction);
+
+    HAL_UART_Transmit(&huart2, (uint8_t *)buf, len, HAL_MAX_DELAY);
+}
+
+// -----------------------------------------------------
+// MQTT 초기화용 공용 AT 명령 함수들
+// -----------------------------------------------------
+
+uint8_t MQTT_SetConfig(
+    UART_HandleTypeDef *huart_wiz,
+    UART_HandleTypeDef *huart_term,
+    const char *user,
+    const char *pass,
+    const char *clientID,
+    int aliveTime,
+    uint8_t *resp, uint16_t resp_size
+) {
+    char cmd[256];
+    snprintf(cmd, sizeof(cmd),
+             "AT+MQTTSET=\"%s\",\"%s\",\"%s\",%d",
+             user, pass, clientID, aliveTime);
+
+    Send_AT_Command(huart_wiz, huart_term, cmd, resp, resp_size, 3000);
+    return strstr((char*)resp, "OK") != NULL;
+}
+
+uint8_t MQTT_SetTopics(
+    UART_HandleTypeDef *huart_wiz,
+    UART_HandleTypeDef *huart_term,
+    const char *pubTopic,
+    const char *subTopic,
+    uint8_t *resp, uint16_t resp_size
+) {
+    char cmd[256];
+    snprintf(cmd, sizeof(cmd),
+             "AT+MQTTTOPIC=\"%s\",\"%s\"",
+             pubTopic, subTopic);
+
+    Send_AT_Command(huart_wiz, huart_term, cmd, resp, resp_size, 3000);
+    return strstr((char*)resp, "OK") != NULL;
+}
+
+uint8_t MQTT_SetQos(
+    UART_HandleTypeDef *huart_wiz,
+    UART_HandleTypeDef *huart_term,
+    int qos,
+    uint8_t *resp, uint16_t resp_size
+) {
+    char cmd[32];
+    snprintf(cmd, sizeof(cmd), "AT+MQTTQOS=%d", qos);
+
+    Send_AT_Command(huart_wiz, huart_term, cmd, resp, resp_size, 2000);
+    return strstr((char*)resp, "OK") != NULL;
+}
+
+uint8_t MQTT_ConnectBroker(
+    UART_HandleTypeDef *huart_wiz,
+    UART_HandleTypeDef *huart_term,
+    const char *brokerIP,
+    int port,
+    uint8_t *resp, uint16_t resp_size
+) {
+    char cmd[128];
+    snprintf(cmd, sizeof(cmd),
+             "AT+MQTTCON=0,\"%s\",%d",
+             brokerIP, port);
+
+    Send_AT_Command(huart_wiz, huart_term, cmd, resp, resp_size, 6000);
+
+    return strstr((char*)resp, "CONNECT") || strstr((char*)resp, "OK");
+}
+
+uint8_t MQTT_Init_All(
+    UART_HandleTypeDef *huart_wiz,
+    UART_HandleTypeDef *huart_term
+){
+    uint8_t resp[512];
+
+    // -------- Wi-Fi 연결 --------
+    Send_AT_Command(huart_wiz, huart_term, "AT", resp, sizeof(resp), 1000);
+    Send_AT_Command(huart_wiz, huart_term, "AT+RST", resp, sizeof(resp), 5000);
+    Send_AT_Command(huart_wiz, huart_term, "AT+CWMODE=1", resp, sizeof(resp), 2000);
+
+    // WiFi 접속
+    Send_AT_Command(huart_wiz, huart_term,
+        "AT+CWJAP=\"S24\",\"dial8787@@\"",
+        resp, sizeof(resp), 15000);
+
+    // -------- MQTT 설정 --------
+    if (!MQTT_SetConfig(huart_wiz, huart_term,
+                        "", "", "vibeclean01", 300,
+                        resp, sizeof(resp))) return 0;
+
+    if (!MQTT_SetTopics(huart_wiz, huart_term,
+                        "vibeclean/robot1/telemetry",
+                        "vibeclean/robot1/control/#",
+                        resp, sizeof(resp))) return 0;
+
+    if (!MQTT_SetQos(huart_wiz, huart_term, 0, resp, sizeof(resp)))
+        return 0;
+
+    if (!MQTT_ConnectBroker(huart_wiz, huart_term,
+                            "192.168.178.61", 1883,
+                            resp, sizeof(resp)))
+        return 0;
+
+    return 1;
+}
 
 
-	    // 4. 좌표 (X, Y) 및 방향 (Yaw) 업데이트 (Middle Point 적분 방식 적용)
+void Publish_Message(void)
+{
+    char cmd[512];
+    char json_message[400];
 
-	    // 4-1. 현재 Yaw를 라디안으로 변환
-	    float current_yaw_rad = g_robot_yaw * PI / 180.0f;
+    // 실시간 센서 데이터와 AI 판별 결과를 포함한 JSON 생성
+    snprintf(json_message, sizeof(json_message),
+        "{\"currentFloor\":\"%s\",\"fanSpeed\":%d,"
+        "\"position\":{\"x\":%.2f,\"y\":%.2f},"
+        "\"sensor\":{\"x\":%.3f,\"y\":%.3f,\"z\":%.3f}}",
+        g_current_floor,
+        g_fanSpeed > 0 ? g_fanSpeed : 1,
+        g_robot_x,
+        g_robot_y,
+        imu_debug_ax,
+        imu_debug_ay,
+        imu_debug_az);
 
-	    // 4-2. 중간 각도 (Average Yaw) 계산: X, Y 계산에 사용 (정확도 향상)
-	    float avg_yaw_rad = current_yaw_rad + delta_theta_rad / 2.0f;
+    // topic은 이미 AT+MQTTTOPIC로 설정되어 있으므로 메시지만 전달
+    snprintf(cmd, sizeof(cmd), "AT+MQTTPUB=\"%s\"", json_message);
+    Send_AT_Command(&huart3, &huart2, cmd, wizfi_rx_buffer, WIZFI360_MAX_RESPONSE_SIZE, 1000);
+//    WizFi_SendOnly(&huart3, &huart2, cmd); //wizfi통해서 보내기만 하는 애
+}
 
-	    // 4-3. X, Y 좌표 업데이트
-	    float delta_x = distance_center_mm * cosf(avg_yaw_rad);
-	    float delta_y = distance_center_mm * sinf(avg_yaw_rad);
+// 토픽과 JSON을 보고 상태 변수에 반영
+void HandleControlJson(const char *topic, const char *json)
+{
+    if (strstr(topic, "control/power")) {
+        if (strstr(json, "\"ON\""))  g_powerOn = 1;
+        if (strstr(json, "\"OFF\"")) g_powerOn = 0;
+    }
+    else if (strstr(topic, "control/speed")) {
+        int v = 0;
+        // 숫자 하나만 뽑는 단순 파서 (예: {"fanSpeed":2})
+        sscanf(json, "%*[^0-9]%d", &v);
+        if (v < 0) v = 0;
+        if (v > 3) v = 3;
+        g_fanSpeed = v;
+    }
+    else if (strstr(topic, "control/mode")) {
+        if (strstr(json, "\"MANUAL\"")) g_modeManual = 1;
+        if (strstr(json, "\"AUTO\""))   g_modeManual = 0;
+    }
+    else if (strstr(topic, "control/direction")) {
+        if (strstr(json, "\"FWD\""))   strcpy(g_direction, "FWD");
+        else if (strstr(json, "\"BACK\""))  strcpy(g_direction, "BACK");
+        else if (strstr(json, "\"LEFT\""))  strcpy(g_direction, "LEFT");
+        else if (strstr(json, "\"RIGHT\"")) strcpy(g_direction, "RIGHT");
+        else if (strstr(json, "\"STOP\""))  strcpy(g_direction, "STOP");
+    }
 
-	    g_robot_x += delta_x;
-	    g_robot_y += delta_y;
+    Debug_PrintControlState(topic, json);
+}
 
-	    // 4-4. Yaw 각도 업데이트 및 정규화
-	    float next_yaw_rad = current_yaw_rad + delta_theta_rad;
-	    g_robot_yaw = next_yaw_rad * 180.0f / PI;
+// WizFi360이 보낸 한 줄(line)을 토픽 / json 으로 분리
+void ParseMqttLine(char *line, int len)
+{
+    line[len] = '\0';
 
-	    // Yaw 각도 정규화 (0~359.999도)
-	    while (g_robot_yaw >= 360.0f) g_robot_yaw -= 360.0f;
-	    while (g_robot_yaw < 0.0f) g_robot_yaw += 360.0f;
+    // "topic->\"...\"" 형식에서 화살표 위치 찾기
+    char *arrow = strstr(line, "->");
+    if (!arrow) return;
+
+    *arrow = '\0';
+    char *topic = line;
+    char *payload = arrow + 2;
+
+    // 공백/따옴표 건너뛰기
+    while (*payload == ' ' || *payload == '"' || *payload == '\r' || *payload == '\n')
+        payload++;
+
+    // JSON 시작 '{' 위치 찾기
+    char *brace = strchr(payload, '{');
+    if (!brace) return;
+
+    char *end = strrchr(brace, '}');
+    if (!end) return;
+    *(end + 1) = '\0';   // JSON 문자열을 '\0'로 끝나게
+
+    HandleControlJson(topic, brace);
+}
+
+// WizFi360 응답 버퍼 전체에서 "topic -> { json }" 형태의 구독 메시지를 찾아 처리
+void MQTT_ProcessResponseBuffer(uint8_t *buf, uint16_t len)
+{
+    char line[256];
+    uint16_t pos = 0;
+
+    for (uint16_t i = 0; i < len; i++) {
+        char c = (char)buf[i];
+
+        // CR은 무시
+        if (c == '\r') {
+            continue;
+        }
+
+        // 줄 끝이거나 line 버퍼가 꽉 찬 경우
+        if (c == '\n' || pos >= sizeof(line) - 1) {
+
+            if (pos > 0) {
+                line[pos] = '\0';
+
+                // "->" 들어간 라인만 MQTT 메시지로 인정
+                if (strstr(line, "->")) {
+                    ParseMqttLine(line, strlen(line));
+                }
+            }
+
+            pos = 0;
+        }
+        else {
+            // 일반 문자는 line에 저장
+            line[pos++] = c;
+        }
+    }
+
+    // 마지막 라인이 '\n' 없이 종료되었을 때 처리
+    if (pos > 0) {
+        line[pos] = '\0';
+        if (strstr(line, "->")) {
+            ParseMqttLine(line, strlen(line));
+        }
+    }
 }
 /* USER CODE END 0 */
 
@@ -642,11 +847,22 @@ int main(void)
   // Edge-AI 초기화
   UART_Printf("\r\n=== VibeClean Edge-AI Test ===\r\n");
 
+  // I2C 통신 테스트
+  UART_Printf("Testing I2C communication...\r\n");
+  uint8_t who_am_i = MPU6050_WhoAmI(&hi2c1);
+  UART_Printf("WHO_AM_I Register: 0x%02X (Expected: 0x68)\r\n", who_am_i);
+
   // MPU6050 센서 초기화
-  if (MPU6050_Init(&hi2c1) == HAL_OK) {
-      UART_Printf("MPU6050 Init: OK (WHO_AM_I = 0x%02X)\r\n", MPU6050_WhoAmI(&hi2c1));
+  UART_Printf("Initializing MPU6050...\r\n");
+  HAL_StatusTypeDef mpu_status = MPU6050_Init(&hi2c1);
+
+  if (mpu_status == HAL_OK) {
+      UART_Printf("MPU6050 Init: OK\r\n");
   } else {
-      UART_Printf("MPU6050 Init: FAILED!\r\n");
+      UART_Printf("MPU6050 Init: FAILED! (Status: %d)\r\n", mpu_status);
+      UART_Printf("Check I2C connections (SDA: PB9, SCL: PB8)\r\n");
+      UART_Printf("Check MPU6050 power supply (3.3V)\r\n");
+      UART_Printf("Check pull-up resistors on SDA/SCL (4.7k ohm)\r\n");
   }
 
   // Edge Impulse 분류기 초기화
@@ -670,34 +886,16 @@ int main(void)
   int tempAovoid = 0; // 0 = right, 1 = left
 
   char post_data_buffer[150]; //json 문자열 버퍼
+  uint32_t last_pub_tick = 0; // 마지막 메시지 발행 시간 저장
 
-////  MPU6050_Init();
-//
-//  float d1, d2, d3;
-//  int16_t Ax, Ay, Az;
-//  char buf[100];
-//  // 1️⃣ Wi-Fi 연결
-//     ESP_Init("YOUR_WIFI_SSID", "YOUR_WIFI_PASSWORD");
-//     char value[64];  // 서버로부터 받은 값을 저장할 버퍼
-//
-//     // 2️⃣ GET 요청 및 값 파싱
-//     if (ESP_HTTP_Get_Value("192.168.178.61", "/api/manual/speed", "fanSpeed", value))
-//     {
-//         char msg[128];
-//         sprintf(msg, "fanSpeed value = %s\r\n", value);
-//         Uart_sendstring(msg, &huart2);
-//     }
-//     else
-//     {
-//         Uart_sendstring("HTTP GET Failed\r\n", &huart2);
-//     }
-//
-//  // POST
-//  ESP_HTTP_Post("192.168.178.61", "/data", "{\"id\":1,\"value\":42}");
-//
-//  float distance1, distance2, distance3;
+  char *start_msg = "STM32 WizFi360 MQTT Test Start! (PuTTY=USART2, WizFi360=USART3)\r\n";
+  //  HAL_UART_Transmit(&huart2, (uint8_t *)start_msg, strlen(start_msg), HAL_MAX_DELAY);
 
+  HAL_Delay(3000); // WizFi360 부팅 대기
 
+  //  Setup_WiFi_And_MQTT();
+  MQTT_Init_All(&huart3, &huart2);   // Wiz: huart1, Terminal: huart2
+  
   while (1)
   {
       // === IMU 센서 디버깅 출력 (0.1초마다) ===
@@ -716,8 +914,18 @@ int main(void)
               // 판별 결과 출력 (Hard, Carpet, Dusty - 대문자 시작)
               UART_Printf("[AI] Hard: %.2f, Carpet: %.2f, Dusty: %.2f\r\n",
                          result.Hard, result.Carpet, result.Dusty);
+
+              // 가장 높은 확률의 노면 타입 저장
+              if (result.Hard >= result.Carpet && result.Hard >= result.Dusty) {
+                  strcpy(g_current_floor, "Hard");
+              } else if (result.Carpet >= result.Hard && result.Carpet >= result.Dusty) {
+                  strcpy(g_current_floor, "Carpet");
+              } else {
+                  strcpy(g_current_floor, "Dusty");
+              }
           } else {
               UART_Printf("[AI] Classification FAILED\r\n");
+              strcpy(g_current_floor, "Unknown");
           }
 
           // 버퍼 준비 완료 플래그 리셋
@@ -764,34 +972,12 @@ int main(void)
 
       HAL_Delay(100);
 
-
-
-//	  	  	  //실제 사용할 2D Mapping 좌표전송 코드 (통신구축 완료 후 수정필요)
-//	  		  HAL_Delay(5000);  // 5초마다 재요청 가능
-//	          ESP_HTTP_Get_Value("192.168.178.61", "/api/manual/speed", "fanSpeed", value);
-//
-//	          char msg[128];
-//	          sprintf(msg, "fanSpeed = %s\r\n", value);
-//	          Uart_sendstring(msg, &huart2);
-//
-//	          // 1. 오도메트리 업데이트 (좌표 계산)
-//	              update_odometry();
-//
-//	          // 2. 백엔드로 보낼 JSON 데이터 생성
-//	              int x_int = (int)roundf(g_robot_x);
-//	              int y_int = (int)roundf(g_robot_y);
-//
-//	          // JSON 형식으로 포맷팅
-//	              sprintf(post_data_buffer,
-//	                      "{\"robotId\":1,\"x\":%d,\"y\":%d}",
-//	                      x_int, y_int);
-//
-//	          // 3. POST 요청으로 서버에 데이터 전송
-//	              ESP_HTTP_Post("192.168.178.61", "/api/robot/location", post_data_buffer);
-//
-//	          // 4. 전송 주기 설정
-//	              HAL_Delay(100); // 100ms (0.1초) 주기로 전송
-
+      // === MQTT 메시지 발행 (5초마다) ===
+      uint32_t now_tick = HAL_GetTick();
+      if (now_tick - last_pub_tick >= 1000) {
+          Publish_Message();
+          last_pub_tick = now_tick;
+      }
 
 //     MPU6050_Read_Accel(&Ax, &Ay, &Az);
 //
@@ -851,42 +1037,6 @@ int main(void)
 
      /* USER CODE BEGIN WHILE */
 
-
-//      모터 c 전진 2s
-//         set_motor_direction(MOTOR_C, FORWARD);
-//
-//         set_motor_speed(MOTOR_C, 900);
-//
-//         HAL_Delay(3000);
-//
-//         set_motor_speed(MOTOR_C, 0);
-//         HAL_Delay(500);
-//
-//      모터 A 전진 2s
-//         set_motor_direction(MOTOR_A, FORWARD);
-//         set_motor_direction(MOTOR_B, FORWARD);
-//
-//         set_motor_speed(MOTOR_A, 400);
-//         set_motor_speed(MOTOR_B, 400);
-//
-//         HAL_Delay(1000);
-//
-//         set_motor_speed(MOTOR_A, 0);
-//         HAL_Delay(500);
-//
-//         // 모터 A 후진 2s
-//         set_motor_direction(MOTOR_A, BACKWARD);
-//         set_motor_direction(MOTOR_B, BACKWARD);
-//
-//         set_motor_speed(MOTOR_A, 400);
-//         set_motor_speed(MOTOR_B, 400);
-//
-//         HAL_Delay(1000);
-//
-//         set_motor_speed(MOTOR_A, 0);
-//         set_motor_speed(MOTOR_B, 0);
-//
-//         HAL_Delay(1000);
 //
 //      센서 1에서 거리 읽기
 //         distance1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);

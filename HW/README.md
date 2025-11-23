@@ -17,16 +17,20 @@ HW/
 │   │   ├── Inc/               # 헤더 파일
 │   │   │   ├── main.h
 │   │   │   ├── ESP8266_HAL.h         # ESP8266 WiFi 모듈 드라이버
+│   │   │   ├── ESP8266_HAL_TCP.h     # ESP8266 TCP 통신
 │   │   │   ├── UartRingbuffer_multi.h # UART 멀티채널 링 버퍼
 │   │   │   ├── edge_ai_wrapper.h      # Edge AI 래퍼
+│   │   │   ├── mqtt_comm.h            # MQTT 통신 함수
 │   │   │   ├── stm32f4xx_hal_conf.h   # HAL 설정
 │   │   │   └── stm32f4xx_it.h         # 인터럽트 핸들러
 │   │   ├── Src/               # 소스 파일
 │   │   │   ├── main.c                 # 메인 프로그램
 │   │   │   ├── ESP8266_HAL.c          # ESP8266 드라이버 구현
+│   │   │   ├── ESP8266_HAL_TCP.c      # ESP8266 TCP 통신 구현
 │   │   │   ├── UartRingbuffer_multi.c # UART 버퍼 구현
 │   │   │   ├── edge_ai_wrapper.cpp    # Edge AI 래퍼 구현
 │   │   │   ├── ei_classifier_porting.cpp # Edge Impulse 포팅 레이어
+│   │   │   ├── mqtt_comm.c            # MQTT 통신 함수 구현
 │   │   │   ├── stm32f4xx_hal_msp.c    # HAL MSP 초기화
 │   │   │   ├── stm32f4xx_it.c         # 인터럽트 핸들러
 │   │   │   └── system_stm32f4xx.c     # 시스템 초기화
@@ -107,17 +111,67 @@ HW/
 - **설정 도구**: STM32CubeMX
 - **디버거**: ST-Link
 
-## 🚀 빌드 및 실행 가이드
+## 개발 환경 설정 (IDE Setup)
 
-### 1. 개발 환경 설정
+이 프로젝트는 Edge-AI (C++) 및 MQTT 통신 기능을 포함하고 있습니다. 프로젝트 Import 또는 재설정 시 다음 설정이 필수입니다.
 
-#### STM32CubeIDE 사용
+### 1. STM32CubeIDE 설치 및 프로젝트 열기
 1. [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html) 다운로드 및 설치
 2. STM32CubeIDE 실행
-3. `File` > `Open Projects from File System...`
-4. `HW/STM32` 폴더 선택
+3. `File` > `Open Projects from File System...` 선택
+4. `HW/STM32` 폴더 선택하여 프로젝트 Import
 
-### 2. 프로젝트 빌드
+### 2. C++ 프로젝트 변환
+Edge Impulse SDK는 C++로 작성되어 있으므로 프로젝트를 C++로 변환해야 합니다.
+
+1. Project Explorer에서 프로젝트 우클릭
+2. `Convert to C++ Project` 선택
+3. 변환 타입에서 `C++` 선택 후 `Finish`
+
+### 3. 소스 파일 확장자 변경
+다음 파일의 확장자를 `.c`에서 `.cpp`로 변경:
+- `Core/Src/edge_ai_wrapper.c` → `edge_ai_wrapper.cpp`
+- `Core/Src/ei_classifier_porting.c` → `ei_classifier_porting.cpp` (존재 시)
+
+### 4. Include Path 설정
+C 및 C++ 컴파일러 모두에 Edge-AI 헤더 경로를 추가해야 합니다.
+
+프로젝트 우클릭 > `Properties` > `C/C++ Build` > `Settings`
+
+**MCU GCC Compiler** > **Include paths** 및 **MCU G++ Compiler** > **Include paths**에 다음 경로 추가:
+```
+../Edge-AI
+../Edge-AI/edge-impulse-sdk
+../Edge-AI/edge-impulse-sdk/CMSIS/DSP/Include
+../Edge-AI/edge-impulse-sdk/CMSIS/Core/Include
+../Edge-AI/edge-impulse-sdk/classifier
+../Edge-AI/edge-impulse-sdk/dsp
+../Edge-AI/edge-impulse-sdk/porting
+../Edge-AI/tflite-model
+../Edge-AI/model-parameters
+```
+
+### 5. 전처리기 정의 (Preprocessor Defines)
+**MCU GCC Compiler** > **Preprocessor** 및 **MCU G++ Compiler** > **Preprocessor**의 `Define symbols (-D)`에 추가:
+```
+EI_CLASSIFIER_TFLITE_ENABLE_CMSIS_NN=1
+ARM_MATH_CM4
+__FPU_PRESENT=1
+```
+
+### 6. C++ 표준 설정
+**MCU G++ Compiler** > **Dialect** > **Language standard**: `ISO C++11 (-std=c++11)` 이상 선택
+
+### 7. 필수 파일 확인
+다음 MQTT 관련 파일이 프로젝트에 포함되어 있는지 확인:
+- `Core/Inc/mqtt_comm.h`
+- `Core/Src/mqtt_comm.c`
+- `Core/Inc/ESP8266_HAL_TCP.h`
+- `Core/Src/ESP8266_HAL_TCP.c`
+
+## 빌드 및 실행 가이드
+
+### 1. 프로젝트 빌드
 
 ```bash
 # STM32CubeIDE에서
@@ -133,7 +187,7 @@ Cmd + B (macOS)
 - `SoundTest.bin` - 바이너리 파일
 - `SoundTest.hex` - HEX 파일
 
-### 3. 펌웨어 업로드
+### 2. 펌웨어 업로드
 
 1. ST-Link를 보드에 연결
 2. USB를 통해 PC에 연결
@@ -142,7 +196,7 @@ Cmd + B (macOS)
    Run > Debug (F11) 또는 Run (Ctrl+F11)
    ```
 
-### 4. 디버깅
+### 3. 디버깅
 
 ```
 Run > Debug Configurations...
@@ -170,6 +224,13 @@ Run > Debug Configurations...
   - **Dusty (먼지)**: 먼지가 많은 표면
   - **Hard (딱딱한 표면)**: 나무, 타일 등 단단한 바닥
 - 분류 결과를 WiFi 모듈을 통해 서버로 전송
+
+### MQTT 통신
+- WizFi360 (ESP8266 호환) 모듈을 통한 MQTT 프로토콜 지원
+- 실시간 원격 제어 및 모니터링
+- 제어 명령 수신: 전원, 팬 속도, 모드, 방향
+- 텔레메트리 데이터 전송: 위치, 센서 데이터, 상태 정보
+- 모듈화된 설계 (mqtt_comm.c/h)
 
 ### UART 멀티채널 링 버퍼
 - 효율적인 UART 데이터 관리

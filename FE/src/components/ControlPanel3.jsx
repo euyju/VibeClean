@@ -1,17 +1,27 @@
-import React from "react";
+import React, {useState} from "react";
 import './ControlPanel3.css';
 
 function ControlPanel3({ className, currentMode, onModeChange, onDirectionChange }) {
     const isManual = currentMode === 'MANUAL';
 
+    //마우스 이동시 STOP 호출하는 상황 (handleRelease) 처리 로직을 위한 상태 추가
+    const [activeKey, setActiveKey] = useState(null); //현재 누르고 있는 (active) 키를 기억
+
     //조작키 이벤트 핸들링 함수
     const handlePress = (dir) => {
         if (!isManual) return; //AUTO일경우 무시
+        
+        setActiveKey(dir); //조작키를 눌렀을때. 현재 누른 키를 기록
         onDirectionChange(dir);
     };
 
+    //조작키 클릭 뗌 혹은 영역 이탈 
     const handleRelease = () => {
         if (!isManual) return;
+
+        if (activeKey == null) return; //아무것도 누르지 않았을때(activeKey 없음) 영역 이탈 무시
+
+        setActiveKey(null); //조작 종료시 기록되었던 키 초기화
         onDirectionChange("STOP");
     };
 

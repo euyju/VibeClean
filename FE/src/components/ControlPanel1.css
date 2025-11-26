@@ -29,10 +29,10 @@ h2 {
 .switch-container {
   display: flex;
   align-items: center;
-  gap: 1rem; /* space-x-4 */
+  gap: 1rem;
   background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 9999px; /* rounded-full */
-  padding: 1rem 2rem; /* px-8 py-4 */
+  border-radius: 9999px;
+  padding: 1rem 2rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 

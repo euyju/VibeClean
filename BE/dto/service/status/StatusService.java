@@ -35,11 +35,12 @@ public class StatusService {
     public RobotStatusResponse returnStatus(){
         Optional<Status> latestStatus= repository.findTopByOrderByIdDesc();//가장 최신의 값을 가져옴.
         if (latestStatus.isEmpty()){
-            return new RobotStatusResponse("OFF",null,0,new ArrayList<>());
+            return new RobotStatusResponse("OFF",null,null,0,new ArrayList<>());
         }
         List<Coordinate> path= repository.findAllPathPoints();
 
-        return new RobotStatusResponse(latestStatus.get().getPower(), latestStatus.get().getCurrentFloor(), latestStatus.get().getFanSpeed(),path);
+        return new RobotStatusResponse(latestStatus.get().getPower(),latestStatus.get().getMode(), latestStatus.get().getCurrentFloor(),
+                latestStatus.get().getFanSpeed(),path);
     }
 
 }

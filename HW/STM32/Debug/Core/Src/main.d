@@ -29,7 +29,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Users/euyju/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  C:/Users/euyju/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  C:/Users/euyju/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Core/Inc/ESP8266_HAL.h
+ ../Core/Inc/ESP8266_HAL.h ../Core/Inc/mpu6050.h \
+ ../Core/Inc/edge_ai_wrapper.h ../Core/Inc/odom_imu.h ../Core/Inc/main.h \
+ ../Core/Inc/mpu6050.h
 ../Core/Inc/main.h:
 C:/Users/euyju/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -62,3 +64,8 @@ C:/Users/euyju/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HA
 C:/Users/euyju/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 C:/Users/euyju/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 ../Core/Inc/ESP8266_HAL.h:
+../Core/Inc/mpu6050.h:
+../Core/Inc/edge_ai_wrapper.h:
+../Core/Inc/odom_imu.h:
+../Core/Inc/main.h:
+../Core/Inc/mpu6050.h:

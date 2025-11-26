@@ -1,3 +1,5 @@
+//svg icon들을 작성해둔 file
+
 export function PowerIcon({ className = "", strokeWidth = 2 }) {
   return (
     <svg

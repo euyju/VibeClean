@@ -103,7 +103,7 @@ uint8_t rx_data[100];
 #define RGB_WHITE       1, 1, 1
 
 // LED 상태 타이밍 (ms)
-#define LED_BLINK_INTERVAL_BASE    1000  // 베이스 색상 표시 시간 (모드 색상)
+#define LED_BLINK_INTERVAL_BASE    500   // 베이스 색상 표시 시간 (모드 색상)
 #define LED_BLINK_INTERVAL_FLOOR   500   // 바닥 색상 표시 시간
 #define LED_BLINK_INTERVAL_OBSTACLE 1000 // 장애물 회피 깜빡임
 
@@ -444,7 +444,7 @@ void perform_u_turn(void)
 */
 void R_avoidance_sequence(void)
 {
-    // LED 상태를 장애물 회피 모드로 설정
+    // LED 상태를 장애물 회피 모드로 설정 (빨간색 고정)
     set_led_priority_state(LED_STATE_OBSTACLE);
 
     // 1) 정지
@@ -469,11 +469,11 @@ void R_avoidance_sequence(void)
     stop_all_motors();
     HAL_Delay(50);
 
-    // 5) 제자리 우회전 90도
-    rotate_right_inplace(TURN_SPEED);
-    HAL_Delay(TURN_90_TIME_MS);
-    stop_all_motors();
-    HAL_Delay(50);
+    // 3) 제자리 우회전 90도
+        rotate_right_inplace(TURN_SPEED);
+        HAL_Delay(TURN_90_TIME_MS);
+        stop_all_motors();
+        HAL_Delay(50);
 
     // 회피 완료 후 일반 모드로 복귀
     set_led_priority_state(LED_STATE_NORMAL);
@@ -481,7 +481,7 @@ void R_avoidance_sequence(void)
 
 void L_avoidance_sequence(void)
 {
-    // LED 상태를 장애물 회피 모드로 설정
+    // LED 상태를 장애물 회피 모드로 설정 (빨간색 고정)
     set_led_priority_state(LED_STATE_OBSTACLE);
 
     // 1) 정지
@@ -506,11 +506,12 @@ void L_avoidance_sequence(void)
     stop_all_motors();
     HAL_Delay(50);
 
-    // 5) 제자리 좌회전 90도
-    rotate_left_inplace(TURN_SPEED);
-    HAL_Delay(TURN_90_TIME_MS);
-    stop_all_motors();
-    HAL_Delay(50);
+    // 3) 제자리 좌회전 90도
+        rotate_left_inplace(TURN_SPEED);
+        HAL_Delay(TURN_90_TIME_MS);
+        stop_all_motors();
+        HAL_Delay(50);
+
 
     // 회피 완료 후 일반 모드로 복귀
     set_led_priority_state(LED_STATE_NORMAL);
@@ -559,69 +560,61 @@ void update_led_state(void)
         return;
     }
 
-    // 우선순위 2: 장애물 회피 - 빨간색 깜빡임 (1000ms)
+    // 우선순위 2: 장애물 회피 - 빨간색 고정 (점멸 없음)
     if (g_led_priority_state == LED_STATE_OBSTACLE) {
-        interval = LED_BLINK_INTERVAL_OBSTACLE;
-
-        if (current_tick - g_led_last_update_tick >= interval) {
-            g_led_toggle_state = !g_led_toggle_state;
-            g_led_last_update_tick = current_tick;
-
-            if (g_led_toggle_state) {
-                set_rgb_led(RGB_RED);
-            } else {
-                set_rgb_led(RGB_OFF);
-            }
-        }
+        set_rgb_led(RGB_RED);  // 빨간색 계속 켜짐
         return;
     }
 
-    // 우선순위 3: 일반 동작 - 모드와 바닥 타입에 따른 교차 깜빡임 (2:1 비율)
-    // g_led_toggle_state: 0 = 베이스 색상(1000ms), 1 = 바닥 색상(500ms)
+    // 우선순위 3: 일반 동작
+    // Manual Mode: 파란색 고정 (점멸 없음)
+    if (g_modeManual == 1) {
+        set_rgb_led(RGB_BLUE);  // 수동 모드는 파란색 고정
+        return;
+    }
+
+    // Auto Mode: 노면 감지에 따른 교차 깜빡임 (2:1 비율)
+    // g_led_toggle_state: 0 = 하얀색(1000ms), 1 = 바닥 색상(500ms)
+
+    // 현재 표시할 색상 먼저 결정
+    uint8_t base_r = 1, base_g = 1, base_b = 1;  // 하얀색
+
+    // 바닥 색상 결정 (Edge-AI 판별 결과에 따라)
+    uint8_t floor_r, floor_g, floor_b;
+    if (strcmp(g_current_floor, "Hard") == 0) {
+        // Hard Floor -> Green (초록색)
+        floor_r = 0; floor_g = 1; floor_b = 0;
+    } else if (strcmp(g_current_floor, "Carpet") == 0) {
+        // Carpet -> Magenta (자홍색)
+        floor_r = 1; floor_g = 0; floor_b = 1;
+    } else if (strcmp(g_current_floor, "Dusty") == 0) {
+        // Dusty -> Yellow (노란색)
+        floor_r = 1; floor_g = 1; floor_b = 0;
+    } else {
+        // Unknown -> Off (꺼짐)
+        floor_r = 0; floor_g = 0; floor_b = 0;
+    }
+
+    // 현재 상태에 따른 interval 설정
     if (g_led_toggle_state == 0) {
-        interval = LED_BLINK_INTERVAL_BASE;  // 베이스 색상 표시 시간 (1000ms)
+        interval = LED_BLINK_INTERVAL_BASE;  // 하얀색 표시 시간 (1000ms)
     } else {
         interval = LED_BLINK_INTERVAL_FLOOR; // 바닥 색상 표시 시간 (500ms)
     }
 
     if (current_tick - g_led_last_update_tick >= interval) {
+        // 다음 색상으로 전환
         g_led_toggle_state = !g_led_toggle_state;
         g_led_last_update_tick = current_tick;
+    }
 
-        // 베이스 색상 결정 (모드에 따라)
-        uint8_t base_r, base_g, base_b;
-        if (g_modeManual == 1) {
-            // Manual Mode -> Blue
-            base_r = 0; base_g = 0; base_b = 1;
-        } else {
-            // Auto Mode -> White
-            base_r = 1; base_g = 1; base_b = 1;
-        }
-
-        // 바닥 색상 결정 (Edge-AI 판별 결과에 따라)
-        uint8_t floor_r, floor_g, floor_b;
-        if (strcmp(g_current_floor, "Hard") == 0) {
-            // Hard Floor -> Green
-            floor_r = 0; floor_g = 1; floor_b = 0;
-        } else if (strcmp(g_current_floor, "Carpet") == 0) {
-            // Carpet -> Magenta
-            floor_r = 1; floor_g = 0; floor_b = 1;
-        } else if (strcmp(g_current_floor, "Dusty") == 0) {
-            // Dusty -> Yellow
-            floor_r = 1; floor_g = 1; floor_b = 0;
-        } else {
-            // Unknown -> Off (또는 베이스 색상만 표시)
-            floor_r = 0; floor_g = 0; floor_b = 0;
-        }
-
-        // 교차 깜빡임: 토글 상태에 따라 베이스 색상 또는 바닥 색상 표시
-        // toggle_state = 0 → 베이스 색상 표시 (1000ms)
-        // toggle_state = 1 → 바닥 색상 표시 (500ms)
-        if (g_led_toggle_state == 0) {
-            set_rgb_led(base_r, base_g, base_b);
-        } else {
-            set_rgb_led(floor_r, floor_g, floor_b);
-        }
+    // 현재 토글 상태에 따라 LED 색상 표시
+    // toggle_state = 0 → 하얀색 표시 (1000ms 유지)
+    // toggle_state = 1 → 바닥 색상 표시 (500ms 유지)
+    if (g_led_toggle_state == 0) {
+        set_rgb_led(base_r, base_g, base_b);  // 하얀색
+    } else {
+        set_rgb_led(floor_r, floor_g, floor_b);  // 바닥색
     }
 }
 
@@ -798,7 +791,7 @@ uint8_t MQTT_Init_All(
     // WiFi 접속
     Send_AT_Command(huart_wiz, huart_term,
         "AT+CWJAP=\"S24\",\"dial8787@@\"",
-        resp, sizeof(resp), 15000);
+        resp, sizeof(resp), 35000);
 
     // -------- MQTT 설정 --------
     if (!MQTT_SetConfig(huart_wiz, huart_term,
@@ -1115,7 +1108,7 @@ int main(void)
                 || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
                 || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
           failCount++;
-          if (failCount > 5) { // 연속 5회 이상이면 진짜 장애물
+          if (failCount >= 3) { // 연속 3회 이상이면 진짜 장애물
               stop_all_motors();
               HAL_Delay(50);
 

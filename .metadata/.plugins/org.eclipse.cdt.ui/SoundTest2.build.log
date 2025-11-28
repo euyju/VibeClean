@@ -1,0 +1,10 @@
+18:57:25 **** Incremental Build of configuration Debug for project SoundTest2 ****
+make -j16 all 
+arm-none-eabi-size  SoundTest2.elf 
+   text	   data	    bss	    dec	    hex	filename
+ 168860	   1388	   6160	 176408	  2b118	SoundTest2.elf
+Finished building: default.size.stdout
+ 
+
+18:57:35 Build Finished. 0 errors, 0 warnings. (took 10s.221ms)
+

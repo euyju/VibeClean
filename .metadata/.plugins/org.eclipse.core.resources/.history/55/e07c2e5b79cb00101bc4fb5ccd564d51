@@ -1,0 +1,222 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * File Name          : freertos.c
+  * Description        : Code for freertos applications
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+
+/* Includes ------------------------------------------------------------------*/
+#include "FreeRTOS.h"
+#include "task.h"
+#include "main.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "cmsis_os.h"  // <--- 이 줄을 추가해야 osDelay를 인식합니다.
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+// HC-SR04 핀 정의
+#define TRIG_PIN    GPIO_PIN_0
+#define TRIG_PORT    GPIOC
+#define ECHO_PIN    GPIO_PIN_1
+#define ECHO_PORT    GPIOA
+
+#define TRIG_PIN1    GPIO_PIN_1
+#define TRIG_PORT1    GPIOC
+#define ECHO_PIN1    GPIO_PIN_8
+#define ECHO_PORT1    GPIOB
+
+#define TRIG_PIN2    GPIO_PIN_2
+#define TRIG_PORT2    GPIOC
+#define ECHO_PIN2    GPIO_PIN_10
+#define ECHO_PORT2    GPIOB
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+/* USER CODE BEGIN Variables */
+
+/* USER CODE END Variables */
+
+/* Private function prototypes -----------------------------------------------*/
+/* USER CODE BEGIN FunctionPrototypes */
+
+/* USER CODE END FunctionPrototypes */
+
+/* Private application code --------------------------------------------------*/
+/* USER CODE BEGIN Application */
+
+/* USER CODE BEGIN Application */
+
+// ==========================================
+// 1. main.c에 있는 변수와 함수들 가져오기 (extern)
+// ==========================================
+
+// [변수 가져오기]
+extern volatile float g_d1, g_d2, g_d3;
+extern volatile int g_obstacle_detected;
+extern volatile int g_powerOn;
+extern volatile uint16_t g_target_suction_pwm;
+extern volatile uint8_t edge_ai_buffer_ready; // AI 버퍼 플래그
+
+// [함수 가져오기]
+// (main.h에 선언되어 있다면 생략 가능하지만, 안전하게 적어둠)
+extern void move_forward_pwm(uint16_t pwm);
+extern void move_backward_pwm(uint16_t pwm);
+extern void stop_all_motors(void);
+extern void clean_go_pwm(uint16_t pwm);
+extern void rotate_right_inplace(uint16_t pwm);
+extern void rotate_left_inplace(uint16_t pwm);
+extern void set_motor_speed(uint8_t motor_id, uint16_t speed);
+extern float HCSR04_Read(GPIO_TypeDef *trigPort, uint16_t trigPin, GPIO_TypeDef *echoPort, uint16_t echoPin);
+extern void UART_Printf(const char *format, ...); // main.c의 매크로가 아닌 실제 함수 필요
+extern uint8_t MQTT_Init_All(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term);
+extern void Publish_Message(void);
+
+// UART 핸들 (MQTT 초기화용)
+extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart3;
+// 타이머 핸들 (AI용)
+extern TIM_HandleTypeDef htim6;
+
+// 상수 정의 (main.c와 동일하게)
+#define BASE_SPEED 1000
+#define TURN_SPEED 300
+#define TURN_90_TIME_MS 3200
+
+// 핀 정의 (main.h에 없으면 여기에 다시 정의 필요, 보통 main.h에 있음)
+// 만약 에러 나면 main.h를 확인하거나 여기에 #define 복사
+
+// ==========================================
+// 2. 태스크 함수 구현 (실제 로직)
+// ==========================================
+
+/* 1. MotorTask : 바퀴 및 청소 모터 제어 */
+void StartMotorTask(void *argument)
+{
+  for(;;)
+  {
+    // 장애물 감지 시 회피
+    if (g_obstacle_detected) {
+        UART_Printf("[Motor] Obstacle Detected! Avoiding...\r\n");
+        stop_all_motors();
+        osDelay(100);
+
+        // 회피 기동
+        move_backward_pwm(BASE_SPEED);
+        osDelay(500);
+
+        rotate_right_inplace(TURN_SPEED);
+        osDelay(TURN_90_TIME_MS);
+
+        stop_all_motors();
+        osDelay(100);
+
+        g_obstacle_detected = 0; // 상황 해제
+    }
+    else {
+        // 평상시 주행
+        if (g_powerOn) {
+             move_forward_pwm(BASE_SPEED);
+             clean_go_pwm(g_target_suction_pwm); // AI가 정한 흡입력
+        } else {
+             stop_all_motors();
+        }
+    }
+    osDelay(10); // 10ms 주기
+  }
+}
+
+/* 2. SensorTask : 초음파 센서 측정 */
+void StartSensorTask(void *argument)
+{
+  for(;;)
+  {
+    // main.h에 정의된 핀 매크로 사용 (TRIG_PIN 등)
+    // 에러나면 main.h 열어서 핀 이름 확인하세요!
+    float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
+    osDelay(10);
+    float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
+    osDelay(10);
+    float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
+
+    // 거리값 갱신
+    g_d1 = d1; g_d2 = d2; g_d3 = d3;
+
+    // 장애물 판단 (30cm 이내)
+    if ((d1 > 1.0f && d1 < 30.0f) ||
+        (d2 > 1.0f && d2 < 30.0f) ||
+        (d3 > 1.0f && d3 < 30.0f))
+    {
+        g_obstacle_detected = 1;
+    }
+
+    osDelay(50);
+  }
+}
+
+/* 3. CommTask : 통신 */
+void StartCommTask(void *argument)
+{
+  osDelay(1000); // 부팅 대기
+
+  // WizFi 초기화
+  UART_Printf("[Comm] Init WizFi360...\r\n");
+  MQTT_Init_All(&huart3, &huart2);
+
+  for(;;)
+  {
+    Publish_Message();
+    osDelay(1000); // 1초마다 전송
+  }
+}
+
+/* 4. AITask : 인공지능 */
+void StartAITask(void *argument)
+{
+  // 타이머 시작 (인터럽트)
+  HAL_TIM_Base_Start_IT(&htim6);
+
+  for(;;)
+  {
+    if (edge_ai_buffer_ready) {
+        UART_Printf("[AI] Inferencing...\r\n");
+
+        // --- [AI 추론 로직] ---
+        // (여기서 노면 판별 후 g_target_suction_pwm 값 변경)
+        // 예: g_target_suction_pwm = 900;
+
+        edge_ai_buffer_ready = 0;
+    }
+
+    osDelay(50);
+  }
+}
+
+/* USER CODE END Application */
+
+/* USER CODE END Application */
+

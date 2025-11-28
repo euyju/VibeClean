@@ -1,0 +1,103 @@
+2025-11-28 00:05:30,522 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 911997560 Bytes (1073741824)
+2025-11-28 00:05:36,141 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 932446840 Bytes (1073741824)
+2025-11-28 00:05:36,607 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 966523512 Bytes (1073741824)
+2025-11-28 00:05:36,869 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: FREERTOS
+2025-11-28 00:05:36,869 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM6_7
+2025-11-28 00:05:36,870 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-28 00:05:36,870 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-28 00:05:36,870 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-28 00:05:36,870 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-28 00:05:36,870 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: SYS
+2025-11-28 00:05:36,870 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: RCC
+2025-11-28 00:05:36,871 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: I2C
+2025-11-28 00:05:36,871 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: NVIC
+2025-11-28 00:05:36,871 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: USART
+2025-11-28 00:05:36,871 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: USART
+2025-11-28 00:05:36,871 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-28 00:05:36,871 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: GPIO
+2025-11-28 00:05:36,873 [INFO] CodeGenerator:882 - code generatio: config db path: C:\ST\STM32CubeIDE_1.18.0\STM32CubeIDE\plugins\com.st.stm32cube.common.mx_6.14.1.202504091515\\db\
+2025-11-28 00:05:36,884 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2025-11-28 00:05:36,884 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2025-11-28 00:05:37,069 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\license.tmp_save
+2025-11-28 00:05:37,460 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\license.tmp
+2025-11-28 00:05:37,537 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\gpio.tmp_save
+2025-11-28 00:05:37,689 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\gpio.tmp
+2025-11-28 00:05:38,117 [INFO] Middleware:1452 - No code input for Bsp Dependency
+2025-11-28 00:05:38,130 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_inc.tmp_save
+2025-11-28 00:05:38,201 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_inc.tmp
+2025-11-28 00:05:38,206 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_kernelInit.tmp_save
+2025-11-28 00:05:38,293 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_kernelInit.tmp
+2025-11-28 00:05:38,299 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_kernelStart.tmp_save
+2025-11-28 00:05:38,358 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_kernelStart.tmp
+2025-11-28 00:05:38,363 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_typedefs.tmp_save
+2025-11-28 00:05:38,419 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_typedefs.tmp
+2025-11-28 00:05:38,425 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_vars.tmp_save
+2025-11-28 00:05:38,482 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_vars.tmp
+2025-11-28 00:05:38,487 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_pfp.tmp_save
+2025-11-28 00:05:38,536 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_pfp.tmp
+2025-11-28 00:05:38,540 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_obj_creat.tmp_save
+2025-11-28 00:05:38,587 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_obj_creat.tmp
+2025-11-28 00:05:38,591 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_default_thread.tmp_save
+2025-11-28 00:05:38,637 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_default_thread.tmp
+2025-11-28 00:05:38,642 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_threads.tmp_save
+2025-11-28 00:05:38,687 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_threads.tmp
+2025-11-28 00:05:38,705 [INFO] Middleware:1452 - No code input for Bsp Dependency
+2025-11-28 00:05:38,713 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_inc.tmp_save
+2025-11-28 00:05:38,761 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_inc.tmp
+2025-11-28 00:05:38,765 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_kernelInit.tmp_save
+2025-11-28 00:05:38,809 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_kernelInit.tmp
+2025-11-28 00:05:38,816 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_kernelStart.tmp_save
+2025-11-28 00:05:38,860 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_kernelStart.tmp
+2025-11-28 00:05:38,865 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_typedefs.tmp_save
+2025-11-28 00:05:38,911 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_typedefs.tmp
+2025-11-28 00:05:38,916 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_vars.tmp_save
+2025-11-28 00:05:38,963 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_vars.tmp
+2025-11-28 00:05:38,969 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_pfp.tmp_save
+2025-11-28 00:05:39,013 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_pfp.tmp
+2025-11-28 00:05:39,019 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_obj_creat.tmp_save
+2025-11-28 00:05:39,065 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_obj_creat.tmp
+2025-11-28 00:05:39,072 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_default_thread.tmp_save
+2025-11-28 00:05:39,125 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_default_thread.tmp
+2025-11-28 00:05:39,132 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_threads.tmp_save
+2025-11-28 00:05:39,182 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\rtos_threads.tmp
+2025-11-28 00:05:39,187 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Inc\FreeRTOSConfig.h_save
+2025-11-28 00:05:39,255 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Inc\FreeRTOSConfig.h
+2025-11-28 00:05:39,262 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\freertos.c_save
+2025-11-28 00:05:39,336 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\freertos.c
+2025-11-28 00:05:39,364 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\stm32f4xx_it.c_save
+2025-11-28 00:05:39,494 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\stm32f4xx_it.c
+2025-11-28 00:05:39,503 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Inc\stm32f4xx_it.h_save
+2025-11-28 00:05:39,554 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Inc\stm32f4xx_it.h
+2025-11-28 00:05:39,576 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\stm32f4xx_hal_msp.c_save
+2025-11-28 00:05:39,700 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\stm32f4xx_hal_msp.c
+2025-11-28 00:05:39,705 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\system.tmp_save
+2025-11-28 00:05:39,749 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\MXTmpFiles\system.tmp
+2025-11-28 00:05:39,754 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\stm32f4xx_hal_timebase_tim.c_save
+2025-11-28 00:05:39,813 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\stm32f4xx_hal_timebase_tim.c
+2025-11-28 00:05:39,824 [INFO] CodeEngine:319 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Inc\stm32f4xx_hal_conf.h_save
+2025-11-28 00:05:39,879 [INFO] CodeEngine:343 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Inc\stm32f4xx_hal_conf.h
+2025-11-28 00:05:39,901 [WARN] IPConfigManager:3217 - Warning: the RefConfig PLL2P_FOR_MCO is not available in your config.xml file
+2025-11-28 00:05:39,911 [INFO] ApiDbMcu:508 - Load IP Config File for I2C1
+2025-11-28 00:05:39,918 [INFO] ApiDbMcu:508 - Load IP Config File for TIM1
+2025-11-28 00:05:39,925 [INFO] ApiDbMcu:508 - Load IP Config File for TIM2
+2025-11-28 00:05:39,932 [INFO] ApiDbMcu:508 - Load IP Config File for TIM3
+2025-11-28 00:05:39,941 [INFO] ApiDbMcu:508 - Load IP Config File for TIM4
+2025-11-28 00:05:39,947 [INFO] ApiDbMcu:508 - Load IP Config File for TIM6
+2025-11-28 00:05:39,955 [INFO] ApiDbMcu:508 - Load IP Config File for TIM8
+2025-11-28 00:05:39,958 [INFO] ApiDbMcu:508 - Load IP Config File for USART2
+2025-11-28 00:05:39,960 [INFO] ApiDbMcu:508 - Load IP Config File for USART3
+2025-11-28 00:05:39,963 [INFO] ApiDbMcu:508 - Load IP Config File for RCC
+2025-11-28 00:05:39,976 [WARN] IPConfigManager:3790 - IP not found : TIM
+2025-11-28 00:05:39,977 [WARN] CodeGenerator:4198 - IP not found : null
+2025-11-28 00:05:39,987 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Inc\main.h_save
+2025-11-28 00:05:40,063 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Inc\main.h
+2025-11-28 00:05:40,069 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\main.c_save
+2025-11-28 00:05:40,316 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\SoundTest1128Rtos\Core\Src\main.c
+2025-11-28 00:05:40,505 [INFO] ProjectBuilder:3324 - Time for Copy HAL[2] : 1mS.
+2025-11-28 00:05:40,517 [INFO] ProjectBuilder:4912 - Project Generator version: 4.6.0.1-B1
+2025-11-28 00:05:40,609 [INFO] ConfigFileManager:1590 - The Die is : DIE421
+2025-11-28 00:05:40,614 [INFO] ApiDbMcu:508 - Load IP Config File for FATFS
+2025-11-28 00:05:40,618 [INFO] ApiDbMcu:508 - Load IP Config File for LIBJPEG
+2025-11-28 00:05:40,624 [INFO] ApiDbMcu:508 - Load IP Config File for MBEDTLS
+2025-11-28 00:05:40,633 [INFO] ApiDbMcu:508 - Load IP Config File for USB_DEVICE
+2025-11-28 00:05:40,638 [INFO] ApiDbMcu:508 - Load IP Config File for USB_HOST

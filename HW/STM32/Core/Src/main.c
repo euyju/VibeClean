@@ -78,7 +78,7 @@ uint8_t rx_data[100];
 #define M2_IN2_PORT GPIOB
 #define M2_IN2_PIN  GPIO_PIN_12
 
-// 모터 3 (A) - ENA: TIM4_CH1 (Pb6)
+// 모터 3 (A) - ENA: TIM4_CH2 (Pb7)
 #define M3_IN1_PORT GPIOC
 #define M3_IN1_PIN  GPIO_PIN_3
 #define M3_IN2_PORT GPIOC
@@ -331,7 +331,7 @@ void set_motor_speed(uint8_t motor_id, uint16_t speed)
     } else if (motor_id == MOTOR_B) {
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed);
     } else if (motor_id == MOTOR_C) {
-        __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, speed);
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, speed);
     }
 
 }
@@ -352,8 +352,17 @@ void move_forward_pwm(uint16_t pwm)
 {
     set_motor_direction(MOTOR_A, FORWARD);
     set_motor_direction(MOTOR_B, FORWARD);
+    set_motor_direction(MOTOR_C, FORWARD);
+
     set_motor_speed(MOTOR_A, pwm);
     set_motor_speed(MOTOR_B, pwm);
+    set_motor_speed(MOTOR_C, pwm);
+}
+
+void clean_go_pwm(uint16_t pwm)
+{
+    set_motor_direction(MOTOR_C, FORWARD);
+    set_motor_speed(MOTOR_C, pwm);
 }
 
 void move_backward_pwm(uint16_t pwm)
@@ -476,7 +485,7 @@ void motor_control_init(void)
     // 1. PWM 출력 시작 (PA8: ENA, PA9: ENB)
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
 
 
 
@@ -684,7 +693,7 @@ void Publish_Message(void)
 
     // topic은 이미 AT+MQTTTOPIC로 설정되어 있으므로 메시지만 전달
     snprintf(cmd, sizeof(cmd), "AT+MQTTPUB=\"%s\"", json_message);
-    Send_AT_Command(&huart3, &huart2, cmd, wizfi_rx_buffer, WIZFI360_MAX_RESPONSE_SIZE, 1000);
+    Send_AT_Command(&huart3, &huart2, cmd, wizfi_rx_buffer, WIZFI360_MAX_RESPONSE_SIZE, 500);
 //    WizFi_SendOnly(&huart3, &huart2, cmd); //wizfi통해서 보내기만 하는 애
 }
 
@@ -844,39 +853,39 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
 
-  // Edge-AI 초기화
-  UART_Printf("\r\n=== VibeClean Edge-AI Test ===\r\n");
-
-  // I2C 통신 테스트
-  UART_Printf("Testing I2C communication...\r\n");
-  uint8_t who_am_i = MPU6050_WhoAmI(&hi2c1);
-  UART_Printf("WHO_AM_I Register: 0x%02X (Expected: 0x68)\r\n", who_am_i);
+//  // Edge-AI 초기화
+//  UART_Printf("\r\n=== VibeClean Edge-AI Test ===\r\n");
+//
+//  // I2C 통신 테스트
+//  UART_Printf("Testing I2C communication...\r\n");
+//  uint8_t who_am_i = MPU6050_WhoAmI(&hi2c1);
+//  UART_Printf("WHO_AM_I Register: 0x%02X (Expected: 0x68)\r\n", who_am_i);
 
   // MPU6050 센서 초기화
-  UART_Printf("Initializing MPU6050...\r\n");
-  HAL_StatusTypeDef mpu_status = MPU6050_Init(&hi2c1);
-
-  if (mpu_status == HAL_OK) {
-      UART_Printf("MPU6050 Init: OK\r\n");
-  } else {
-      UART_Printf("MPU6050 Init: FAILED! (Status: %d)\r\n", mpu_status);
-      UART_Printf("Check I2C connections (SDA: PB9, SCL: PB8)\r\n");
-      UART_Printf("Check MPU6050 power supply (3.3V)\r\n");
-      UART_Printf("Check pull-up resistors on SDA/SCL (4.7k ohm)\r\n");
-  }
-
-  // Edge Impulse 분류기 초기화
-  if (edge_ai_init() == 0) {
-      UART_Printf("Edge Impulse Init: OK\r\n");
-  } else {
-      UART_Printf("Edge Impulse Init: FAILED!\r\n");
-  }
+//  UART_Printf("Initializing MPU6050...\r\n");
+//  HAL_StatusTypeDef mpu_status = MPU6050_Init(&hi2c1);
+//
+//  if (mpu_status == HAL_OK) {
+//      UART_Printf("MPU6050 Init: OK\r\n");
+//  } else {
+//      UART_Printf("MPU6050 Init: FAILED! (Status: %d)\r\n", mpu_status);
+//      UART_Printf("Check I2C connections (SDA: PB9, SCL: PB8)\r\n");
+//      UART_Printf("Check MPU6050 power supply (3.3V)\r\n");
+//      UART_Printf("Check pull-up resistors on SDA/SCL (4.7k ohm)\r\n");
+//  }
+//
+//  // Edge Impulse 분류기 초기화
+//  if (edge_ai_init() == 0) {
+//      UART_Printf("Edge Impulse Init: OK\r\n");
+//  } else {
+//      UART_Printf("Edge Impulse Init: FAILED!\r\n");
+//  }
 
   // TIM6 100Hz 인터럽트 시작
-  HAL_TIM_Base_Start_IT(&htim6);
-  UART_Printf("TIM6 100Hz Timer: Started\r\n");
-  UART_Printf("Collecting %d samples (%.1f seconds)...\r\n\r\n",
-              EDGE_AI_SAMPLE_COUNT, EDGE_AI_SAMPLE_COUNT / 100.0f);
+//  HAL_TIM_Base_Start_IT(&htim6);
+//  UART_Printf("TIM6 100Hz Timer: Started\r\n");
+//  UART_Printf("Collecting %d samples (%.1f seconds)...\r\n\r\n",
+//              EDGE_AI_SAMPLE_COUNT, EDGE_AI_SAMPLE_COUNT / 100.0f);
 
   /* USER CODE END 2 */
 
@@ -891,11 +900,11 @@ int main(void)
   char *start_msg = "STM32 WizFi360 MQTT Test Start! (PuTTY=USART2, WizFi360=USART3)\r\n";
   //  HAL_UART_Transmit(&huart2, (uint8_t *)start_msg, strlen(start_msg), HAL_MAX_DELAY);
 
-  HAL_Delay(3000); // WizFi360 부팅 대기
+  HAL_Delay(1000); // WizFi360 부팅 대기
 
   //  Setup_WiFi_And_MQTT();
   MQTT_Init_All(&huart3, &huart2);   // Wiz: huart1, Terminal: huart2
-  
+//
   while (1)
   {
       // === IMU 센서 디버깅 출력 (0.1초마다) ===
@@ -935,6 +944,9 @@ int main(void)
       // === 주행 코드 ===
       // 전진 유지
       move_forward_pwm(BASE_SPEED);
+//      clean_go_pwm(BASE_SPEED);
+      UART_Printf("gogo\r\n");
+
 
       // 초음파 센서로 거리 측정
       float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
@@ -943,9 +955,9 @@ int main(void)
       DWT_Delay_us(5000);
       float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
 
-      // UART_Printf("[USS] S1: %.1fcm | S2: %.1fcm | S3: %.1fcm\r\n", d1, d2, d3);
+       UART_Printf("[USS] S1: %.1fcm | S2: %.1fcm | S3: %.1fcm\r\n", d1, d2, d3);
 
-      // 장애물 감지 및 회피
+//      // 장애물 감지 및 회피
       if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
                 || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
                 || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
@@ -971,13 +983,19 @@ int main(void)
       }
 
       HAL_Delay(100);
-
-      // === MQTT 메시지 발행 (5초마다) ===
+//
+      // === MQTT 메시지 발행 (1초마다) ===
       uint32_t now_tick = HAL_GetTick();
       if (now_tick - last_pub_tick >= 1000) {
           Publish_Message();
           last_pub_tick = now_tick;
       }
+
+//      uint32_t now_tick = HAL_GetTick();
+//      if (now_tick - last_pub_tick >= 1000) {
+//          Publish_Message();
+//          last_pub_tick = now_tick;
+//      }
 
 //     MPU6050_Read_Accel(&Ax, &Ay, &Az);
 //
@@ -1367,7 +1385,7 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 84-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 65535;
+  htim4.Init.Period = 999;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)

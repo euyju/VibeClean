@@ -1,0 +1,27 @@
+!SESSION 2025-11-23 15:43:55.622 -----------------------------------------------
+eclipse.buildId=Version 1.18.1
+java.version=21.0.3
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\FE
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-11-23 15:44:00.873
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-11-23 15:44:00.874
+!MESSAGE Log4j2 initialized with config file C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\FE\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-11-23 15:44:03.517
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 4 0 2025-11-23 15:49:51.035
+!MESSAGE Unexpected overload for binary operator 28: 'operator =='
+
+!ENTRY org.eclipse.cdt.core 4 0 2025-11-23 15:49:51.048
+!MESSAGE Unexpected overload for binary operator 28: 'operator =='
+
+!ENTRY org.eclipse.cdt.core 4 0 2025-11-23 15:49:51.066
+!MESSAGE Unexpected overload for binary operator 28: 'operator =='
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-11-23 15:50:04.326
+!MESSAGE Indexed 'SoundTest' (832 sources, 851 headers) in 30.5 sec: 119,611 declarations; 456,112 references; 63 unresolved inclusions; 99 syntax errors; 2,605 unresolved names (0.45%)

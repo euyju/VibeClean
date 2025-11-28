@@ -1,0 +1,60 @@
+2025-11-27 00:32:26,559 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2025-11-27 00:32:27,480 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 865015296 Bytes (1073741824)
+2025-11-27 00:32:28,958 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 664345016 Bytes (1073741824)
+2025-11-27 00:32:30,401 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 770773432 Bytes (1073741824)
+2025-11-27 00:32:30,912 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM6_7
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: SYS
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: RCC
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: I2C
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: NVIC
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: USART
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: USART
+2025-11-27 00:32:30,913 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2025-11-27 00:32:30,915 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: GPIO
+2025-11-27 00:32:30,917 [INFO] CodeGenerator:882 - code generatio: config db path: C:\ST\STM32CubeIDE_1.18.0\STM32CubeIDE\plugins\com.st.stm32cube.common.mx_6.14.1.202504091515\\db\
+2025-11-27 00:32:30,922 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2025-11-27 00:32:30,922 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2025-11-27 00:32:31,066 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\MXTmpFiles\license.tmp_save
+2025-11-27 00:32:31,448 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\MXTmpFiles\license.tmp
+2025-11-27 00:32:31,576 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\MXTmpFiles\gpio.tmp_save
+2025-11-27 00:32:31,760 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\MXTmpFiles\gpio.tmp
+2025-11-27 00:32:32,311 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Src\stm32f4xx_it.c_save
+2025-11-27 00:32:32,485 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Src\stm32f4xx_it.c
+2025-11-27 00:32:32,492 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Inc\stm32f4xx_it.h_save
+2025-11-27 00:32:32,557 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Inc\stm32f4xx_it.h
+2025-11-27 00:32:32,578 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Src\stm32f4xx_hal_msp.c_save
+2025-11-27 00:32:32,700 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Src\stm32f4xx_hal_msp.c
+2025-11-27 00:32:32,710 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\MXTmpFiles\system.tmp_save
+2025-11-27 00:32:32,769 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\MXTmpFiles\system.tmp
+2025-11-27 00:32:32,785 [INFO] CodeEngine:319 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Inc\stm32f4xx_hal_conf.h_save
+2025-11-27 00:32:32,859 [INFO] CodeEngine:343 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Inc\stm32f4xx_hal_conf.h
+2025-11-27 00:32:32,897 [WARN] IPConfigManager:3217 - Warning: the RefConfig PLL2P_FOR_MCO is not available in your config.xml file
+2025-11-27 00:32:32,904 [INFO] ApiDbMcu:508 - Load IP Config File for I2C1
+2025-11-27 00:32:32,916 [INFO] ApiDbMcu:508 - Load IP Config File for TIM1
+2025-11-27 00:32:32,927 [INFO] ApiDbMcu:508 - Load IP Config File for TIM2
+2025-11-27 00:32:32,937 [INFO] ApiDbMcu:508 - Load IP Config File for TIM3
+2025-11-27 00:32:32,946 [INFO] ApiDbMcu:508 - Load IP Config File for TIM4
+2025-11-27 00:32:32,955 [INFO] ApiDbMcu:508 - Load IP Config File for TIM6
+2025-11-27 00:32:32,962 [INFO] ApiDbMcu:508 - Load IP Config File for TIM8
+2025-11-27 00:32:32,966 [INFO] ApiDbMcu:508 - Load IP Config File for USART2
+2025-11-27 00:32:32,968 [INFO] ApiDbMcu:508 - Load IP Config File for USART3
+2025-11-27 00:32:32,971 [INFO] ApiDbMcu:508 - Load IP Config File for RCC
+2025-11-27 00:32:32,974 [WARN] IPConfigManager:3790 - IP not found : TIM
+2025-11-27 00:32:32,977 [WARN] CodeGenerator:4198 - IP not found : null
+2025-11-27 00:32:32,985 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Inc\main.h_save
+2025-11-27 00:32:33,073 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Inc\main.h
+2025-11-27 00:32:33,081 [INFO] CodeEngine:263 - oldGeneratedFile, C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Src\main.c_save
+2025-11-27 00:32:33,385 [INFO] CodeEngine:287 - Generated code: C:\Users\taejeong\STM32CubeIDE\iot\NewIot1123\VibeClean\HW\STM32\Core\Src\main.c
+2025-11-27 00:32:33,655 [INFO] ProjectBuilder:3324 - Time for Copy HAL[2] : 1mS.
+2025-11-27 00:32:33,668 [INFO] ProjectBuilder:4912 - Project Generator version: 4.6.0.1-B1
+2025-11-27 00:32:33,800 [INFO] ConfigFileManager:1590 - The Die is : DIE421
+2025-11-27 00:32:33,808 [INFO] ApiDbMcu:508 - Load IP Config File for FATFS
+2025-11-27 00:32:33,813 [INFO] ApiDbMcu:508 - Load IP Config File for FREERTOS
+2025-11-27 00:32:33,815 [INFO] ApiDbMcu:508 - Load IP Config File for LIBJPEG
+2025-11-27 00:32:33,822 [INFO] ApiDbMcu:508 - Load IP Config File for MBEDTLS
+2025-11-27 00:32:33,834 [INFO] ApiDbMcu:508 - Load IP Config File for USB_DEVICE
+2025-11-27 00:32:33,840 [INFO] ApiDbMcu:508 - Load IP Config File for USB_HOST

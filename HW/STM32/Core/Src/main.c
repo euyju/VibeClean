@@ -183,6 +183,18 @@ volatile uint8_t imu_debug_counter = 0;  // 0.1초마다 출력하기 위한 카
 volatile uint8_t imu_debug_ready = 0;    // 출력 준비 플래그
 float imu_debug_ax, imu_debug_ay, imu_debug_az;  // 마지막 측정값 저장
 
+// MQTT 전송용 IMU 센서 배열 버퍼 (10개 샘플)
+#define MQTT_SENSOR_BUFFER_SIZE 10
+typedef struct {
+    float x;
+    float y;
+    float z;
+} SensorData_t;
+
+SensorData_t mqtt_sensor_buffer[MQTT_SENSOR_BUFFER_SIZE];
+volatile uint8_t mqtt_sensor_index = 0;  // 현재 저장 인덱스
+volatile uint8_t mqtt_sensor_ready = 0;  // 10개 수집 완료 플래그
+
 // MQTT 관련 전역 변수
 #define WIZFI360_MAX_RESPONSE_SIZE 512
 char wizfi_rx_buffer[WIZFI360_MAX_RESPONSE_SIZE];
@@ -547,7 +559,7 @@ void set_led_priority_state(LED_Priority_State_t state)
   * @brief LED 상태 업데이트 함수 (메인 루프에서 주기적으로 호출)
   * @retval None
   * @note 우선순위: STANDBY(최고) > OBSTACLE > NORMAL
-  * @note 일반 모드: 베이스 색상(1000ms) ↔ 바닥 색상(500ms) 2:1 비율
+  * @note 일반 모드: 베이스 색상(500ms) ↔ 바닥 색상(500ms) 1:1 비율
   */
 void update_led_state(void)
 {
@@ -782,7 +794,7 @@ uint8_t MQTT_Init_All(
     UART_HandleTypeDef *huart_term
 ){
     uint8_t resp[512];
-
+    UART_Printf("Start MQTT Init\n");
     // -------- Wi-Fi 연결 --------
     Send_AT_Command(huart_wiz, huart_term, "AT", resp, sizeof(resp), 1000);
     Send_AT_Command(huart_wiz, huart_term, "AT+RST", resp, sizeof(resp), 5000);
@@ -817,21 +829,56 @@ uint8_t MQTT_Init_All(
 
 void Publish_Message(void)
 {
-    char cmd[512];
-    char json_message[400];
+    char cmd[1536];  // 버퍼 크기 증가 (센서 배열 포함)
+    char json_message[1400];  // JSON 메시지 버퍼 크기 증가
+    char sensor_array[1000];  // 센서 배열 문자열
+
+    // 센서 배열이 준비되지 않은 경우 (오프라인 또는 데이터 없음)
+    if (!mqtt_sensor_ready) {
+        // 고정 길이 10개, 모두 0.0으로 채움
+        strcpy(sensor_array, "");
+        for (int i = 0; i < MQTT_SENSOR_BUFFER_SIZE; i++) {
+            char item[50];
+            if (i == 0) {
+                snprintf(item, sizeof(item), "{\"x\":0.0,\"y\":0.0,\"z\":0.0}");
+            } else {
+                snprintf(item, sizeof(item), ",{\"x\":0.0,\"y\":0.0,\"z\":0.0}");
+            }
+            strcat(sensor_array, item);
+        }
+    } else {
+        // 실제 센서 데이터로 배열 생성
+        strcpy(sensor_array, "");
+        for (int i = 0; i < MQTT_SENSOR_BUFFER_SIZE; i++) {
+            char item[50];
+            if (i == 0) {
+                snprintf(item, sizeof(item), "{\"x\":%.3f,\"y\":%.3f,\"z\":%.3f}",
+                    mqtt_sensor_buffer[i].x,
+                    mqtt_sensor_buffer[i].y,
+                    mqtt_sensor_buffer[i].z);
+            } else {
+                snprintf(item, sizeof(item), ",{\"x\":%.3f,\"y\":%.3f,\"z\":%.3f}",
+                    mqtt_sensor_buffer[i].x,
+                    mqtt_sensor_buffer[i].y,
+                    mqtt_sensor_buffer[i].z);
+            }
+            strcat(sensor_array, item);
+        }
+
+        // 플래그 리셋 (다음 수집 시작)
+        mqtt_sensor_ready = 0;
+    }
 
     // 실시간 센서 데이터와 AI 판별 결과를 포함한 JSON 생성
     snprintf(json_message, sizeof(json_message),
         "{\"currentFloor\":\"%s\",\"fanSpeed\":%d,"
         "\"position\":{\"x\":%.2f,\"y\":%.2f},"
-        "\"sensor\":{\"x\":%.3f,\"y\":%.3f,\"z\":%.3f}}",
+        "\"sensor\":[%s]}",
         g_current_floor,
         g_fanSpeed > 0 ? g_fanSpeed : 1,
         g_robot_x,
         g_robot_y,
-        imu_debug_ax,
-        imu_debug_ay,
-        imu_debug_az);
+        sensor_array);
 
     // topic은 이미 AT+MQTTTOPIC로 설정되어 있으므로 메시지만 전달
     snprintf(cmd, sizeof(cmd), "AT+MQTTPUB=\"%s\"", json_message);
@@ -1805,7 +1852,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /**
-  * @brief  TIM6 인터럽트 콜백 - Edge-AI 100Hz 데이터 수집 + IMU 디버깅
+  * @brief  TIM6 인터럽트 콜백 - Edge-AI 100Hz 데이터 수집 + IMU 디버깅 + MQTT 버퍼
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -1820,7 +1867,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                 edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
                 edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
 
-                // 디버깅용 - 10번마다 한 번씩(0.1초) 센서값 저장
+                // 디버깅용 - 10번마다 한 번씩(0.1초) 센서값 저장 및 MQTT 버퍼에 추가
                 imu_debug_counter++;
                 if (imu_debug_counter >= 10) {
                     imu_debug_ax = ax;
@@ -1828,6 +1875,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
                     imu_debug_az = az;
                     imu_debug_ready = 1;  // 출력 준비 완료
                     imu_debug_counter = 0;
+
+                    // MQTT 전송용 버퍼에 저장 (0.1초마다)
+                    if (!mqtt_sensor_ready) {
+                        mqtt_sensor_buffer[mqtt_sensor_index].x = ax;
+                        mqtt_sensor_buffer[mqtt_sensor_index].y = ay;
+                        mqtt_sensor_buffer[mqtt_sensor_index].z = az;
+                        mqtt_sensor_index++;
+
+                        // 10개 수집 완료
+                        if (mqtt_sensor_index >= MQTT_SENSOR_BUFFER_SIZE) {
+                            mqtt_sensor_ready = 1;
+                            mqtt_sensor_index = 0;
+                        }
+                    }
                 }
 
                 edge_ai_sample_index++;

@@ -29,6 +29,7 @@
 #include "stm32f4xx_hal.h" // HAL 함수 사용
 #include "mpu6050.h"  // Edge-AI용 MPU6050 드라이버
 #include "edge_ai_wrapper.h"  // Edge Impulse SDK Wrapper 헤더
+#include "odom_imu.h"	//2D Mapping용 헤더파일
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -1055,6 +1056,8 @@ int main(void)
   
   while (1)
   {
+      // x,y 좌표 계산
+	    update_odometry();
       // === RGB LED 상태 업데이트 (논블로킹 방식) ===
       update_led_state();
 

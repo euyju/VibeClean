@@ -1056,8 +1056,49 @@ int main(void)
   
   while (1)
   {
+	  // ==========================================================
+	  // [1] MQTT Publish & Data Receiving (데이터 수신/발신 통합)
+	  // ==========================================================
+	  // Publish 함수 내부에서 AT 커맨드 응답을 기다릴 때
+	  // Subscribe 수동조작 명령도 같이 수신하여 처리함.
+	        uint32_t now_tick = HAL_GetTick();
+	        if (now_tick - last_pub_tick >= 600) { // 1000 = 1초 주기 (필요시 단축 가능)
+	            Publish_Message();
+	            last_pub_tick = now_tick;
+	        }
+
+
+	  // ==========================================================
+	  // [2] POWER OFF 체크 (조건 1)
+	  // ==========================================================
+	  // OFF 상태면 모터 정지 후 다음 루프로 넘어감 (주행 로직 Skip)
+	        if (g_powerOn == 0) {
+	            stop_all_motors();
+	            // set_motor_speed(MOTOR_C, 0); // 팬도 끄기 (필요시)
+	            HAL_Delay(100);
+	            continue;
+	        }
+
+	  // ==========================================================
+	  // [3] FAN SPEED 제어 (Fan 연결후 수정필요)
+	  // ==========================================================
+	        if (g_fanSpeed != -1) {
+	            // 수동 값(0~3)이 있으면 강제 적용
+	            int pwm_val = 0;
+	            if (g_fanSpeed == 1) pwm_val = 300;
+	            else if (g_fanSpeed == 2) pwm_val = 600;
+	            else if (g_fanSpeed == 3) pwm_val = 1000;
+
+	            set_motor_speed(MOTOR_C, pwm_val);
+	        } else {
+	            // -1이면 노면 상태(g_current_floor)에 따라 자동 제어 (추후 구현)
+	        }
+
+	  // ==========================================================
+	  // [4] 센서 및 AI 업데이트
+	  // ==========================================================
       // x,y 좌표 계산
-	    update_odometry();
+	  update_odometry();
       // === RGB LED 상태 업데이트 (논블로킹 방식) ===
       update_led_state();
 
@@ -1095,6 +1136,35 @@ int main(void)
           edge_ai_buffer_ready = 0;
       }
 
+       // ==========================================================
+       // [5] 주행 모드 분기
+       // ==========================================================
+
+       // g_modeManual이 1이면 수동, 그 외(0 또는 -1)는 자동
+            if (g_modeManual == 1)
+            {
+                // ------------------------------------------------------
+                // < MANUAL MODE > 장애물 감지 무시, 사용자 명령 수행
+                // ------------------------------------------------------
+                if (strcmp(g_direction, "FWD") == 0) {
+                    move_forward_pwm(BASE_SPEED);
+                }
+                else if (strcmp(g_direction, "BACK") == 0) {
+                    move_backward_pwm(BASE_SPEED);
+                }
+                else if (strcmp(g_direction, "LEFT") == 0) {
+                    rotate_left_inplace(TURN_SPEED);
+                }
+                else if (strcmp(g_direction, "RIGHT") == 0) {
+                    rotate_right_inplace(TURN_SPEED);
+                }
+                else {
+                    // "STOP" 이거나 "NULL" 이면 정지
+                    stop_all_motors();
+                }
+            }
+            else
+             {
       // === 주행 코드 ===
       // 전진 유지
       move_forward_pwm(BASE_SPEED);
@@ -1133,14 +1203,14 @@ int main(void)
           failCount = 0;
       }
 
-      HAL_Delay(100);
-
-      // === MQTT 메시지 발행 (5초마다) ===
-      uint32_t now_tick = HAL_GetTick();
-      if (now_tick - last_pub_tick >= 1000) {
-          Publish_Message();
-          last_pub_tick = now_tick;
-      }
+      HAL_Delay(10);
+             }
+//      // === MQTT 메시지 발행 (5초마다) ===    //위치이동하고 주석 처리하였습니다.
+//      uint32_t now_tick = HAL_GetTick();
+//      if (now_tick - last_pub_tick >= 1000) {
+//          Publish_Message();
+//          last_pub_tick = now_tick;
+//      }
 
 //     MPU6050_Read_Accel(&Ax, &Ay, &Az);
 //
@@ -1738,8 +1808,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
-                          |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -1763,9 +1832,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB0 PB1 PB2 PB12 PB13 PB14 PB15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
-                       |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+  /*Configure GPIO pins : PB0 PB1 PB2 PB12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

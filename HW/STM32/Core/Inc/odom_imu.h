@@ -31,10 +31,10 @@
 // =========================================================================
 // 3. 전역 변수 선언 (extern)
 // =========================================================================
-extern float g_robot_x;     // 현재의 X 좌표
-extern float g_robot_y;     // 현재의 Y 좌표
-extern float g_robot_yaw;   // 현재의 방향 각도 (단위: 도 Degree)
-extern float gyro_bias_Z;   // 자이로 Z축 바이어스 (rad/s)
+extern float g_robot_x;
+extern float g_robot_y;
+extern float g_robot_yaw;
+extern float gyro_bias_Z;
 
 // 엔코더 카운터 추적 변수
 extern int prev_enc_L;

@@ -14,6 +14,9 @@
 #define MPU6050_REG_ACCEL_CONFIG 0x1C
 #define MPU6050_REG_WHO_AM_I     0x75
 #define MPU6050_REG_ACCEL_XOUT_H 0x3B
+#define MPU6050_ADDR         (0x68 << 1)
+#define PWR_MGMT_1           0x6B
+#define ACCEL_XOUT_H         0x3B
 
 // Accelerometer Scale Factor (for ±2g range)
 #define ACCEL_SCALE_FACTOR   16384.0f

@@ -171,9 +171,9 @@ UART_HandleTypeDef huart3;
 /* USER CODE BEGIN PV */
 TIM_HandleTypeDef htim2;
 //2D 맵핑용 위치변수
-float g_robot_x = 0.0f;     // 현재의 X 좌표
-float g_robot_y = 0.0f;     // 현재의 Y 좌표
-float g_robot_yaw = 0.0f;   // 현재의 방향 각도 (단위: 도 Degree)
+extern float g_robot_x;     // 현재의 X 좌표
+extern float g_robot_y;     // 현재의 Y 좌표
+extern float g_robot_yaw;   // 현재의 방향 각도 (단위: 도 Degree)
 
 // Edge-AI 데이터 버퍼 (슬라이딩 윈도우 방식)
 float edge_ai_buffer[EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES];

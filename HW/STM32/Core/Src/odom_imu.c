@@ -7,6 +7,8 @@
 #include <math.h> // cosf, sinf 사용
 #include "mpu6050.h"
 
+
+
 // 외부 HAL 핸들러 선언 (main.c에서 extern으로 불러옴)
 extern I2C_HandleTypeDef hi2c1; // I2C 통신 핸들
 extern TIM_HandleTypeDef htim3;  // 왼쪽 엔코더 타이머 핸들

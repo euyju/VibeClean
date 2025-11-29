@@ -105,6 +105,13 @@ HW/
 |                 | IN2 | PC4 | - | Direction 2 |
 |                 | ENB | PB7 | TIM4_CH2 | PWM 속도 제어 |
 
+### RGB LED (상태 표시)
+| 기능 | STM32 핀 | 비고 |
+|------|----------|------|
+| RED  | PB13     | Common Cathode (Active High) |
+| GREEN| PB14     | Common Cathode (Active High) |
+| BLUE | PB15     | Common Cathode (Active High) |
+
 ### 소프트웨어 도구
 - **IDE**: STM32CubeIDE
 - **펌웨어**: STM32 HAL Library
@@ -120,6 +127,7 @@ HW/
 2. STM32CubeIDE 실행
 3. `File` > `Open Projects from File System...` 선택
 4. `HW/STM32` 폴더 선택하여 프로젝트 Import
+5. '*.ioc'에서 Generate Code 선택 (필수)
 
 ### 2. C++ 프로젝트 변환
 Edge Impulse SDK는 C++로 작성되어 있으므로 프로젝트를 C++로 변환해야 합니다.
@@ -128,12 +136,7 @@ Edge Impulse SDK는 C++로 작성되어 있으므로 프로젝트를 C++로 변�
 2. `Convert to C++ Project` 선택
 3. 변환 타입에서 `C++` 선택 후 `Finish`
 
-### 3. 소스 파일 확장자 변경
-다음 파일의 확장자를 `.c`에서 `.cpp`로 변경:
-- `Core/Src/edge_ai_wrapper.c` → `edge_ai_wrapper.cpp`
-- `Core/Src/ei_classifier_porting.c` → `ei_classifier_porting.cpp` (존재 시)
-
-### 4. Include Path 설정
+### 3. Include Path 설정
 C 및 C++ 컴파일러 모두에 Edge-AI 헤더 경로를 추가해야 합니다.
 
 프로젝트 우클릭 > `Properties` > `C/C++ Build` > `Settings`
@@ -142,11 +145,6 @@ C 및 C++ 컴파일러 모두에 Edge-AI 헤더 경로를 추가해야 합니다
 ```
 ../Edge-AI
 ../Edge-AI/edge-impulse-sdk
-../Edge-AI/edge-impulse-sdk/CMSIS/DSP/Include
-../Edge-AI/edge-impulse-sdk/CMSIS/Core/Include
-../Edge-AI/edge-impulse-sdk/classifier
-../Edge-AI/edge-impulse-sdk/dsp
-../Edge-AI/edge-impulse-sdk/porting
 ../Edge-AI/tflite-model
 ../Edge-AI/model-parameters
 ```
@@ -159,15 +157,8 @@ ARM_MATH_CM4
 __FPU_PRESENT=1
 ```
 
-### 6. C++ 표준 설정
+### 6. C++ 표준 설정 ()
 **MCU G++ Compiler** > **Dialect** > **Language standard**: `ISO C++11 (-std=c++11)` 이상 선택
-
-### 7. 필수 파일 확인
-다음 MQTT 관련 파일이 프로젝트에 포함되어 있는지 확인:
-- `Core/Inc/mqtt_comm.h`
-- `Core/Src/mqtt_comm.c`
-- `Core/Inc/ESP8266_HAL_TCP.h`
-- `Core/Src/ESP8266_HAL_TCP.c`
 
 ## 빌드 및 실행 가이드
 
@@ -204,7 +195,7 @@ Run > Debug Configurations...
 > Debug
 ```
 
-## 📝 주요 기능
+## 주요 기능
 
 ### ESP8266 WiFi 통신
 - AT 명령어 기반 WiFi 모듈 제어
@@ -219,11 +210,39 @@ Run > Debug Configurations...
 ### Edge AI 표면 분류
 - Edge Impulse SDK 기반 실시간 추론
 - MPU6050 센서 데이터를 활용한 표면 유형 분류
+- **슬라이딩 윈도우 방식**: 1초마다 최신 2초(200개 샘플) 데이터로 AI 판단
+  - 응답 속도: 노면 변화 감지 지연 최대 1초 (기존 2초에서 개선)
+  - 업데이트 주기: 1초마다 실시간 판단
 - 3가지 표면 유형 감지:
   - **Carpet (카펫)**: 부드러운 카펫이나 러그 표면
   - **Dusty (먼지)**: 먼지가 많은 표면
   - **Hard (딱딱한 표면)**: 나무, 타일 등 단단한 바닥
 - 분류 결과를 WiFi 모듈을 통해 서버로 전송
+
+### RGB LED 상태 표시
+로봇의 현재 상태를 RGB LED로 시각적으로 표시합니다.
+
+#### 우선순위 기반 LED 제어
+LED 표시는 다음 우선순위에 따라 결정됩니다 (높은 순):
+1. **대기 상태** (Standby) - 모터 정지 시
+2. **장애물 회피** (Obstacle Avoidance)
+3. **일반 동작** (Normal Operation)
+
+#### 상황별 LED 색상표
+
+| 상태 | LED 색상 | 동작 패턴 | 설명 |
+|------|----------|-----------|------|
+| **대기 (Standby)** | 🔴 빨간색 | 고정 | 모터가 정지된 상태 |
+| **장애물 회피 중** | 🔴 빨간색 | 고정 | 장애물 감지 및 회피 동작 수행 중 |
+| **수동 모드** | 🔵 파란색 | 고정 | 사용자가 수동으로 로봇을 제어 중 |
+| **자동 모드 - Hard Floor** | ⚪ 하얀색 ↔ 🟢 초록색 | 깜빡임 | 딱딱한 바닥에서 자동 주행 중 |
+| **자동 모드 - Carpet** | ⚪ 하얀색 ↔ 🟣 자홍색 | 깜빡임 | 카펫 위에서 자동 주행 중 |
+| **자동 모드 - Dusty** | ⚪ 하얀색 ↔ 🔴 빨간색 | 깜빡임 | 먼지 많은 바닥에서 자동 주행 중 |
+| **자동 모드 - Unknown** | ⚪ 하얀색 ↔ ⚫ 꺼짐 | 깜빡임 | 바닥 타입 인식 실패 |
+
+**깜빡임 패턴 설명:**
+- **1:1 비율**: 하얀색 1000ms → 바닥 색상 1000ms 반복
+- 하얀색은 모드 색상 (Auto), 바닥 색상은 Edge-AI 판단 결과를 나타냄
 
 ### MQTT 통신
 - WizFi360 (ESP8266 호환) 모듈을 통한 MQTT 프로토콜 지원
@@ -237,7 +256,7 @@ Run > Debug Configurations...
 - 논블로킹 통신
 - 다중 UART 포트 지원
 
-## 🔧 설정 변경 방법
+## 설정 변경 방법
 
 ### 핀 설정 또는 주변장치 변경
 1. `SoundTest.ioc` 파일을 STM32CubeMX로 열기

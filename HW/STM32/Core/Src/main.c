@@ -576,8 +576,8 @@ void update_led_state(void)
         return;
     }
 
-    // Auto Mode: 노면 감지에 따른 교차 깜빡임 (2:1 비율)
-    // g_led_toggle_state: 0 = 하얀색(1000ms), 1 = 바닥 색상(500ms)
+    // Auto Mode: 노면 감지에 따른 교차 깜빡임 (1:1 비율)
+    // g_led_toggle_state: 0 = 하얀색(500ms), 1 = 바닥 색상(500ms)
 
     // 현재 표시할 색상 먼저 결정
     uint8_t base_r = 1, base_g = 1, base_b = 1;  // 하얀색
@@ -600,7 +600,7 @@ void update_led_state(void)
 
     // 현재 상태에 따른 interval 설정
     if (g_led_toggle_state == 0) {
-        interval = LED_BLINK_INTERVAL_BASE;  // 하얀색 표시 시간 (1000ms)
+        interval = LED_BLINK_INTERVAL_BASE;  // 하얀색 표시 시간 (500ms)
     } else {
         interval = LED_BLINK_INTERVAL_FLOOR; // 바닥 색상 표시 시간 (500ms)
     }
@@ -999,7 +999,7 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
 
   // Edge-AI 초기화
-  UART_Printf("\r\n=== VibeClean Edge-AI Test ===\r\n");
+  UART_Printf("\r\n=== VibeClean ===\r\n");
 
   // I2C 통신 테스트
   UART_Printf("Testing I2C communication...\r\n");

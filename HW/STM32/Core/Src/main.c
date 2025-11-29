@@ -143,8 +143,9 @@ typedef enum {
 #define ACCEL_XOUT_H  0x3B
 
 // Edge-AI 관련 상수
-#define EDGE_AI_SAMPLE_COUNT    200    // 2초 @ 100Hz
+#define EDGE_AI_SAMPLE_COUNT    200    // 2초 @ 100Hz (윈도우 크기)
 #define EDGE_AI_AXES            3      // 3축 가속도
+#define EDGE_AI_SLIDE_INTERVAL  100    // 1초마다 AI 판단 (100 샘플 = 1초)
 
 /* USER CODE END PD */
 
@@ -173,10 +174,11 @@ float g_robot_x = 0.0f;     // 현재의 X 좌표
 float g_robot_y = 0.0f;     // 현재의 Y 좌표
 float g_robot_yaw = 0.0f;   // 현재의 방향 각도 (단위: 도 Degree)
 
-// Edge-AI 데이터 버퍼
+// Edge-AI 데이터 버퍼 (슬라이딩 윈도우 방식)
 float edge_ai_buffer[EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES];
 volatile uint16_t edge_ai_sample_index = 0;
 volatile uint8_t edge_ai_buffer_ready = 0;
+volatile uint16_t edge_ai_slide_counter = 0;  // 슬라이딩 인터벌 카운터
 
 // IMU 센서 디버깅용 변수
 volatile uint8_t imu_debug_counter = 0;  // 0.1초마다 출력하기 위한 카운터
@@ -588,8 +590,8 @@ void update_led_state(void)
         // Carpet -> Magenta (자홍색)
         floor_r = 1; floor_g = 0; floor_b = 1;
     } else if (strcmp(g_current_floor, "Dusty") == 0) {
-        // Dusty -> Yellow (노란색)
-        floor_r = 1; floor_g = 1; floor_b = 0;
+        // Dusty -> Red (빨간색)
+        floor_r = 1; floor_g = 0; floor_b = 0;
     } else {
         // Unknown -> Off (꺼짐)
         floor_r = 0; floor_g = 0; floor_b = 0;
@@ -1733,7 +1735,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
+                          |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -1757,15 +1760,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB0 PB1 PB2 PB12 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure RGB LED pins : PB13(R) PB14(G) PB15(B) */
-  GPIO_InitStruct.Pin = LED_R_PIN | LED_G_PIN | LED_B_PIN;
+  /*Configure GPIO pins : PB0 PB1 PB2 PB12 PB13 PB14 PB15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
+                       |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -1805,38 +1802,43 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /**
-  * @brief  TIM6 인터럽트 콜백 - Edge-AI 100Hz 데이터 수집 + IMU 디버깅
+  * @brief  TIM6 인터럽트 콜백 - Edge-AI 100Hz 데이터 수집 + IMU 디버깅 (슬라이딩 윈도우)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM6) {
-        if (!edge_ai_buffer_ready) {
-            float ax, ay, az;
+        float ax, ay, az;
 
-            // MPU6050에서 가속도 읽기
-            if (MPU6050_ReadAccel(&hi2c1, &ax, &ay, &az) == HAL_OK) {
-                // Edge-AI 버퍼에 저장(현재 ax는 1.0g 단위이므로, 다시 16384.0f를 곱함)
-                edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
-                edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
-                edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
+        // MPU6050에서 가속도 읽기
+        if (MPU6050_ReadAccel(&hi2c1, &ax, &ay, &az) == HAL_OK) {
+            // Edge-AI 버퍼에 저장(현재 ax는 1.0g 단위이므로, 다시 16384.0f를 곱함)
+            // 순환 버퍼 방식으로 저장 (슬라이딩 윈도우)
+            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+            edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+            edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
 
-                // 디버깅용 - 10번마다 한 번씩(0.1초) 센서값 저장
-                imu_debug_counter++;
-                if (imu_debug_counter >= 10) {
-                    imu_debug_ax = ax;
-                    imu_debug_ay = ay;
-                    imu_debug_az = az;
-                    imu_debug_ready = 1;  // 출력 준비 완료
-                    imu_debug_counter = 0;
-                }
+            // 디버깅용 - 10번마다 한 번씩(0.1초) 센서값 저장
+            imu_debug_counter++;
+            if (imu_debug_counter >= 10) {
+                imu_debug_ax = ax;
+                imu_debug_ay = ay;
+                imu_debug_az = az;
+                imu_debug_ready = 1;  // 출력 준비 완료
+                imu_debug_counter = 0;
+            }
 
-                edge_ai_sample_index++;
+            edge_ai_sample_index++;
+            edge_ai_slide_counter++;
 
-                // 버퍼가 가득 찼으면 플래그 설정
-                if (edge_ai_sample_index >= EDGE_AI_SAMPLE_COUNT) {
-                    edge_ai_buffer_ready = 1;
-                    edge_ai_sample_index = 0;
-                }
+            // 버퍼가 가득 차면 순환 (슬라이딩 윈도우)
+            if (edge_ai_sample_index >= EDGE_AI_SAMPLE_COUNT) {
+                edge_ai_sample_index = 0;
+            }
+
+            // 1초(100개 샘플)마다 AI 판단 트리거
+            if (edge_ai_slide_counter >= EDGE_AI_SLIDE_INTERVAL) {
+                edge_ai_buffer_ready = 1;
+                edge_ai_slide_counter = 0;
             }
         }
     }

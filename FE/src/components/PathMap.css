@@ -31,8 +31,7 @@
   background-color: #ff4d4d; 
   border-radius: 50%;
   /* 점의 중심을 좌표에 맞추기 위해 약간 이동 */
-  /* right, bottom 기준이므로 50% 50% 이동 */
-  transform: translate(50%, 50%);
+  transform: translate(-50%, 50%);
 
   /* 부드럽게 움직임 */
   transition: all 0.2s ease;
@@ -40,8 +39,9 @@
 
 .start-marker {
   position: absolute;
-  right: 10px;
-  bottom: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: rgba(255, 255, 255, 0.3);
   font-size: 0.8rem;
   font-weight: bold;

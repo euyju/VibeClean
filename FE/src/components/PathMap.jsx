@@ -12,9 +12,12 @@ function PathMap({ path, className }) {
 
       <div className="map-canvas">
         {Array.isArray(path) && path.map((point, index) => {
+          const halfWidth = MAX_WIDTH / 2;
+          const halfHeight = MAX_HEIGHT / 2;
+
           //로봇이 범위를 넘어가도 PathMap 밖으로 나가지 못하게
-          const clampedX = Math.max(0, Math.min(point.x, MAX_WIDTH));
-          const clampedY = Math.max(0, Math.min(point.y, MAX_HEIGHT));
+          const clampedX = Math.max(-halfWidth, Math.min(point.x, halfWidth));
+          const clampedY = Math.max(-halfHeight, Math.min(point.y, halfHeight));
 
           //백분율로 변환 (스케일링)
           const xPercent = (clampedX / MAX_WIDTH) * 100;
@@ -26,8 +29,8 @@ function PathMap({ path, className }) {
               className="pin"
               style={{
                 //초기위치
-                right: `${xPercent}%`,
-                bottom: `${yPercent}%`
+                left: `calc(50% + ${xPercent}%)`,
+                bottom: `calc(50% + ${yPercent}%)`
               }}
             >
             </div>

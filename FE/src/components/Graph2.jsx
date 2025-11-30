@@ -3,8 +3,8 @@ import './Graph2.css';
 
 function Graph2 ({ className, data }) {
     //그래프의 Y축 범위 설정
-    const MAX_VAL = 50;
-    const MIN_VAL = -50;
+    const MAX_VAL = 1;
+    const MIN_VAL = -1;
     const RANGE = MAX_VAL - MIN_VAL;
 
     //받은 데이터를 SVG 폴리라인 좌표 문자열로 변환하는 함수
@@ -29,7 +29,7 @@ function Graph2 ({ className, data }) {
             <div className="charts-wrapper">
                 {/* X축 그래프 */}
                 <div className="chart-row">
-                    <div className="chart-label x-label">X: {latest.x.toFixed(1)}</div>
+                    <div className="chart-label x-label">X: {latest.x.toFixed(3)}</div> {/* toFixed <= 소수점 자리 ex) toFixed(1) = 소수점 한자리 */}
                     <div className="svg-container">
                         <svg viewBox="0 0 100 100" preserveAspectRatio="none">
                             {/* 기준선 (영점) */}
@@ -48,7 +48,7 @@ function Graph2 ({ className, data }) {
 
                 {/* Y축 그래프 */}
                 <div className="chart-row">
-                    <div className="chart-label y-label">Y: {latest.y.toFixed(1)}</div>
+                    <div className="chart-label y-label">Y: {latest.y.toFixed(3)}</div>
                     <div className="svg-container">
                         <svg viewBox="0 0 100 100" preserveAspectRatio="none">
                             {/* 기준선 (영점) */}
@@ -67,7 +67,7 @@ function Graph2 ({ className, data }) {
 
                 {/* Z축 그래프 */}
                 <div className="chart-row">
-                    <div className="chart-label z-label">Z: {latest.z.toFixed(1)}</div>
+                    <div className="chart-label z-label">Z: {latest.z.toFixed(3)}</div>
                     <div className="svg-container">
                         <svg viewBox="0 0 100 100" preserveAspectRatio="none">
                             {/* 기준선 (영점) */}

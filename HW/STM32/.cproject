@@ -81,6 +81,10 @@
 								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.optimization.level.372986084" name="Optimization level" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.optimization.level" useByScannerDiscovery="false"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.includepaths.1082480640" name="Include paths (-I)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.includepaths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../Core/Inc"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\euyju\Documents\stmteam4\VibeClean\HW\STM32\Edge-AI&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\euyju\Documents\stmteam4\VibeClean\HW\STM32\Edge-AI\edge-impulse-sdk&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\euyju\Documents\stmteam4\VibeClean\HW\STM32\Edge-AI\model-parameters&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\euyju\Documents\stmteam4\VibeClean\HW\STM32\Edge-AI\tflite-model&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\euyju\Documents\stmteam3\VibeClean\HW\STM32\Edge-AI&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\euyju\Documents\stmteam3\VibeClean\HW\STM32\Edge-AI\edge-impulse-sdk&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\euyju\Documents\stmteam3\VibeClean\HW\STM32\Edge-AI\model-parameters&quot;"/>

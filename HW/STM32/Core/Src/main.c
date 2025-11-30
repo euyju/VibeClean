@@ -63,7 +63,7 @@ uint8_t rx_data[100];
 
 // HC-SR04 관련 상수
 #define SOUND_SPEED_CM_PER_US 0.0343 // 음속: 343m/s = 0.0343 cm/us
-#define MAX_TIMEOUT_US 30000 // 30ms (HC-SR04 최대 측정 거리 고려)
+#define MAX_TIMEOUT_US 6000 // 30ms (HC-SR04 최대 측정 거리 고려)  //[최적화] 6000으로 변경
 
 // 모터 1 (A) - ENA: TIM1_CH1 (PA8)
 // 방향 핀
@@ -1203,8 +1203,11 @@ int main(void)
           failCount = 0;
       }
 
-      HAL_Delay(10);
+
              }
+
+
+            HAL_Delay(1);
 //      // === MQTT 메시지 발행 (5초마다) ===    //위치이동하고 주석 처리하였습니다.
 //      uint32_t now_tick = HAL_GetTick();
 //      if (now_tick - last_pub_tick >= 1000) {

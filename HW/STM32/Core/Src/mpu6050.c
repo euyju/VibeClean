@@ -43,7 +43,7 @@ HAL_StatusTypeDef MPU6050_Init(I2C_HandleTypeDef *hi2c)
     if (status != HAL_OK) return status;
 
     // Set gyroscope range to ±250°/s (not used for Edge-AI but good to configure)
-    data = 0x00;
+    data = 0x18;
     status = HAL_I2C_Mem_Write(hi2c, MPU6050_ADDR, MPU6050_REG_GYRO_CONFIG, 1, &data, 1, 1000);
     if (status != HAL_OK) return status;
 

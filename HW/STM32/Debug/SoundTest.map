@@ -3392,8 +3392,6 @@ Discarded input sections
  .text          0x00000000        0x0 ./Core/Src/odom_imu.o
  .data          0x00000000        0x0 ./Core/Src/odom_imu.o
  .bss           0x00000000        0x0 ./Core/Src/odom_imu.o
- .text.Odom_MPU_Init
-                0x00000000       0x6c ./Core/Src/odom_imu.o
  .text.MPU6050_Read_Accel
                 0x00000000       0x44 ./Core/Src/odom_imu.o
  .debug_macro   0x00000000      0xaf6 ./Core/Src/odom_imu.o
@@ -131110,6 +131108,7 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                 0x080125c4       0xec ./Core/Src/main.o
                 0x080125c4                HAL_TIM_PeriodElapsedCallback
  .text.MPU6050_Init
+<<<<<<< Updated upstream
                 0x080126b0       0xd0 ./Core/Src/mpu6050.o
                 0x080126b0                MPU6050_Init
  .text.MPU6050_WhoAmI
@@ -131137,6 +131136,31 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .text.HAL_TIM_Base_MspInit
                 0x08012b80      0x120 ./Core/Src/stm32f4xx_hal_msp.o
                 0x08012b80                HAL_TIM_Base_MspInit
+=======
+                0x080127ec       0xd4 ./Core/Src/mpu6050.o
+                0x080127ec                MPU6050_Init
+ .text.MPU6050_WhoAmI
+                0x080128c0       0x34 ./Core/Src/mpu6050.o
+                0x080128c0                MPU6050_WhoAmI
+ .text.MPU6050_ReadAccel
+                0x080128f4       0x74 ./Core/Src/mpu6050.o
+                0x080128f4                MPU6050_ReadAccel
+ .text.MPU6050_Read_Gyro
+                0x08012968       0x44 ./Core/Src/odom_imu.o
+                0x08012968                MPU6050_Read_Gyro
+ .text.update_odometry
+                0x080129ac      0x1c8 ./Core/Src/odom_imu.o
+                0x080129ac                update_odometry
+ .text.HAL_MspInit
+                0x08012b74       0x3c ./Core/Src/stm32f4xx_hal_msp.o
+                0x08012b74                HAL_MspInit
+ .text.HAL_I2C_MspInit
+                0x08012bb0       0x70 ./Core/Src/stm32f4xx_hal_msp.o
+                0x08012bb0                HAL_I2C_MspInit
+ .text.HAL_TIM_Base_MspInit
+                0x08012c20      0x120 ./Core/Src/stm32f4xx_hal_msp.o
+                0x08012c20                HAL_TIM_Base_MspInit
+>>>>>>> Stashed changes
  .text.HAL_TIM_Encoder_MspInit
                 0x08012ca0       0xcc ./Core/Src/stm32f4xx_hal_msp.o
                 0x08012ca0                HAL_TIM_Encoder_MspInit
@@ -133376,6 +133400,7 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
 LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a
 LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a
 
+<<<<<<< Updated upstream
 .debug_info     0x00000000   0x1f951d
  .debug_info    0x00000000      0xfc2 ./Core/Src/UartRingbuffer_multi.o
  .debug_info    0x00000fc2    0x47727 ./Core/Src/edge_ai_wrapper.o
@@ -133564,6 +133589,196 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                 0x00014853       0x80 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.o
 
 .debug_aranges  0x00000000     0x5c78
+=======
+.debug_info     0x00000000   0x1f9fd2
+ .debug_info    0x00000000      0xfc2 ./Core/Src/UartRingbuffer_multi.o
+ .debug_info    0x00000fc2    0x47727 ./Core/Src/edge_ai_wrapper.o
+ .debug_info    0x000486e9     0x2122 ./Core/Src/ei_classifier_porting.o
+ .debug_info    0x0004a80b     0x75c3 ./Core/Src/main.o
+ .debug_info    0x00051dce      0xb92 ./Core/Src/mpu6050.o
+ .debug_info    0x00052960      0xecf ./Core/Src/odom_imu.o
+ .debug_info    0x0005382f     0x1891 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_info    0x000550c0      0xa64 ./Core/Src/stm32f4xx_it.o
+ .debug_info    0x00055b24      0x7a5 ./Core/Src/syscalls.o
+ .debug_info    0x000562c9      0x186 ./Core/Src/sysmem.o
+ .debug_info    0x0005644f      0x563 ./Core/Src/system_stm32f4xx.o
+ .debug_info    0x000569b2       0x30 ./Core/Startup/startup_stm32f446retx.o
+ .debug_info    0x000569e2      0xa72 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o
+ .debug_info    0x00057454     0x1041 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o
+ .debug_info    0x00058495      0xb2e ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma.o
+ .debug_info    0x00058fc3      0x754 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o
+ .debug_info    0x00059717     0x38b3 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o
+ .debug_info    0x0005cfca      0xb21 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o
+ .debug_info    0x0005daeb      0xc59 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o
+ .debug_info    0x0005e744     0x4735 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o
+ .debug_info    0x00062e79     0x1b72 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o
+ .debug_info    0x000649eb     0x4185 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o
+ .debug_info    0x00068b70     0x1366 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_common_tables.o
+ .debug_info    0x00069ed6     0x1267 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_const_structs.o
+ .debug_info    0x0006b13d      0x205 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_scale_f32.o
+ .debug_info    0x0006b342      0x24a ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_trans_f32.o
+ .debug_info    0x0006b58c      0x12e ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.o
+ .debug_info    0x0006b6ba      0x1f4 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_rms_f32.o
+ .debug_info    0x0006b8ae      0x17f ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_var_f32.o
+ .debug_info    0x0006ba2d      0x280 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.o
+ .debug_info    0x0006bcad      0x78d ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.o
+ .debug_info    0x0006c43a      0x500 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.o
+ .debug_info    0x0006c93a      0x5da ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.o
+ .debug_info    0x0006cf14      0x3f0 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.o
+ .debug_info    0x0006d304      0xff9 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.o
+ .debug_info    0x0006e2fd     0x13bc ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_nn_softmax_common_s8.o
+ .debug_info    0x0006f6b9      0x1fb ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.o
+ .debug_info    0x0006f8b4     0x1016 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/core/api/common.o
+ .debug_info    0x000708ca     0xa06a ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/custom/tree_ensemble_classifier.o
+ .debug_info    0x0007a934      0xcd0 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/portable_tensor_utils.o
+ .debug_info    0x0007b604     0x20b9 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/quantization_util.o
+ .debug_info    0x0007d6bd     0xd2fb ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/reference_portable_tensor_utils.o
+ .debug_info    0x0008a9b8     0x4ba6 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/kernel_util_lite.o
+ .debug_info    0x0008f55e    0x2046c ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/memory_helpers.o
+ .debug_info    0x000af9ca    0x4b3e7 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_allocator.o
+ .debug_info    0x000fadb1     0xcfa3 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_context.o
+ .debug_info    0x00107d54    0x4eaf9 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_interpreter.o
+ .debug_info    0x0015684d      0x402 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_log.o
+ .debug_info    0x00156c4f     0xd249 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations.o
+ .debug_info    0x00163e98     0xe818 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations_common.o
+ .debug_info    0x001726b0     0xefc6 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/concatenation.o
+ .debug_info    0x00181676     0xf67f ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/conv.o
+ .debug_info    0x00190cf5     0xf527 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected.o
+ .debug_info    0x001a021c     0xd472 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected_common.o
+ .debug_info    0x001ad68e     0xd9f2 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/kernel_util_micro.o
+ .debug_info    0x001bb080     0xf8b6 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/l2norm.o
+ .debug_info    0x001ca936     0xefd6 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax.o
+ .debug_info    0x001d990c     0xdbbc ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
+ .debug_info    0x001e74c8    0x12b0a ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
+
+.debug_abbrev   0x00000000    0x15428
+ .debug_abbrev  0x00000000      0x464 ./Core/Src/UartRingbuffer_multi.o
+ .debug_abbrev  0x00000464     0x16cd ./Core/Src/edge_ai_wrapper.o
+ .debug_abbrev  0x00001b31      0x32d ./Core/Src/ei_classifier_porting.o
+ .debug_abbrev  0x00001e5e      0x508 ./Core/Src/main.o
+ .debug_abbrev  0x00002366      0x289 ./Core/Src/mpu6050.o
+ .debug_abbrev  0x000025ef      0x28a ./Core/Src/odom_imu.o
+ .debug_abbrev  0x00002879      0x275 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_abbrev  0x00002aee      0x237 ./Core/Src/stm32f4xx_it.o
+ .debug_abbrev  0x00002d25      0x206 ./Core/Src/syscalls.o
+ .debug_abbrev  0x00002f2b       0xdc ./Core/Src/sysmem.o
+ .debug_abbrev  0x00003007      0x120 ./Core/Src/system_stm32f4xx.o
+ .debug_abbrev  0x00003127       0x24 ./Core/Startup/startup_stm32f446retx.o
+ .debug_abbrev  0x0000314b      0x285 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o
+ .debug_abbrev  0x000033d0      0x388 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o
+ .debug_abbrev  0x00003758      0x337 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma.o
+ .debug_abbrev  0x00003a8f      0x215 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o
+ .debug_abbrev  0x00003ca4      0x44a ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o
+ .debug_abbrev  0x000040ee      0x352 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o
+ .debug_abbrev  0x00004440      0x258 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o
+ .debug_abbrev  0x00004698      0x38f ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o
+ .debug_abbrev  0x00004a27      0x363 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o
+ .debug_abbrev  0x00004d8a      0x44c ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o
+ .debug_abbrev  0x000051d6       0xc2 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_common_tables.o
+ .debug_abbrev  0x00005298      0x115 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_const_structs.o
+ .debug_abbrev  0x000053ad      0x120 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_scale_f32.o
+ .debug_abbrev  0x000054cd       0xff ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_trans_f32.o
+ .debug_abbrev  0x000055cc       0xc4 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.o
+ .debug_abbrev  0x00005690      0x15d ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_rms_f32.o
+ .debug_abbrev  0x000057ed       0xc5 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_var_f32.o
+ .debug_abbrev  0x000058b2       0xa5 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.o
+ .debug_abbrev  0x00005957      0x185 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.o
+ .debug_abbrev  0x00005adc       0xc2 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.o
+ .debug_abbrev  0x00005b9e      0x160 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.o
+ .debug_abbrev  0x00005cfe      0x14a ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.o
+ .debug_abbrev  0x00005e48      0x2d3 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.o
+ .debug_abbrev  0x0000611b      0x212 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_nn_softmax_common_s8.o
+ .debug_abbrev  0x0000632d       0xc4 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.o
+ .debug_abbrev  0x000063f1      0x29a ./Edge-AI/edge-impulse-sdk/tensorflow/lite/core/api/common.o
+ .debug_abbrev  0x0000668b      0xae9 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/custom/tree_ensemble_classifier.o
+ .debug_abbrev  0x00007174      0x302 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/portable_tensor_utils.o
+ .debug_abbrev  0x00007476      0x4f3 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/quantization_util.o
+ .debug_abbrev  0x00007969      0x7f0 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/reference_portable_tensor_utils.o
+ .debug_abbrev  0x00008159      0x6a6 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/kernel_util_lite.o
+ .debug_abbrev  0x000087ff      0xd82 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/memory_helpers.o
+ .debug_abbrev  0x00009581     0x10ce ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_allocator.o
+ .debug_abbrev  0x0000a64f      0xc3a ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_context.o
+ .debug_abbrev  0x0000b289      0xf23 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_interpreter.o
+ .debug_abbrev  0x0000c1ac       0xb9 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_log.o
+ .debug_abbrev  0x0000c265      0xc39 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations.o
+ .debug_abbrev  0x0000ce9e      0xda0 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations_common.o
+ .debug_abbrev  0x0000dc3e      0xcf4 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/concatenation.o
+ .debug_abbrev  0x0000e932      0xd6f ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/conv.o
+ .debug_abbrev  0x0000f6a1      0xdae ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected.o
+ .debug_abbrev  0x0001044f      0xc2f ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected_common.o
+ .debug_abbrev  0x0001107e      0xcc2 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/kernel_util_micro.o
+ .debug_abbrev  0x00011d40      0xe4a ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/l2norm.o
+ .debug_abbrev  0x00012b8a      0xd23 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax.o
+ .debug_abbrev  0x000138ad      0xd45 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
+ .debug_abbrev  0x000145f2      0xe36 ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
+
+.debug_loclists
+                0x00000000    0x14d25
+ .debug_loclists
+                0x00000000      0x657 ./Core/Src/UartRingbuffer_multi.o
+ .debug_loclists
+                0x00000657     0x290d ./Core/Src/main.o
+ .debug_loclists
+                0x00002f64      0x25f ./Core/Src/mpu6050.o
+ .debug_loclists
+                0x000031c3      0x237 ./Core/Src/odom_imu.o
+ .debug_loclists
+                0x000033fa      0x1eb ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_loclists
+                0x000035e5      0x2cd ./Core/Src/syscalls.o
+ .debug_loclists
+                0x000038b2       0x5a ./Core/Src/sysmem.o
+ .debug_loclists
+                0x0000390c       0x7b ./Core/Src/system_stm32f4xx.o
+ .debug_loclists
+                0x00003987       0xf4 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o
+ .debug_loclists
+                0x00003a7b      0x5dd ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o
+ .debug_loclists
+                0x00004058      0x655 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma.o
+ .debug_loclists
+                0x000046ad      0x3c0 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o
+ .debug_loclists
+                0x00004a6d     0x2e02 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o
+ .debug_loclists
+                0x0000786f      0x390 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o
+ .debug_loclists
+                0x00007bff      0x99d ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o
+ .debug_loclists
+                0x0000859c     0x3e59 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o
+ .debug_loclists
+                0x0000c3f5     0x11f6 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o
+ .debug_loclists
+                0x0000d5eb     0x2d1c ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o
+ .debug_loclists
+                0x00010307       0xae ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_scale_f32.o
+ .debug_loclists
+                0x000103b5      0x166 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_trans_f32.o
+ .debug_loclists
+                0x0001051b       0x73 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.o
+ .debug_loclists
+                0x0001058e       0x96 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_rms_f32.o
+ .debug_loclists
+                0x00010624      0x105 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_var_f32.o
+ .debug_loclists
+                0x00010729      0x19c ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.o
+ .debug_loclists
+                0x000108c5      0xef0 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.o
+ .debug_loclists
+                0x000117b5      0x683 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.o
+ .debug_loclists
+                0x00011e38      0x6c4 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.o
+ .debug_loclists
+                0x000124fc       0xfa ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.o
+ .debug_loclists
+                0x000125f6      0xb60 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.o
+ .debug_loclists
+                0x00013156     0x1b4f ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_nn_softmax_common_s8.o
+ .debug_loclists
+                0x00014ca5       0x80 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.o
+
+.debug_aranges  0x00000000     0x5c88
+>>>>>>> Stashed changes
  .debug_aranges
                 0x00000000       0x88 ./Core/Src/UartRingbuffer_multi.o
  .debug_aranges
@@ -133575,6 +133790,7 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_aranges
                 0x000027c0       0x38 ./Core/Src/mpu6050.o
  .debug_aranges
+<<<<<<< Updated upstream
                 0x000027f8       0x40 ./Core/Src/odom_imu.o
  .debug_aranges
                 0x00002838       0x78 ./Core/Src/stm32f4xx_hal_msp.o
@@ -133685,6 +133901,118 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
 
 .debug_rnglists
                 0x00000000     0x5957
+=======
+                0x00002810       0x38 ./Core/Src/odom_imu.o
+ .debug_aranges
+                0x00002848       0x78 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_aranges
+                0x000028c0       0x90 ./Core/Src/stm32f4xx_it.o
+ .debug_aranges
+                0x00002950       0xa8 ./Core/Src/syscalls.o
+ .debug_aranges
+                0x000029f8       0x20 ./Core/Src/sysmem.o
+ .debug_aranges
+                0x00002a18       0x28 ./Core/Src/system_stm32f4xx.o
+ .debug_aranges
+                0x00002a40       0x28 ./Core/Startup/startup_stm32f446retx.o
+ .debug_aranges
+                0x00002a68       0xf0 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o
+ .debug_aranges
+                0x00002b58       0xc0 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o
+ .debug_aranges
+                0x00002c18       0x78 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma.o
+ .debug_aranges
+                0x00002c90       0x58 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o
+ .debug_aranges
+                0x00002ce8      0x200 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o
+ .debug_aranges
+                0x00002ee8       0x88 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o
+ .debug_aranges
+                0x00002f70       0x78 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o
+ .debug_aranges
+                0x00002fe8      0x3a0 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o
+ .debug_aranges
+                0x00003388      0x160 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o
+ .debug_aranges
+                0x000034e8      0x1e8 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o
+ .debug_aranges
+                0x000036d0       0x18 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_common_tables.o
+ .debug_aranges
+                0x000036e8       0x18 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_const_structs.o
+ .debug_aranges
+                0x00003700       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_scale_f32.o
+ .debug_aranges
+                0x00003720       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_trans_f32.o
+ .debug_aranges
+                0x00003740       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.o
+ .debug_aranges
+                0x00003760       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_rms_f32.o
+ .debug_aranges
+                0x00003780       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_var_f32.o
+ .debug_aranges
+                0x000037a0       0x30 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.o
+ .debug_aranges
+                0x000037d0       0x30 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.o
+ .debug_aranges
+                0x00003800       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.o
+ .debug_aranges
+                0x00003820       0x30 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.o
+ .debug_aranges
+                0x00003850       0x28 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.o
+ .debug_aranges
+                0x00003878       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.o
+ .debug_aranges
+                0x00003898       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_nn_softmax_common_s8.o
+ .debug_aranges
+                0x000038b8       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.o
+ .debug_aranges
+                0x000038d8       0x60 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/core/api/common.o
+ .debug_aranges
+                0x00003938      0x2f8 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/custom/tree_ensemble_classifier.o
+ .debug_aranges
+                0x00003c30       0x58 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/portable_tensor_utils.o
+ .debug_aranges
+                0x00003c88       0xf8 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/quantization_util.o
+ .debug_aranges
+                0x00003d80      0x930 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/reference_portable_tensor_utils.o
+ .debug_aranges
+                0x000046b0      0x138 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/kernel_util_lite.o
+ .debug_aranges
+                0x000047e8      0x130 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/memory_helpers.o
+ .debug_aranges
+                0x00004918      0x418 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_allocator.o
+ .debug_aranges
+                0x00004d30       0xb0 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_context.o
+ .debug_aranges
+                0x00004de0      0x290 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_interpreter.o
+ .debug_aranges
+                0x00005070       0x20 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_log.o
+ .debug_aranges
+                0x00005090       0x78 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations.o
+ .debug_aranges
+                0x00005108      0x150 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations_common.o
+ .debug_aranges
+                0x00005258      0x1a0 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/concatenation.o
+ .debug_aranges
+                0x000053f8      0x118 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/conv.o
+ .debug_aranges
+                0x00005510      0x108 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected.o
+ .debug_aranges
+                0x00005618       0x50 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected_common.o
+ .debug_aranges
+                0x00005668      0x100 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/kernel_util_micro.o
+ .debug_aranges
+                0x00005768      0x248 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/l2norm.o
+ .debug_aranges
+                0x000059b0      0x118 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax.o
+ .debug_aranges
+                0x00005ac8       0xe0 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
+ .debug_aranges
+                0x00005ba8       0xe0 ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
+
+.debug_rnglists
+                0x00000000     0x59ec
+>>>>>>> Stashed changes
  .debug_rnglists
                 0x00000000      0x148 ./Core/Src/UartRingbuffer_multi.o
  .debug_rnglists
@@ -133692,6 +134020,7 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_rnglists
                 0x00001f21       0x62 ./Core/Src/ei_classifier_porting.o
  .debug_rnglists
+<<<<<<< Updated upstream
                 0x00001f83      0x46e ./Core/Src/main.o
  .debug_rnglists
                 0x000023f1       0x3e ./Core/Src/mpu6050.o
@@ -133799,6 +134128,115 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                 0x00005806       0xa7 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
  .debug_rnglists
                 0x000058ad       0xaa ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
+=======
+                0x00001f83      0x509 ./Core/Src/main.o
+ .debug_rnglists
+                0x0000248c       0x3e ./Core/Src/mpu6050.o
+ .debug_rnglists
+                0x000024ca       0x33 ./Core/Src/odom_imu.o
+ .debug_rnglists
+                0x000024fd      0x132 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_rnglists
+                0x0000262f       0x67 ./Core/Src/stm32f4xx_it.o
+ .debug_rnglists
+                0x00002696       0x85 ./Core/Src/syscalls.o
+ .debug_rnglists
+                0x0000271b       0x13 ./Core/Src/sysmem.o
+ .debug_rnglists
+                0x0000272e       0x19 ./Core/Src/system_stm32f4xx.o
+ .debug_rnglists
+                0x00002747       0x19 ./Core/Startup/startup_stm32f446retx.o
+ .debug_rnglists
+                0x00002760       0xaf ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o
+ .debug_rnglists
+                0x0000280f      0x100 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o
+ .debug_rnglists
+                0x0000290f       0x9e ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma.o
+ .debug_rnglists
+                0x000029ad       0x4b ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o
+ .debug_rnglists
+                0x000029f8      0x448 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o
+ .debug_rnglists
+                0x00002e40       0xca ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o
+ .debug_rnglists
+                0x00002f0a       0x8a ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o
+ .debug_rnglists
+                0x00002f94      0x48e ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o
+ .debug_rnglists
+                0x00003422      0x184 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o
+ .debug_rnglists
+                0x000035a6      0x25e ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o
+ .debug_rnglists
+                0x00003804       0x13 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_scale_f32.o
+ .debug_rnglists
+                0x00003817       0x13 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_trans_f32.o
+ .debug_rnglists
+                0x0000382a       0x13 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.o
+ .debug_rnglists
+                0x0000383d       0x13 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_rms_f32.o
+ .debug_rnglists
+                0x00003850       0x13 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_var_f32.o
+ .debug_rnglists
+                0x00003863       0x1f ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.o
+ .debug_rnglists
+                0x00003882       0x22 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.o
+ .debug_rnglists
+                0x000038a4       0x14 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.o
+ .debug_rnglists
+                0x000038b8       0x21 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.o
+ .debug_rnglists
+                0x000038d9       0x19 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.o
+ .debug_rnglists
+                0x000038f2      0x1be ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.o
+ .debug_rnglists
+                0x00003ab0      0x412 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_nn_softmax_common_s8.o
+ .debug_rnglists
+                0x00003ec2       0x13 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.o
+ .debug_rnglists
+                0x00003ed5       0x44 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/core/api/common.o
+ .debug_rnglists
+                0x00003f19      0x23b ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/custom/tree_ensemble_classifier.o
+ .debug_rnglists
+                0x00004154       0x49 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/portable_tensor_utils.o
+ .debug_rnglists
+                0x0000419d       0xbf ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/quantization_util.o
+ .debug_rnglists
+                0x0000425c      0x71c ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/reference_portable_tensor_utils.o
+ .debug_rnglists
+                0x00004978       0xec ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/kernel_util_lite.o
+ .debug_rnglists
+                0x00004a64       0xe3 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/memory_helpers.o
+ .debug_rnglists
+                0x00004b47      0x31c ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_allocator.o
+ .debug_rnglists
+                0x00004e63       0x7f ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_context.o
+ .debug_rnglists
+                0x00004ee2      0x1eb ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_interpreter.o
+ .debug_rnglists
+                0x000050cd       0x13 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_log.o
+ .debug_rnglists
+                0x000050e0       0x57 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations.o
+ .debug_rnglists
+                0x00005137      0x100 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations_common.o
+ .debug_rnglists
+                0x00005237      0x142 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/concatenation.o
+ .debug_rnglists
+                0x00005379       0xd3 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/conv.o
+ .debug_rnglists
+                0x0000544c       0xc8 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected.o
+ .debug_rnglists
+                0x00005514       0x39 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected_common.o
+ .debug_rnglists
+                0x0000554d       0xc1 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/kernel_util_micro.o
+ .debug_rnglists
+                0x0000560e      0x1bb ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/l2norm.o
+ .debug_rnglists
+                0x000057c9       0xd2 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax.o
+ .debug_rnglists
+                0x0000589b       0xa7 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
+ .debug_rnglists
+                0x00005942       0xaa ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
+>>>>>>> Stashed changes
 
 .debug_macro    0x00000000    0x17e3a
  .debug_macro   0x00000000      0x2d1 ./Core/Src/UartRingbuffer_multi.o
@@ -134037,6 +134475,7 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_macro   0x0001681f      0xa4d ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
  .debug_macro   0x0001726c      0xbce ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
 
+<<<<<<< Updated upstream
 .debug_line     0x00000000    0x7414c
  .debug_line    0x00000000     0x1573 ./Core/Src/UartRingbuffer_multi.o
  .debug_line    0x00001573    0x156a9 ./Core/Src/edge_ai_wrapper.o
@@ -134159,6 +134598,130 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_str     0x001e9780    0x28569 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax.o
  .debug_str     0x001e9780    0x27aac ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
  .debug_str     0x001e9780    0x2b7ab ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
+=======
+.debug_line     0x00000000    0x74549
+ .debug_line    0x00000000     0x1573 ./Core/Src/UartRingbuffer_multi.o
+ .debug_line    0x00001573    0x156a9 ./Core/Src/edge_ai_wrapper.o
+ .debug_line    0x00016c1c     0x11f1 ./Core/Src/ei_classifier_porting.o
+ .debug_line    0x00017e0d     0x3119 ./Core/Src/main.o
+ .debug_line    0x0001af26      0xa47 ./Core/Src/mpu6050.o
+ .debug_line    0x0001b96d      0xc98 ./Core/Src/odom_imu.o
+ .debug_line    0x0001c605      0xdbf ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_line    0x0001d3c4      0x9ba ./Core/Src/stm32f4xx_it.o
+ .debug_line    0x0001dd7e      0x95b ./Core/Src/syscalls.o
+ .debug_line    0x0001e6d9      0x5c0 ./Core/Src/sysmem.o
+ .debug_line    0x0001ec99      0x8f2 ./Core/Src/system_stm32f4xx.o
+ .debug_line    0x0001f58b       0x7a ./Core/Startup/startup_stm32f446retx.o
+ .debug_line    0x0001f605      0xc49 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o
+ .debug_line    0x0002024e      0xf2b ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o
+ .debug_line    0x00021179     0x153c ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma.o
+ .debug_line    0x000226b5      0xe75 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o
+ .debug_line    0x0002352a     0x5db6 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o
+ .debug_line    0x000292e0     0x1314 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o
+ .debug_line    0x0002a5f4     0x1b86 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o
+ .debug_line    0x0002c17a     0x5296 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o
+ .debug_line    0x00031410     0x1e2c ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o
+ .debug_line    0x0003323c     0x3f9e ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o
+ .debug_line    0x000371da      0x815 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_common_tables.o
+ .debug_line    0x000379ef      0x861 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_const_structs.o
+ .debug_line    0x00038250      0x84c ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_scale_f32.o
+ .debug_line    0x00038a9c      0x87d ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_trans_f32.o
+ .debug_line    0x00039319      0x876 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.o
+ .debug_line    0x00039b8f      0x8ac ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_rms_f32.o
+ .debug_line    0x0003a43b      0x8ab ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_var_f32.o
+ .debug_line    0x0003ace6      0x9fe ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.o
+ .debug_line    0x0003b6e4     0x10d5 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.o
+ .debug_line    0x0003c7b9      0xd41 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.o
+ .debug_line    0x0003d4fa      0xa9f ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.o
+ .debug_line    0x0003df99      0x97f ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.o
+ .debug_line    0x0003e918     0x1005 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.o
+ .debug_line    0x0003f91d     0x1805 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_nn_softmax_common_s8.o
+ .debug_line    0x00041122      0x92c ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.o
+ .debug_line    0x00041a4e      0x6ac ./Edge-AI/edge-impulse-sdk/tensorflow/lite/core/api/common.o
+ .debug_line    0x000420fa     0x2bfc ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/custom/tree_ensemble_classifier.o
+ .debug_line    0x00044cf6     0x1133 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/portable_tensor_utils.o
+ .debug_line    0x00045e29     0x162b ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/quantization_util.o
+ .debug_line    0x00047454     0x592c ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/reference_portable_tensor_utils.o
+ .debug_line    0x0004cd80     0x1eac ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/kernel_util_lite.o
+ .debug_line    0x0004ec2c     0x2062 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/memory_helpers.o
+ .debug_line    0x00050c8e     0x3448 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_allocator.o
+ .debug_line    0x000540d6     0x1d29 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_context.o
+ .debug_line    0x00055dff     0x2adb ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_interpreter.o
+ .debug_line    0x000588da      0x7c5 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_log.o
+ .debug_line    0x0005909f     0x208e ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations.o
+ .debug_line    0x0005b12d     0x2640 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations_common.o
+ .debug_line    0x0005d76d     0x3116 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/concatenation.o
+ .debug_line    0x00060883     0x2bfc ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/conv.o
+ .debug_line    0x0006347f     0x2a07 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected.o
+ .debug_line    0x00065e86     0x2169 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected_common.o
+ .debug_line    0x00067fef     0x22a2 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/kernel_util_micro.o
+ .debug_line    0x0006a291     0x2d8c ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/l2norm.o
+ .debug_line    0x0006d01d     0x2861 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax.o
+ .debug_line    0x0006f87e     0x24d6 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
+ .debug_line    0x00071d54     0x27f5 ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
+
+.debug_str      0x00000000   0x1e9a33
+ .debug_str     0x00000000   0x1e9a33 ./Core/Src/UartRingbuffer_multi.o
+                              0xce9a8 (size before relaxing)
+ .debug_str     0x001e9a33    0x63793 ./Core/Src/edge_ai_wrapper.o
+ .debug_str     0x001e9a33    0xd2a47 ./Core/Src/ei_classifier_porting.o
+ .debug_str     0x001e9a33    0xd1492 ./Core/Src/main.o
+ .debug_str     0x001e9a33    0xcb82c ./Core/Src/mpu6050.o
+ .debug_str     0x001e9a33    0xcf812 ./Core/Src/odom_imu.o
+ .debug_str     0x001e9a33    0xcc441 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_str     0x001e9a33    0xcbae0 ./Core/Src/stm32f4xx_it.o
+ .debug_str     0x001e9a33     0x9a56 ./Core/Src/syscalls.o
+ .debug_str     0x001e9a33     0x77f4 ./Core/Src/sysmem.o
+ .debug_str     0x001e9a33    0xcb30e ./Core/Src/system_stm32f4xx.o
+ .debug_str     0x001e9a33       0x7f ./Core/Startup/startup_stm32f446retx.o
+ .debug_str     0x001e9a33    0xcbf0c ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o
+ .debug_str     0x001e9a33    0xcbc63 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o
+ .debug_str     0x001e9a33    0xcb73c ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma.o
+ .debug_str     0x001e9a33    0xcb4c2 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o
+ .debug_str     0x001e9a33    0xcc345 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o
+ .debug_str     0x001e9a33    0xcb791 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o
+ .debug_str     0x001e9a33    0xcb7c4 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o
+ .debug_str     0x001e9a33    0xcc6ac ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o
+ .debug_str     0x001e9a33    0xcbeb8 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o
+ .debug_str     0x001e9a33    0xcbd48 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o
+ .debug_str     0x001e9a33     0xaa33 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_common_tables.o
+ .debug_str     0x001e9a33     0xb086 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/arm_const_structs.o
+ .debug_str     0x001e9a33     0x9bb2 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_scale_f32.o
+ .debug_str     0x001e9a33     0x9ba6 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_trans_f32.o
+ .debug_str     0x001e9a33     0x9aea ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.o
+ .debug_str     0x001e9a33     0x9bb8 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_rms_f32.o
+ .debug_str     0x001e9a33     0x9b01 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_var_f32.o
+ .debug_str     0x001e9a33     0xa167 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.o
+ .debug_str     0x001e9a33     0xa252 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.o
+ .debug_str     0x001e9a33     0x9b30 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.o
+ .debug_str     0x001e9a33     0x9bcc ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.o
+ .debug_str     0x001e9a33     0xabfd ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.o
+ .debug_str     0x001e9a33     0xad01 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.o
+ .debug_str     0x001e9a33     0xac2b ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_nn_softmax_common_s8.o
+ .debug_str     0x001e9a33     0xaa88 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.o
+ .debug_str     0x001e9a33     0x5812 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/core/api/common.o
+ .debug_str     0x001e9a33    0x1a03f ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/custom/tree_ensemble_classifier.o
+ .debug_str     0x001e9a33     0xc118 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/portable_tensor_utils.o
+ .debug_str     0x001e9a33     0xf30f ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/quantization_util.o
+ .debug_str     0x001e9a33    0x19ddc ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/reference_portable_tensor_utils.o
+ .debug_str     0x001e9a33    0x1353f ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/kernel_util_lite.o
+ .debug_str     0x001e9a33    0x44b58 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/memory_helpers.o
+ .debug_str     0x001e9a33    0x9f215 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_allocator.o
+ .debug_str     0x001e9a33    0x23bdf ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_context.o
+ .debug_str     0x001e9a33    0xaae9e ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_interpreter.o
+ .debug_str     0x001e9a33     0x61b9 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_log.o
+ .debug_str     0x001e9a33    0x2588d ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations.o
+ .debug_str     0x001e9a33    0x27e32 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations_common.o
+ .debug_str     0x001e9a33    0x2724d ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/concatenation.o
+ .debug_str     0x001e9a33    0x28ac3 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/conv.o
+ .debug_str     0x001e9a33    0x28ace ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected.o
+ .debug_str     0x001e9a33    0x26e47 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected_common.o
+ .debug_str     0x001e9a33    0x256a2 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/kernel_util_micro.o
+ .debug_str     0x001e9a33    0x28f90 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/l2norm.o
+ .debug_str     0x001e9a33    0x28569 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax.o
+ .debug_str     0x001e9a33    0x27aac ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
+ .debug_str     0x001e9a33    0x2b7ab ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
+>>>>>>> Stashed changes
 
 .comment        0x00000000       0x43
  .comment       0x00000000       0x43 ./Core/Src/UartRingbuffer_multi.o
@@ -134221,6 +134784,7 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .comment       0x00000043       0x44 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
  .comment       0x00000043       0x44 ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
 
+<<<<<<< Updated upstream
 .debug_frame    0x00000000    0x1b3bc
  .debug_frame   0x00000000      0x194 ./Core/Src/UartRingbuffer_multi.o
  .debug_frame   0x00000194     0xb5d8 ./Core/Src/edge_ai_wrapper.o
@@ -134399,6 +134963,185 @@ LOAD C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_frame   0x0001b324       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_fixdfdi.o)
  .debug_frame   0x0001b35c       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_fixunsdfdi.o)
  .debug_frame   0x0001b388       0x34 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
+=======
+.debug_frame    0x00000000    0x1b3d8
+ .debug_frame   0x00000000      0x194 ./Core/Src/UartRingbuffer_multi.o
+ .debug_frame   0x00000194     0xb5d8 ./Core/Src/edge_ai_wrapper.o
+ .debug_frame   0x0000b76c      0x224 ./Core/Src/ei_classifier_porting.o
+ .debug_frame   0x0000b990      0x4b4 ./Core/Src/main.o
+ .debug_frame   0x0000be44       0xa0 ./Core/Src/mpu6050.o
+ .debug_frame   0x0000bee4       0xec ./Core/Src/odom_imu.o
+ .debug_frame   0x0000bfd0      0x1a4 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_frame   0x0000c174      0x118 ./Core/Src/stm32f4xx_it.o
+ .debug_frame   0x0000c28c      0x190 ./Core/Src/syscalls.o
+ .debug_frame   0x0000c41c       0x28 ./Core/Src/sysmem.o
+ .debug_frame   0x0000c444       0x30 ./Core/Src/system_stm32f4xx.o
+ .debug_frame   0x0000c474      0x1f4 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o
+ .debug_frame   0x0000c668      0x188 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o
+ .debug_frame   0x0000c7f0      0x17c ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma.o
+ .debug_frame   0x0000c96c       0xe0 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o
+ .debug_frame   0x0000ca4c      0x840 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o
+ .debug_frame   0x0000d28c      0x178 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o
+ .debug_frame   0x0000d404      0x164 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o
+ .debug_frame   0x0000d568      0xa60 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o
+ .debug_frame   0x0000dfc8      0x3d0 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o
+ .debug_frame   0x0000e398      0x5fc ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o
+ .debug_frame   0x0000e994       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_scale_f32.o
+ .debug_frame   0x0000e9b4       0x30 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/arm_mat_trans_f32.o
+ .debug_frame   0x0000e9e4       0x2c ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_mean_f32.o
+ .debug_frame   0x0000ea10       0x2c ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_rms_f32.o
+ .debug_frame   0x0000ea3c       0x20 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/arm_var_f32.o
+ .debug_frame   0x0000ea5c       0x7c ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.o
+ .debug_frame   0x0000ead8      0x104 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.o
+ .debug_frame   0x0000ebdc       0x94 ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.o
+ .debug_frame   0x0000ec70       0x6c ./Edge-AI/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.o
+ .debug_frame   0x0000ecdc       0x4c ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/arm_fully_connected_s8.o
+ .debug_frame   0x0000ed28       0x40 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/arm_nn_vec_mat_mult_t_s8.o
+ .debug_frame   0x0000ed68       0x44 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_nn_softmax_common_s8.o
+ .debug_frame   0x0000edac       0x30 ./Edge-AI/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/arm_softmax_s8.o
+ .debug_frame   0x0000eddc      0x16c ./Edge-AI/edge-impulse-sdk/tensorflow/lite/core/api/common.o
+ .debug_frame   0x0000ef48      0xd78 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/custom/tree_ensemble_classifier.o
+ .debug_frame   0x0000fcc0      0x140 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/portable_tensor_utils.o
+ .debug_frame   0x0000fe00      0x454 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/quantization_util.o
+ .debug_frame   0x00010254     0x2b20 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/internal/reference_portable_tensor_utils.o
+ .debug_frame   0x00012d74      0x538 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/kernels/kernel_util_lite.o
+ .debug_frame   0x000132ac      0x53c ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/memory_helpers.o
+ .debug_frame   0x000137e8     0x12d8 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_allocator.o
+ .debug_frame   0x00014ac0      0x304 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_context.o
+ .debug_frame   0x00014dc4      0xb88 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_interpreter.o
+ .debug_frame   0x0001594c       0x38 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/micro_log.o
+ .debug_frame   0x00015984      0x1dc ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations.o
+ .debug_frame   0x00015b60      0x5dc ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/activations_common.o
+ .debug_frame   0x0001613c      0x7d4 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/concatenation.o
+ .debug_frame   0x00016910      0x4f8 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/conv.o
+ .debug_frame   0x00016e08      0x498 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected.o
+ .debug_frame   0x000172a0      0x110 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/fully_connected_common.o
+ .debug_frame   0x000173b0      0x464 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/kernel_util_micro.o
+ .debug_frame   0x00017814      0xaa4 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/l2norm.o
+ .debug_frame   0x000182b8      0x4f8 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax.o
+ .debug_frame   0x000187b0      0x3e0 ./Edge-AI/edge-impulse-sdk/tensorflow/lite/micro/kernels/softmax_common.o
+ .debug_frame   0x00018b90      0x3ac ./Edge-AI/tflite-model/tflite_learn_827910_4_compiled.o
+ .debug_frame   0x00018f3c       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libstdc++_nano.a(del_ops.o)
+ .debug_frame   0x00018f5c       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libstdc++_nano.a(del_opvs.o)
+ .debug_frame   0x00018f7c       0x28 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libstdc++_nano.a(new_op.o)
+ .debug_frame   0x00018fa4       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libstdc++_nano.a(new_opv.o)
+ .debug_frame   0x00018fc4      0x184 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libstdc++_nano.a(functexcept.o)
+ .debug_frame   0x00019148       0x68 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libstdc++_nano.a(functional.o)
+ .debug_frame   0x000191b0       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libstdc++_nano.a(del_op.o)
+ .debug_frame   0x000191d0       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libstdc++_nano.a(del_opv.o)
+ .debug_frame   0x000191f0       0x30 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libstdc++_nano.a(new_handler.o)
+ .debug_frame   0x00019220       0x44 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-w_pow.o)
+ .debug_frame   0x00019264       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-s_frexp.o)
+ .debug_frame   0x00019290       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-s_sin.o)
+ .debug_frame   0x000192c8       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-s_tan.o)
+ .debug_frame   0x00019300       0x48 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-wf_log.o)
+ .debug_frame   0x00019348       0x48 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-wf_log10.o)
+ .debug_frame   0x00019390       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-wf_sqrt.o)
+ .debug_frame   0x000193c8       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-sf_cos.o)
+ .debug_frame   0x00019400       0x28 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-sf_frexp.o)
+ .debug_frame   0x00019428       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-sf_sin.o)
+ .debug_frame   0x00019460       0x28 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-s_finite.o)
+ .debug_frame   0x00019488       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-s_nan.o)
+ .debug_frame   0x000194a8       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-sf_nan.o)
+ .debug_frame   0x000194c8       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-e_sqrt.o)
+ .debug_frame   0x00019500       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-ef_sqrt.o)
+ .debug_frame   0x00019520       0x30 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-s_floor.o)
+ .debug_frame   0x00019550       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-s_round.o)
+ .debug_frame   0x0001957c       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-sf_floor.o)
+ .debug_frame   0x0001959c       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-sf_round.o)
+ .debug_frame   0x000195bc       0x3c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-k_cos.o)
+ .debug_frame   0x000195f8       0x40 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-k_sin.o)
+ .debug_frame   0x00019638       0x40 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-k_tan.o)
+ .debug_frame   0x00019678       0x78 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-e_pow.o)
+ .debug_frame   0x000196f0       0x40 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-e_rem_pio2.o)
+ .debug_frame   0x00019730       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-s_fabs.o)
+ .debug_frame   0x00019750       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-kf_cos.o)
+ .debug_frame   0x00019770       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-kf_sin.o)
+ .debug_frame   0x00019790       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-ef_log.o)
+ .debug_frame   0x000197b0       0x3c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-ef_log10.o)
+ .debug_frame   0x000197ec       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-ef_rem_pio2.o)
+ .debug_frame   0x00019824       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-sf_fabs.o)
+ .debug_frame   0x00019844       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-s_scalbn.o)
+ .debug_frame   0x00019870      0x158 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-math_err.o)
+ .debug_frame   0x000199c8       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-sf_scalbn.o)
+ .debug_frame   0x000199e8       0x54 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-k_rem_pio2.o)
+ .debug_frame   0x00019a3c       0x5c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libm.a(libm_a-kf_rem_pio2.o)
+ .debug_frame   0x00019a98       0x28 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-abort.o)
+ .debug_frame   0x00019ac0       0x40 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-assert.o)
+ .debug_frame   0x00019b00       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-atof.o)
+ .debug_frame   0x00019b20       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-calloc.o)
+ .debug_frame   0x00019b40       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-callocr.o)
+ .debug_frame   0x00019b6c       0x30 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-malloc.o)
+ .debug_frame   0x00019b9c       0x50 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-mallocr.o)
+ .debug_frame   0x00019bec       0x30 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-mlock.o)
+ .debug_frame   0x00019c1c      0x11c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strtod.o)
+ .debug_frame   0x00019d38       0x90 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-nano-vfprintf_float.o)
+ .debug_frame   0x00019dc8       0x60 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-nano-vfprintf_i.o)
+ .debug_frame   0x00019e28      0x144 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-findfp.o)
+ .debug_frame   0x00019f6c       0x64 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-fprintf.o)
+ .debug_frame   0x00019fd0       0x34 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-fwalk.o)
+ .debug_frame   0x0001a004       0x7c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-snprintf.o)
+ .debug_frame   0x0001a080       0x80 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-sscanf.o)
+ .debug_frame   0x0001a100       0x88 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-stdio.o)
+ .debug_frame   0x0001a188       0x30 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-vprintf.o)
+ .debug_frame   0x0001a1b8       0x40 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-vsprintf.o)
+ .debug_frame   0x0001a1f8       0x28 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-memmove.o)
+ .debug_frame   0x0001a220       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-memset.o)
+ .debug_frame   0x0001a240       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strchr.o)
+ .debug_frame   0x0001a260       0x28 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strncmp.o)
+ .debug_frame   0x0001a288       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strrchr.o)
+ .debug_frame   0x0001a2c0       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strstr.o)
+ .debug_frame   0x0001a2ec       0xcc C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-signal.o)
+ .debug_frame   0x0001a3b8       0x48 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-locale.o)
+ .debug_frame   0x0001a400       0x40 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-localeconv.o)
+ .debug_frame   0x0001a440       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-closer.o)
+ .debug_frame   0x0001a46c       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-reent.o)
+ .debug_frame   0x0001a4a4       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-lseekr.o)
+ .debug_frame   0x0001a4d0       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-readr.o)
+ .debug_frame   0x0001a4fc       0x3c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-signalr.o)
+ .debug_frame   0x0001a538       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-sbrkr.o)
+ .debug_frame   0x0001a564       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-writer.o)
+ .debug_frame   0x0001a590       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-errno.o)
+ .debug_frame   0x0001a5b0       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-init.o)
+ .debug_frame   0x0001a5dc       0xb0 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-lock.o)
+ .debug_frame   0x0001a68c       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strcmp.o)
+ .debug_frame   0x0001a6ac       0x28 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-memcpy-stub.o)
+ .debug_frame   0x0001a6d4       0x70 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-dtoa.o)
+ .debug_frame   0x0001a744       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-freer.o)
+ .debug_frame   0x0001a77c       0x74 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-gdtoa-gethex.o)
+ .debug_frame   0x0001a7f0       0x78 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-gdtoa-hexnan.o)
+ .debug_frame   0x0001a868       0x48 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-mbtowc_r.o)
+ .debug_frame   0x0001a8b0      0x260 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-mprec.o)
+ .debug_frame   0x0001ab10       0x3c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-wctomb_r.o)
+ .debug_frame   0x0001ab4c       0x90 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-nano-svfprintf.o)
+ .debug_frame   0x0001abdc       0x78 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-nano-svfscanf.o)
+ .debug_frame   0x0001ac54       0xa8 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-nano-vfprintf.o)
+ .debug_frame   0x0001acfc       0x64 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-nano-vfscanf_i.o)
+ .debug_frame   0x0001ad60       0x5c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-fflush.o)
+ .debug_frame   0x0001adbc       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-sccl.o)
+ .debug_frame   0x0001ade8       0x5c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-ungetc.o)
+ .debug_frame   0x0001ae44       0x40 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-wbuf.o)
+ .debug_frame   0x0001ae84       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-wsetup.o)
+ .debug_frame   0x0001aeb0       0x3c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-reallocr.o)
+ .debug_frame   0x0001aeec       0x64 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strtol.o)
+ .debug_frame   0x0001af50       0x64 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-strtoul.o)
+ .debug_frame   0x0001afb4       0x58 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-makebuf.o)
+ .debug_frame   0x0001b00c       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-fstatr.o)
+ .debug_frame   0x0001b038       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-isattyr.o)
+ .debug_frame   0x0001b064       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-msizer.o)
+ .debug_frame   0x0001b084       0xac C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_arm_addsubdf3.o)
+ .debug_frame   0x0001b130       0x50 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_arm_muldivdf3.o)
+ .debug_frame   0x0001b180       0xc4 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_arm_cmpdf2.o)
+ .debug_frame   0x0001b244       0x20 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_arm_unorddf2.o)
+ .debug_frame   0x0001b264       0x24 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_arm_fixdfsi.o)
+ .debug_frame   0x0001b288       0x24 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_arm_fixunsdfsi.o)
+ .debug_frame   0x0001b2ac       0x24 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_arm_truncdfsf2.o)
+ .debug_frame   0x0001b2d0       0x44 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_aeabi_ldivmod.o)
+ .debug_frame   0x0001b314       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x0001b340       0x38 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_fixdfdi.o)
+ .debug_frame   0x0001b378       0x2c C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_fixunsdfdi.o)
+ .debug_frame   0x0001b3a4       0x34 C:/ST/STM32CubeIDE_1.19.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libgcc.a(_udivmoddi4.o)
+>>>>>>> Stashed changes
 
 .debug_line_str
                 0x00000000       0x63

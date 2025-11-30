@@ -63,7 +63,7 @@ uint8_t rx_data[100];
 
 // HC-SR04 관련 상수
 #define SOUND_SPEED_CM_PER_US 0.0343 // 음속: 343m/s = 0.0343 cm/us
-#define MAX_TIMEOUT_US 30000 // 30ms (HC-SR04 최대 측정 거리 고려)
+#define MAX_TIMEOUT_US 6000 // 30ms (HC-SR04 최대 측정 거리 고려)  (30000>6000 변경)
 
 // 모터 1 (A) - ENA: TIM1_CH1 (PA8)
 // 방향 핀
@@ -168,6 +168,15 @@ char g_direction[8] = "NULL";  // "FWD","BACK","LEFT","RIGHT","STOP"
 
 // Edge-AI 판별 결과 저장 (실시간 업데이트)
 char g_current_floor[16] = "Unknown";  // "Hard", "Carpet", "Dusty", "Unknown"
+
+// LED 제어 상태 변수
+LED_Priority_State_t g_led_priority_state = LED_STATE_NORMAL;
+uint32_t g_led_last_update_tick = 0;
+uint8_t g_led_toggle_state = 0;  // 0 or 1 (교차 깜빡임용)
+
+// [최적화] 100Hz 타이머 인터럽트 플래그 (0.01초)
+volatile uint8_t g_timer_100hz_flag = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -973,14 +982,17 @@ int main(void)
           failCount = 0;
       }
 
-      HAL_Delay(100);
 
-      // === MQTT 메시지 발행 (5초마다) ===
-      uint32_t now_tick = HAL_GetTick();
-      if (now_tick - last_pub_tick >= 1000) {
-          Publish_Message();
-          last_pub_tick = now_tick;
-      }
+             } //자율주행 루프 끝
+
+        HAL_Delay(1);
+
+//      // === MQTT 메시지 발행 (5초마다) ===    //위치이동하고 주석 처리하였습니다.
+//      uint32_t now_tick = HAL_GetTick();
+//      if (now_tick - last_pub_tick >= 1000) {
+//          Publish_Message();
+//          last_pub_tick = now_tick;
+//      }
 
 //     MPU6050_Read_Accel(&Ax, &Ay, &Az);
 //

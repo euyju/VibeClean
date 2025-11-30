@@ -27,6 +27,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0002c56c  2**0
                   CONTENTS, READONLY
+<<<<<<< Updated upstream
  12 .debug_info   001f951d  00000000  00000000  0002c59c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  13 .debug_abbrev 0001551c  00000000  00000000  00225ab9  2**0
@@ -48,6 +49,29 @@ Idx Name          Size      VMA       LMA       File off  Algn
  21 .debug_frame  0001b3bc  00000000  00000000  004d05c0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  22 .debug_line_str 00000063  00000000  00000000  004eb97c  2**0
+=======
+ 12 .debug_info   001f9fd2  00000000  00000000  0002c59c  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 13 .debug_abbrev 00015428  00000000  00000000  0022656e  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 14 .debug_loclists 00014d25  00000000  00000000  0023b996  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 15 .debug_aranges 00005c88  00000000  00000000  002506c0  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 16 .debug_rnglists 000059ec  00000000  00000000  00256348  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 17 .debug_macro  00017eb2  00000000  00000000  0025bd34  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 18 .debug_line   00074549  00000000  00000000  00273be6  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 19 .debug_str    001e9a33  00000000  00000000  002e812f  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 20 .comment      00000043  00000000  00000000  004d1b62  2**0
+                  CONTENTS, READONLY
+ 21 .debug_frame  0001b3d8  00000000  00000000  004d1ba8  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 22 .debug_line_str 00000063  00000000  00000000  004ecf80  2**0
+>>>>>>> Stashed changes
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -38801,11 +38825,19 @@ void Error_Handler(void)
  8011ff8:	40010000 	.word	0x40010000
  8011ffc:	40004400 	.word	0x40004400
   htim4.Instance = TIM4;
+<<<<<<< Updated upstream
  8012000:	4e65      	ldr	r6, [pc, #404]	@ (8012198 <main+0x480>)
   HAL_TIM_MspPostInit(&htim1);
  8012002:	4866      	ldr	r0, [pc, #408]	@ (801219c <main+0x484>)
   htim4.Init.Prescaler = 84-1;
  8012004:	4f66      	ldr	r7, [pc, #408]	@ (80121a0 <main+0x488>)
+=======
+ 8011ff8:	4ead      	ldr	r6, [pc, #692]	@ (80122b0 <main+0x5a0>)
+  HAL_TIM_MspPostInit(&htim1);
+ 8011ffa:	48ae      	ldr	r0, [pc, #696]	@ (80122b4 <main+0x5a4>)
+  htim4.Init.Prescaler = 84-1;
+ 8011ffc:	4fae      	ldr	r7, [pc, #696]	@ (80122b8 <main+0x5a8>)
+>>>>>>> Stashed changes
   HAL_TIM_MspPostInit(&htim1);
  8012006:	f000 fecb 	bl	8012da0 <HAL_TIM_MspPostInit>
   htim4.Init.Prescaler = 84-1;
@@ -38870,9 +38902,15 @@ void Error_Handler(void)
  801206e:	4630      	mov	r0, r6
  8012070:	f000 fe96 	bl	8012da0 <HAL_TIM_MspPostInit>
   hi2c1.Instance = I2C1;
+<<<<<<< Updated upstream
  8012074:	484b      	ldr	r0, [pc, #300]	@ (80121a4 <main+0x48c>)
   hi2c1.Init.ClockSpeed = 400000;
  8012076:	4b4c      	ldr	r3, [pc, #304]	@ (80121a8 <main+0x490>)
+=======
+ 801206c:	4893      	ldr	r0, [pc, #588]	@ (80122bc <main+0x5ac>)
+  hi2c1.Init.ClockSpeed = 400000;
+ 801206e:	4b94      	ldr	r3, [pc, #592]	@ (80122c0 <main+0x5b0>)
+>>>>>>> Stashed changes
   hi2c1.Init.OwnAddress1 = 0;
  8012078:	e9c0 5502 	strd	r5, r5, [r0, #8]
   hi2c1.Init.OwnAddress2 = 0;
@@ -38880,8 +38918,13 @@ void Error_Handler(void)
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
  8012080:	e9c0 5507 	strd	r5, r5, [r0, #28]
   hi2c1.Init.ClockSpeed = 400000;
+<<<<<<< Updated upstream
  8012084:	4d49      	ldr	r5, [pc, #292]	@ (80121ac <main+0x494>)
  8012086:	e9c0 5300 	strd	r5, r3, [r0]
+=======
+ 801207c:	4c91      	ldr	r4, [pc, #580]	@ (80122c4 <main+0x5b4>)
+ 801207e:	e9c0 4300 	strd	r4, r3, [r0]
+>>>>>>> Stashed changes
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
  801208a:	f44f 4380 	mov.w	r3, #16384	@ 0x4000
  801208e:	6103      	str	r3, [r0, #16]
@@ -38893,9 +38936,15 @@ void Error_Handler(void)
   while (1)
  801209a:	e7fe      	b.n	801209a <main+0x382>
   huart3.Instance = USART3;
+<<<<<<< Updated upstream
  801209c:	4844      	ldr	r0, [pc, #272]	@ (80121b0 <main+0x498>)
   huart3.Init.BaudRate = 115200;
  801209e:	4945      	ldr	r1, [pc, #276]	@ (80121b4 <main+0x49c>)
+=======
+ 8012094:	488c      	ldr	r0, [pc, #560]	@ (80122c8 <main+0x5b8>)
+  huart3.Init.BaudRate = 115200;
+ 8012096:	498d      	ldr	r1, [pc, #564]	@ (80122cc <main+0x5bc>)
+>>>>>>> Stashed changes
   huart3.Init.Parity = UART_PARITY_NONE;
  80120a0:	6103      	str	r3, [r0, #16]
   huart3.Init.StopBits = UART_STOPBITS_1;
@@ -38915,7 +38964,11 @@ void Error_Handler(void)
   while (1)
  80120be:	e7fe      	b.n	80120be <main+0x3a6>
   htim3.Instance = TIM3;
+<<<<<<< Updated upstream
  80120c0:	4f3d      	ldr	r7, [pc, #244]	@ (80121b8 <main+0x4a0>)
+=======
+ 80120b8:	f8df 8278 	ldr.w	r8, [pc, #632]	@ 8012334 <main+0x624>
+>>>>>>> Stashed changes
   TIM_Encoder_InitTypeDef sConfig = {0};
  80120c2:	2100      	movs	r1, #0
  80120c4:	2220      	movs	r2, #32
@@ -38936,7 +38989,11 @@ void Error_Handler(void)
   htim3.Init.Period = 65535;
  80120dc:	f64f 78ff 	movw	r8, #65535	@ 0xffff
   htim3.Instance = TIM3;
+<<<<<<< Updated upstream
  80120e0:	4b36      	ldr	r3, [pc, #216]	@ (80121bc <main+0x4a4>)
+=======
+ 80120de:	4b7c      	ldr	r3, [pc, #496]	@ (80122d0 <main+0x5c0>)
+>>>>>>> Stashed changes
   sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
  80120e2:	9618      	str	r6, [sp, #96]	@ 0x60
   if (HAL_TIM_Encoder_Init(&htim3, &sConfig) != HAL_OK)
@@ -38982,8 +39039,13 @@ void Error_Handler(void)
   sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
  8012126:	961e      	str	r6, [sp, #120]	@ 0x78
   htim8.Instance = TIM8;
+<<<<<<< Updated upstream
  8012128:	4e25      	ldr	r6, [pc, #148]	@ (80121c0 <main+0x4a8>)
  801212a:	4b26      	ldr	r3, [pc, #152]	@ (80121c4 <main+0x4ac>)
+=======
+ 8012128:	4f6a      	ldr	r7, [pc, #424]	@ (80122d4 <main+0x5c4>)
+ 801212a:	4b6b      	ldr	r3, [pc, #428]	@ (80122d8 <main+0x5c8>)
+>>>>>>> Stashed changes
   htim8.Init.Period = 65535;
  801212c:	f8c6 800c 	str.w	r8, [r6, #12]
   if (HAL_TIM_Encoder_Init(&htim8, &sConfig) != HAL_OK)
@@ -39016,10 +39078,17 @@ void Error_Handler(void)
   while (1)
  801215e:	e7fe      	b.n	801215e <main+0x446>
   htim6.Instance = TIM6;
+<<<<<<< Updated upstream
  8012160:	4d19      	ldr	r5, [pc, #100]	@ (80121c8 <main+0x4b0>)
   htim6.Init.Prescaler = 4999;
  8012162:	4a1a      	ldr	r2, [pc, #104]	@ (80121cc <main+0x4b4>)
  8012164:	60a8      	str	r0, [r5, #8]
+=======
+ 8012160:	4c5e      	ldr	r4, [pc, #376]	@ (80122dc <main+0x5cc>)
+  htim6.Init.Prescaler = 4999;
+ 8012162:	4a5f      	ldr	r2, [pc, #380]	@ (80122e0 <main+0x5d0>)
+ 8012164:	60a0      	str	r0, [r4, #8]
+>>>>>>> Stashed changes
  8012166:	f241 3387 	movw	r3, #4999	@ 0x1387
   TIM_MasterConfigTypeDef sMasterConfig = {0};
  801216a:	e9cd 0018 	strd	r0, r0, [sp, #96]	@ 0x60
@@ -39066,9 +39135,15 @@ void Error_Handler(void)
  80121c8:	20001290 	.word	0x20001290
  80121cc:	40001000 	.word	0x40001000
     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+<<<<<<< Updated upstream
  80121d0:	49c3      	ldr	r1, [pc, #780]	@ (80124e0 <main+0x7c8>)
     DWT->CYCCNT = 0;
  80121d2:	4bc4      	ldr	r3, [pc, #784]	@ (80124e4 <main+0x7cc>)
+=======
+ 8012198:	4952      	ldr	r1, [pc, #328]	@ (80122e4 <main+0x5d4>)
+    DWT->CYCCNT = 0;
+ 801219a:	4b53      	ldr	r3, [pc, #332]	@ (80122e8 <main+0x5d8>)
+>>>>>>> Stashed changes
     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
  80121d4:	f8d1 20fc 	ldr.w	r2, [r1, #252]	@ 0xfc
  80121d8:	f042 7280 	orr.w	r2, r2, #16777216	@ 0x1000000
@@ -39078,7 +39153,11 @@ void Error_Handler(void)
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
  80121e2:	681a      	ldr	r2, [r3, #0]
   UART_Printf("STM32 HC-SR04 Measurement Ready (Trig: PA0, Echo: PA1)\r\n");
+<<<<<<< Updated upstream
  80121e4:	48c0      	ldr	r0, [pc, #768]	@ (80124e8 <main+0x7d0>)
+=======
+ 80121ac:	484f      	ldr	r0, [pc, #316]	@ (80122ec <main+0x5dc>)
+>>>>>>> Stashed changes
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
  80121e6:	f042 0201 	orr.w	r2, r2, #1
  80121ea:	601a      	str	r2, [r3, #0]
@@ -39087,16 +39166,23 @@ void Error_Handler(void)
   motor_control_init(); // <- 반드시 호출 (PWM Start + 초기화)
  80121f0:	f7ff f9f4 	bl	80115dc <motor_control_init>
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+<<<<<<< Updated upstream
  80121f4:	4629      	mov	r1, r5
  80121f6:	48bd      	ldr	r0, [pc, #756]	@ (80124ec <main+0x7d4>)
  80121f8:	f002 fb30 	bl	801485c <HAL_TIM_PWM_Start>
   calculate_gyro_bias();
  80121fc:	f000 fb38 	bl	8012870 <calculate_gyro_bias>
+=======
+ 80121bc:	4621      	mov	r1, r4
+ 80121be:	483c      	ldr	r0, [pc, #240]	@ (80122b0 <main+0x5a0>)
+ 80121c0:	f002 fb9c 	bl	80148fc <HAL_TIM_PWM_Start>
+>>>>>>> Stashed changes
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
  8012200:	213c      	movs	r1, #60	@ 0x3c
  8012202:	4638      	mov	r0, r7
  8012204:	f002 fb2e 	bl	8014864 <HAL_TIM_Encoder_Start>
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
+<<<<<<< Updated upstream
  8012208:	213c      	movs	r1, #60	@ 0x3c
  801220a:	4630      	mov	r0, r6
  801220c:	f002 fb2a 	bl	8014864 <HAL_TIM_Encoder_Start>
@@ -39140,9 +39226,53 @@ void Error_Handler(void)
  8012258:	f8df a314 	ldr.w	sl, [pc, #788]	@ 8012570 <main+0x858>
     uint32_t start_tick = DWT->CYCCNT;
  801225c:	f8df b284 	ldr.w	fp, [pc, #644]	@ 80124e4 <main+0x7cc>
+=======
+ 80121cc:	213c      	movs	r1, #60	@ 0x3c
+ 80121ce:	4638      	mov	r0, r7
+ 80121d0:	f002 fb98 	bl	8014904 <HAL_TIM_Encoder_Start>
+  UART_Printf("\r\n=== VibeClean ===\r\n");
+ 80121d4:	4846      	ldr	r0, [pc, #280]	@ (80122f0 <main+0x5e0>)
+ 80121d6:	f7fe fecd 	bl	8010f74 <UART_Printf>
+  UART_Printf("Testing I2C communication...\r\n");
+ 80121da:	4846      	ldr	r0, [pc, #280]	@ (80122f4 <main+0x5e4>)
+ 80121dc:	f7fe feca 	bl	8010f74 <UART_Printf>
+  uint8_t who_am_i = MPU6050_WhoAmI(&hi2c1);
+ 80121e0:	4836      	ldr	r0, [pc, #216]	@ (80122bc <main+0x5ac>)
+ 80121e2:	f000 fb6d 	bl	80128c0 <MPU6050_WhoAmI>
+ 80121e6:	4601      	mov	r1, r0
+  UART_Printf("WHO_AM_I Register: 0x%02X (Expected: 0x68)\r\n", who_am_i);
+ 80121e8:	4843      	ldr	r0, [pc, #268]	@ (80122f8 <main+0x5e8>)
+ 80121ea:	f7fe fec3 	bl	8010f74 <UART_Printf>
+  UART_Printf("Initializing MPU6050...\r\n");
+ 80121ee:	4843      	ldr	r0, [pc, #268]	@ (80122fc <main+0x5ec>)
+ 80121f0:	f7fe fec0 	bl	8010f74 <UART_Printf>
+  HAL_StatusTypeDef mpu_status = MPU6050_Init(&hi2c1);
+ 80121f4:	4831      	ldr	r0, [pc, #196]	@ (80122bc <main+0x5ac>)
+ 80121f6:	f000 faf9 	bl	80127ec <MPU6050_Init>
+  if (mpu_status == HAL_OK) {
+ 80121fa:	4601      	mov	r1, r0
+ 80121fc:	2800      	cmp	r0, #0
+ 80121fe:	d149      	bne.n	8012294 <main+0x584>
+      UART_Printf("MPU6050 Init: OK\r\n");
+ 8012200:	483f      	ldr	r0, [pc, #252]	@ (8012300 <main+0x5f0>)
+ 8012202:	f7fe feb7 	bl	8010f74 <UART_Printf>
+  if (edge_ai_init() == 0) {
+ 8012206:	f7f7 fc81 	bl	8009b0c <edge_ai_init>
+ 801220a:	2800      	cmp	r0, #0
+ 801220c:	d13e      	bne.n	801228c <main+0x57c>
+      UART_Printf("Edge Impulse Init: OK\r\n");
+ 801220e:	483d      	ldr	r0, [pc, #244]	@ (8012304 <main+0x5f4>)
+ 8012210:	f7fe feb0 	bl	8010f74 <UART_Printf>
+  HAL_TIM_Base_Start_IT(&htim6);
+ 8012214:	4831      	ldr	r0, [pc, #196]	@ (80122dc <main+0x5cc>)
+ 8012216:	f8df 8120 	ldr.w	r8, [pc, #288]	@ 8012338 <main+0x628>
+        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_SET);
+ 801221a:	4c3b      	ldr	r4, [pc, #236]	@ (8012308 <main+0x5f8>)
+>>>>>>> Stashed changes
   HAL_TIM_Base_Start_IT(&htim6);
  8012260:	f002 fa5a 	bl	8014718 <HAL_TIM_Base_Start_IT>
   UART_Printf("TIM6 100Hz Timer: Started\r\n");
+<<<<<<< Updated upstream
  8012264:	48ab      	ldr	r0, [pc, #684]	@ (8012514 <main+0x7fc>)
  8012266:	f7fe ff95 	bl	8011194 <UART_Printf>
   UART_Printf("Collecting %d samples (%.1f seconds)...\r\n\r\n",
@@ -39151,18 +39281,43 @@ void Error_Handler(void)
  8012270:	21c8      	movs	r1, #200	@ 0xc8
  8012272:	48a9      	ldr	r0, [pc, #676]	@ (8012518 <main+0x800>)
  8012274:	f7fe ff8e 	bl	8011194 <UART_Printf>
+=======
+ 8012220:	483a      	ldr	r0, [pc, #232]	@ (801230c <main+0x5fc>)
+ 8012222:	f7fe fea7 	bl	8010f74 <UART_Printf>
+  UART_Printf("Collecting %d samples (%.1f seconds)...\r\n\r\n",
+ 8012226:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
+ 801222a:	4839      	ldr	r0, [pc, #228]	@ (8012310 <main+0x600>)
+ 801222c:	2200      	movs	r2, #0
+ 801222e:	21c8      	movs	r1, #200	@ 0xc8
+ 8012230:	f7fe fea0 	bl	8010f74 <UART_Printf>
+  set_rgb_led(RGB_OFF);
+ 8012234:	2200      	movs	r2, #0
+ 8012236:	4611      	mov	r1, r2
+ 8012238:	4610      	mov	r0, r2
+ 801223a:	f7ff f907 	bl	801144c <set_rgb_led>
+  UART_Printf("RGB LED: Initialized\r\n");
+ 801223e:	4835      	ldr	r0, [pc, #212]	@ (8012314 <main+0x604>)
+ 8012240:	f7fe fe98 	bl	8010f74 <UART_Printf>
+>>>>>>> Stashed changes
   HAL_Delay(3000); // WizFi360 부팅 대기
  8012278:	f640 30b8 	movw	r0, #3000	@ 0xbb8
  801227c:	f000 ff84 	bl	8013188 <HAL_Delay>
   MQTT_Init_All(&huart3, &huart2);   // Wiz: huart1, Terminal: huart2
+<<<<<<< Updated upstream
  8012280:	49a6      	ldr	r1, [pc, #664]	@ (801251c <main+0x804>)
  8012282:	48a7      	ldr	r0, [pc, #668]	@ (8012520 <main+0x808>)
  8012284:	f7ff fc50 	bl	8011b28 <MQTT_Init_All>
+=======
+ 801224c:	4932      	ldr	r1, [pc, #200]	@ (8012318 <main+0x608>)
+ 801224e:	481e      	ldr	r0, [pc, #120]	@ (80122c8 <main+0x5b8>)
+ 8012250:	f7ff fc66 	bl	8011b20 <MQTT_Init_All>
+>>>>>>> Stashed changes
   uint32_t last_pub_tick = 0; // 마지막 메시지 발행 시간 저장
  8012288:	f04f 0800 	mov.w	r8, #0
   int tempAovoid = 0; // 0 = right, 1 = left
  801228c:	4647      	mov	r7, r8
   int failCount = 0;
+<<<<<<< Updated upstream
  801228e:	4646      	mov	r6, r8
           imu_debug_ready = 0;  // 플래그 리셋
  8012290:	46c1      	mov	r9, r8
@@ -39496,6 +39651,502 @@ void Error_Handler(void)
  80125b8:	080270d8 	.word	0x080270d8
  80125bc:	20000260 	.word	0x20000260
  80125c0:	080270e0 	.word	0x080270e0
+=======
+ 801225a:	4667      	mov	r7, ip
+ 801225c:	f8cd c014 	str.w	ip, [sp, #20]
+	        uint32_t now_tick = HAL_GetTick();
+ 8012260:	f000 ffdc 	bl	801321c <HAL_GetTick>
+	        if (now_tick - last_pub_tick >= 600) { // 1000 = 1초 주기 (필요시 단축 가능)
+ 8012264:	9b05      	ldr	r3, [sp, #20]
+ 8012266:	1ac3      	subs	r3, r0, r3
+ 8012268:	f5b3 7f16 	cmp.w	r3, #600	@ 0x258
+	        uint32_t now_tick = HAL_GetTick();
+ 801226c:	4682      	mov	sl, r0
+	        if (now_tick - last_pub_tick >= 600) { // 1000 = 1초 주기 (필요시 단축 가능)
+ 801226e:	d303      	bcc.n	8012278 <main+0x568>
+	            Publish_Message();
+ 8012270:	f7ff fbf8 	bl	8011a64 <Publish_Message>
+	            last_pub_tick = now_tick;
+ 8012274:	f8cd a014 	str.w	sl, [sp, #20]
+	        if (g_powerOn == 0) {
+ 8012278:	4b28      	ldr	r3, [pc, #160]	@ (801231c <main+0x60c>)
+ 801227a:	681b      	ldr	r3, [r3, #0]
+ 801227c:	2b00      	cmp	r3, #0
+ 801227e:	d15d      	bne.n	801233c <main+0x62c>
+	            stop_all_motors();
+ 8012280:	f7fe ff40 	bl	8011104 <stop_all_motors>
+	            HAL_Delay(100);
+ 8012284:	2064      	movs	r0, #100	@ 0x64
+ 8012286:	f000 ffcf 	bl	8013228 <HAL_Delay>
+	            continue;
+ 801228a:	e7e9      	b.n	8012260 <main+0x550>
+      UART_Printf("Edge Impulse Init: FAILED!\r\n");
+ 801228c:	4824      	ldr	r0, [pc, #144]	@ (8012320 <main+0x610>)
+ 801228e:	f7fe fe71 	bl	8010f74 <UART_Printf>
+ 8012292:	e7bf      	b.n	8012214 <main+0x504>
+      UART_Printf("MPU6050 Init: FAILED! (Status: %d)\r\n", mpu_status);
+ 8012294:	4823      	ldr	r0, [pc, #140]	@ (8012324 <main+0x614>)
+ 8012296:	f7fe fe6d 	bl	8010f74 <UART_Printf>
+      UART_Printf("Check I2C connections (SDA: PB9, SCL: PB8)\r\n");
+ 801229a:	4823      	ldr	r0, [pc, #140]	@ (8012328 <main+0x618>)
+ 801229c:	f7fe fe6a 	bl	8010f74 <UART_Printf>
+      UART_Printf("Check MPU6050 power supply (3.3V)\r\n");
+ 80122a0:	4822      	ldr	r0, [pc, #136]	@ (801232c <main+0x61c>)
+ 80122a2:	f7fe fe67 	bl	8010f74 <UART_Printf>
+      UART_Printf("Check pull-up resistors on SDA/SCL (4.7k ohm)\r\n");
+ 80122a6:	4822      	ldr	r0, [pc, #136]	@ (8012330 <main+0x620>)
+ 80122a8:	f7fe fe64 	bl	8010f74 <UART_Printf>
+ 80122ac:	e7ab      	b.n	8012206 <main+0x4f6>
+ 80122ae:	bf00      	nop
+ 80122b0:	200012e0 	.word	0x200012e0
+ 80122b4:	200013b8 	.word	0x200013b8
+ 80122b8:	40000800 	.word	0x40000800
+ 80122bc:	20001400 	.word	0x20001400
+ 80122c0:	00061a80 	.word	0x00061a80
+ 80122c4:	40005400 	.word	0x40005400
+ 80122c8:	200011c0 	.word	0x200011c0
+ 80122cc:	40004800 	.word	0x40004800
+ 80122d0:	40000400 	.word	0x40000400
+ 80122d4:	20001250 	.word	0x20001250
+ 80122d8:	40010400 	.word	0x40010400
+ 80122dc:	20001298 	.word	0x20001298
+ 80122e0:	40001000 	.word	0x40001000
+ 80122e4:	e000ed00 	.word	0xe000ed00
+ 80122e8:	e0001000 	.word	0xe0001000
+ 80122ec:	08026f2c 	.word	0x08026f2c
+ 80122f0:	08026f68 	.word	0x08026f68
+ 80122f4:	08026f80 	.word	0x08026f80
+ 80122f8:	08026fa0 	.word	0x08026fa0
+ 80122fc:	08026fd0 	.word	0x08026fd0
+ 8012300:	08026fec 	.word	0x08026fec
+ 8012304:	080270ac 	.word	0x080270ac
+ 8012308:	40020400 	.word	0x40020400
+ 801230c:	080270e4 	.word	0x080270e4
+ 8012310:	08027100 	.word	0x08027100
+ 8012314:	0802712c 	.word	0x0802712c
+ 8012318:	20001208 	.word	0x20001208
+ 801231c:	2000027c 	.word	0x2000027c
+ 8012320:	080270c4 	.word	0x080270c4
+ 8012324:	08027000 	.word	0x08027000
+ 8012328:	08027028 	.word	0x08027028
+ 801232c:	08027058 	.word	0x08027058
+ 8012330:	0802707c 	.word	0x0802707c
+ 8012334:	20001328 	.word	0x20001328
+ 8012338:	2000025c 	.word	0x2000025c
+	        if (g_fanSpeed != -1) {
+ 801233c:	4bbe      	ldr	r3, [pc, #760]	@ (8012638 <main+0x928>)
+ 801233e:	681b      	ldr	r3, [r3, #0]
+ 8012340:	3301      	adds	r3, #1
+ 8012342:	2b04      	cmp	r3, #4
+ 8012344:	d804      	bhi.n	8012350 <main+0x640>
+ 8012346:	e8df f003 	tbb	[pc, r3]
+ 801234a:	0306      	.short	0x0306
+ 801234c:	706d      	.short	0x706d
+ 801234e:	6a          	.byte	0x6a
+ 801234f:	00          	.byte	0x00
+ 8012350:	2300      	movs	r3, #0
+        __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, speed);
+ 8012352:	6832      	ldr	r2, [r6, #0]
+ 8012354:	6353      	str	r3, [r2, #52]	@ 0x34
+	  update_odometry();
+ 8012356:	f000 fb29 	bl	80129ac <update_odometry>
+      update_led_state();
+ 801235a:	f7ff f897 	bl	801148c <update_led_state>
+      if (imu_debug_ready) {
+ 801235e:	4bb7      	ldr	r3, [pc, #732]	@ (801263c <main+0x92c>)
+ 8012360:	781b      	ldrb	r3, [r3, #0]
+ 8012362:	b1cb      	cbz	r3, 8012398 <main+0x688>
+          UART_Printf("[IMU] Ax: %.3fg, Ay: %.3fg, Az: %.3fg\r\n",
+ 8012364:	4bb6      	ldr	r3, [pc, #728]	@ (8012640 <main+0x930>)
+ 8012366:	6818      	ldr	r0, [r3, #0]
+ 8012368:	f7ee f91e 	bl	80005a8 <__aeabi_f2d>
+ 801236c:	4bb5      	ldr	r3, [pc, #724]	@ (8012644 <main+0x934>)
+ 801236e:	4682      	mov	sl, r0
+ 8012370:	6818      	ldr	r0, [r3, #0]
+ 8012372:	468b      	mov	fp, r1
+ 8012374:	f7ee f918 	bl	80005a8 <__aeabi_f2d>
+ 8012378:	e9cd 0102 	strd	r0, r1, [sp, #8]
+ 801237c:	4bb2      	ldr	r3, [pc, #712]	@ (8012648 <main+0x938>)
+ 801237e:	6818      	ldr	r0, [r3, #0]
+ 8012380:	f7ee f912 	bl	80005a8 <__aeabi_f2d>
+ 8012384:	4652      	mov	r2, sl
+ 8012386:	e9cd 0100 	strd	r0, r1, [sp]
+ 801238a:	465b      	mov	r3, fp
+ 801238c:	48af      	ldr	r0, [pc, #700]	@ (801264c <main+0x93c>)
+ 801238e:	f7fe fdf1 	bl	8010f74 <UART_Printf>
+          imu_debug_ready = 0;  // 플래그 리셋
+ 8012392:	4aaa      	ldr	r2, [pc, #680]	@ (801263c <main+0x92c>)
+ 8012394:	2300      	movs	r3, #0
+ 8012396:	7013      	strb	r3, [r2, #0]
+      if (edge_ai_buffer_ready) {
+ 8012398:	4bad      	ldr	r3, [pc, #692]	@ (8012650 <main+0x940>)
+ 801239a:	781b      	ldrb	r3, [r3, #0]
+ 801239c:	2b00      	cmp	r3, #0
+ 801239e:	f040 8104 	bne.w	80125aa <main+0x89a>
+            if (g_modeManual == 1)
+ 80123a2:	4bac      	ldr	r3, [pc, #688]	@ (8012654 <main+0x944>)
+ 80123a4:	f8d3 a000 	ldr.w	sl, [r3]
+ 80123a8:	f1ba 0f01 	cmp.w	sl, #1
+ 80123ac:	d162      	bne.n	8012474 <main+0x764>
+                if (strcmp(g_direction, "FWD") == 0) {
+ 80123ae:	49aa      	ldr	r1, [pc, #680]	@ (8012658 <main+0x948>)
+ 80123b0:	48aa      	ldr	r0, [pc, #680]	@ (801265c <main+0x94c>)
+ 80123b2:	f7ed ff2d 	bl	8000210 <strcmp>
+ 80123b6:	4683      	mov	fp, r0
+ 80123b8:	2800      	cmp	r0, #0
+ 80123ba:	d054      	beq.n	8012466 <main+0x756>
+                else if (strcmp(g_direction, "BACK") == 0) {
+ 80123bc:	49a8      	ldr	r1, [pc, #672]	@ (8012660 <main+0x950>)
+ 80123be:	48a7      	ldr	r0, [pc, #668]	@ (801265c <main+0x94c>)
+ 80123c0:	f7ed ff26 	bl	8000210 <strcmp>
+ 80123c4:	4683      	mov	fp, r0
+ 80123c6:	2800      	cmp	r0, #0
+ 80123c8:	d046      	beq.n	8012458 <main+0x748>
+                else if (strcmp(g_direction, "LEFT") == 0) {
+ 80123ca:	49a6      	ldr	r1, [pc, #664]	@ (8012664 <main+0x954>)
+ 80123cc:	48a3      	ldr	r0, [pc, #652]	@ (801265c <main+0x94c>)
+ 80123ce:	f7ed ff1f 	bl	8000210 <strcmp>
+ 80123d2:	4683      	mov	fp, r0
+ 80123d4:	b378      	cbz	r0, 8012436 <main+0x726>
+                else if (strcmp(g_direction, "RIGHT") == 0) {
+ 80123d6:	49a4      	ldr	r1, [pc, #656]	@ (8012668 <main+0x958>)
+ 80123d8:	48a0      	ldr	r0, [pc, #640]	@ (801265c <main+0x94c>)
+ 80123da:	f7ed ff19 	bl	8000210 <strcmp>
+ 80123de:	4683      	mov	fp, r0
+ 80123e0:	bb30      	cbnz	r0, 8012430 <main+0x720>
+        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_SET);
+ 80123e2:	4652      	mov	r2, sl
+ 80123e4:	4651      	mov	r1, sl
+ 80123e6:	4620      	mov	r0, r4
+ 80123e8:	f001 f916 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_RESET);
+ 80123ec:	465a      	mov	r2, fp
+ 80123ee:	2102      	movs	r1, #2
+ 80123f0:	4620      	mov	r0, r4
+ 80123f2:	f001 f911 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_RESET);
+ 80123f6:	465a      	mov	r2, fp
+ 80123f8:	2104      	movs	r1, #4
+ 80123fa:	4620      	mov	r0, r4
+ 80123fc:	f001 f90c 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_SET);
+ 8012400:	4652      	mov	r2, sl
+ 8012402:	f44f 5180 	mov.w	r1, #4096	@ 0x1000
+ 8012406:	4620      	mov	r0, r4
+ 8012408:	f001 f906 	bl	8013618 <HAL_GPIO_WritePin>
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed);
+ 801240c:	682b      	ldr	r3, [r5, #0]
+ 801240e:	f44f 7296 	mov.w	r2, #300	@ 0x12c
+ 8012412:	635a      	str	r2, [r3, #52]	@ 0x34
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed);
+ 8012414:	639a      	str	r2, [r3, #56]	@ 0x38
+        HAL_Delay(10);
+ 8012416:	200a      	movs	r0, #10
+ 8012418:	f000 ff06 	bl	8013228 <HAL_Delay>
+ 801241c:	e720      	b.n	8012260 <main+0x550>
+	            else if (g_fanSpeed == 3) pwm_val = 1000;
+ 801241e:	f44f 737a 	mov.w	r3, #1000	@ 0x3e8
+ 8012422:	e796      	b.n	8012352 <main+0x642>
+	        if (g_fanSpeed != -1) {
+ 8012424:	f44f 7396 	mov.w	r3, #300	@ 0x12c
+ 8012428:	e793      	b.n	8012352 <main+0x642>
+ 801242a:	f44f 7316 	mov.w	r3, #600	@ 0x258
+ 801242e:	e790      	b.n	8012352 <main+0x642>
+                    stop_all_motors();
+ 8012430:	f7fe fe68 	bl	8011104 <stop_all_motors>
+ 8012434:	e7ef      	b.n	8012416 <main+0x706>
+        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_RESET);
+ 8012436:	4602      	mov	r2, r0
+ 8012438:	4651      	mov	r1, sl
+ 801243a:	4620      	mov	r0, r4
+ 801243c:	f001 f8ec 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_SET);
+ 8012440:	4652      	mov	r2, sl
+ 8012442:	2102      	movs	r1, #2
+ 8012444:	4620      	mov	r0, r4
+ 8012446:	f001 f8e7 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_SET);
+ 801244a:	4652      	mov	r2, sl
+ 801244c:	2104      	movs	r1, #4
+ 801244e:	4620      	mov	r0, r4
+ 8012450:	f001 f8e2 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_RESET);
+ 8012454:	465a      	mov	r2, fp
+ 8012456:	e7d4      	b.n	8012402 <main+0x6f2>
+        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_RESET);
+ 8012458:	4602      	mov	r2, r0
+ 801245a:	4651      	mov	r1, sl
+ 801245c:	4620      	mov	r0, r4
+ 801245e:	f001 f8db 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_SET);
+ 8012462:	4652      	mov	r2, sl
+ 8012464:	e7c3      	b.n	80123ee <main+0x6de>
+        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_SET);
+ 8012466:	4652      	mov	r2, sl
+ 8012468:	4651      	mov	r1, sl
+ 801246a:	4620      	mov	r0, r4
+ 801246c:	f001 f8d4 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_RESET);
+ 8012470:	465a      	mov	r2, fp
+ 8012472:	e7e6      	b.n	8012442 <main+0x732>
+        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_SET);
+ 8012474:	2201      	movs	r2, #1
+ 8012476:	4611      	mov	r1, r2
+ 8012478:	4620      	mov	r0, r4
+ 801247a:	f001 f8cd 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_RESET);
+ 801247e:	2200      	movs	r2, #0
+ 8012480:	2102      	movs	r1, #2
+ 8012482:	4620      	mov	r0, r4
+ 8012484:	f001 f8c8 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_SET);
+ 8012488:	2201      	movs	r2, #1
+ 801248a:	2104      	movs	r1, #4
+ 801248c:	4620      	mov	r0, r4
+ 801248e:	f001 f8c3 	bl	8013618 <HAL_GPIO_WritePin>
+        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_RESET);
+ 8012492:	2200      	movs	r2, #0
+ 8012494:	f44f 5180 	mov.w	r1, #4096	@ 0x1000
+ 8012498:	4620      	mov	r0, r4
+ 801249a:	f001 f8bd 	bl	8013618 <HAL_GPIO_WritePin>
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed);
+ 801249e:	682a      	ldr	r2, [r5, #0]
+      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
+ 80124a0:	4872      	ldr	r0, [pc, #456]	@ (801266c <main+0x95c>)
+    uint32_t start_tick = DWT->CYCCNT;
+ 80124a2:	f8df a1d4 	ldr.w	sl, [pc, #468]	@ 8012678 <main+0x968>
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed);
+ 80124a6:	f44f 7196 	mov.w	r1, #300	@ 0x12c
+ 80124aa:	6351      	str	r1, [r2, #52]	@ 0x34
+      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
+ 80124ac:	2302      	movs	r3, #2
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed);
+ 80124ae:	6391      	str	r1, [r2, #56]	@ 0x38
+      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
+ 80124b0:	4a6f      	ldr	r2, [pc, #444]	@ (8012670 <main+0x960>)
+ 80124b2:	2101      	movs	r1, #1
+ 80124b4:	f7fe fd7c 	bl	8010fb0 <HCSR04_Read>
+    uint32_t start_tick = DWT->CYCCNT;
+ 80124b8:	f8da b004 	ldr.w	fp, [sl, #4]
+      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
+ 80124bc:	eef0 8a40 	vmov.f32	s17, s0
+    uint32_t delay_ticks = us * DWT_DELAY_UNIT;
+ 80124c0:	f001 fe70 	bl	80141a4 <HAL_RCC_GetHCLKFreq>
+ 80124c4:	f241 3288 	movw	r2, #5000	@ 0x1388
+ 80124c8:	496a      	ldr	r1, [pc, #424]	@ (8012674 <main+0x964>)
+ 80124ca:	fbb0 f3f1 	udiv	r3, r0, r1
+ 80124ce:	fb02 f303 	mul.w	r3, r2, r3
+    while ((DWT->CYCCNT - start_tick) < delay_ticks);
+ 80124d2:	f8da 2004 	ldr.w	r2, [sl, #4]
+ 80124d6:	eba2 020b 	sub.w	r2, r2, fp
+ 80124da:	4293      	cmp	r3, r2
+ 80124dc:	d8f9      	bhi.n	80124d2 <main+0x7c2>
+      float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
+ 80124de:	f44f 7380 	mov.w	r3, #256	@ 0x100
+ 80124e2:	4622      	mov	r2, r4
+ 80124e4:	2102      	movs	r1, #2
+ 80124e6:	4861      	ldr	r0, [pc, #388]	@ (801266c <main+0x95c>)
+ 80124e8:	f7fe fd62 	bl	8010fb0 <HCSR04_Read>
+    uint32_t start_tick = DWT->CYCCNT;
+ 80124ec:	f8da a004 	ldr.w	sl, [sl, #4]
+      float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
+ 80124f0:	eeb0 8a40 	vmov.f32	s16, s0
+    uint32_t delay_ticks = us * DWT_DELAY_UNIT;
+ 80124f4:	f001 fe56 	bl	80141a4 <HAL_RCC_GetHCLKFreq>
+ 80124f8:	f241 3288 	movw	r2, #5000	@ 0x1388
+    while ((DWT->CYCCNT - start_tick) < delay_ticks);
+ 80124fc:	495e      	ldr	r1, [pc, #376]	@ (8012678 <main+0x968>)
+    uint32_t delay_ticks = us * DWT_DELAY_UNIT;
+ 80124fe:	4603      	mov	r3, r0
+ 8012500:	485c      	ldr	r0, [pc, #368]	@ (8012674 <main+0x964>)
+ 8012502:	fbb3 f3f0 	udiv	r3, r3, r0
+ 8012506:	fb02 f303 	mul.w	r3, r2, r3
+    while ((DWT->CYCCNT - start_tick) < delay_ticks);
+ 801250a:	684a      	ldr	r2, [r1, #4]
+ 801250c:	eba2 020a 	sub.w	r2, r2, sl
+ 8012510:	4293      	cmp	r3, r2
+ 8012512:	d8fa      	bhi.n	801250a <main+0x7fa>
+      float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
+ 8012514:	4855      	ldr	r0, [pc, #340]	@ (801266c <main+0x95c>)
+ 8012516:	f44f 6380 	mov.w	r3, #1024	@ 0x400
+ 801251a:	4622      	mov	r2, r4
+ 801251c:	2104      	movs	r1, #4
+ 801251e:	f7fe fd47 	bl	8010fb0 <HCSR04_Read>
+      if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
+ 8012522:	eeb7 7a00 	vmov.f32	s14, #112	@ 0x3f800000  1.0
+ 8012526:	eef4 8ac7 	vcmpe.f32	s17, s14
+ 801252a:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+      float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
+ 801252e:	eef0 7a40 	vmov.f32	s15, s0
+      if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
+ 8012532:	dd06      	ble.n	8012542 <main+0x832>
+ 8012534:	eeb3 7a0e 	vmov.f32	s14, #62	@ 0x41f00000  30.0
+ 8012538:	eef4 8ac7 	vcmpe.f32	s17, s14
+ 801253c:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 8012540:	d91d      	bls.n	801257e <main+0x86e>
+                || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
+ 8012542:	eeb7 7a00 	vmov.f32	s14, #112	@ 0x3f800000  1.0
+ 8012546:	eeb4 8ac7 	vcmpe.f32	s16, s14
+ 801254a:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 801254e:	dd06      	ble.n	801255e <main+0x84e>
+ 8012550:	eeb3 7a0e 	vmov.f32	s14, #62	@ 0x41f00000  30.0
+ 8012554:	eeb4 8ac7 	vcmpe.f32	s16, s14
+ 8012558:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 801255c:	d90f      	bls.n	801257e <main+0x86e>
+                || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
+ 801255e:	eeb7 7a00 	vmov.f32	s14, #112	@ 0x3f800000  1.0
+ 8012562:	eef4 7ac7 	vcmpe.f32	s15, s14
+ 8012566:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 801256a:	f340 8099 	ble.w	80126a0 <main+0x990>
+ 801256e:	eeb3 7a0e 	vmov.f32	s14, #62	@ 0x41f00000  30.0
+ 8012572:	eef4 7ac7 	vcmpe.f32	s15, s14
+ 8012576:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 801257a:	f200 8091 	bhi.w	80126a0 <main+0x990>
+          failCount++;
+ 801257e:	3701      	adds	r7, #1
+          if (failCount >= 3) { // 연속 3회 이상이면 진짜 장애물
+ 8012580:	2f02      	cmp	r7, #2
+ 8012582:	f77f af48 	ble.w	8012416 <main+0x706>
+              stop_all_motors();
+ 8012586:	f7fe fdbd 	bl	8011104 <stop_all_motors>
+              HAL_Delay(50);
+ 801258a:	2032      	movs	r0, #50	@ 0x32
+ 801258c:	f000 fe4c 	bl	8013228 <HAL_Delay>
+              UART_Printf("[AVOID] Obstacle detected! Avoiding...\r\n");
+ 8012590:	483a      	ldr	r0, [pc, #232]	@ (801267c <main+0x96c>)
+ 8012592:	f7fe fcef 	bl	8010f74 <UART_Printf>
+              if(tempAovoid == 0){
+ 8012596:	f1b9 0f00 	cmp.w	r9, #0
+ 801259a:	f040 8083 	bne.w	80126a4 <main+0x994>
+              failCount = 0;
+ 801259e:	464f      	mov	r7, r9
+                 R_avoidance_sequence();
+ 80125a0:	f7fe fde4 	bl	801116c <R_avoidance_sequence>
+                 tempAovoid = 1;
+ 80125a4:	f04f 0901 	mov.w	r9, #1
+ 80125a8:	e735      	b.n	8012416 <main+0x706>
+          surface_classification_t result = {0};
+ 80125aa:	2300      	movs	r3, #0
+          if (edge_ai_classify(edge_ai_buffer, EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES, &result) == 0) {
+ 80125ac:	4834      	ldr	r0, [pc, #208]	@ (8012680 <main+0x970>)
+          surface_classification_t result = {0};
+ 80125ae:	931a      	str	r3, [sp, #104]	@ 0x68
+          if (edge_ai_classify(edge_ai_buffer, EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES, &result) == 0) {
+ 80125b0:	aa18      	add	r2, sp, #96	@ 0x60
+ 80125b2:	f44f 7116 	mov.w	r1, #600	@ 0x258
+          surface_classification_t result = {0};
+ 80125b6:	e9cd 3318 	strd	r3, r3, [sp, #96]	@ 0x60
+          if (edge_ai_classify(edge_ai_buffer, EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES, &result) == 0) {
+ 80125ba:	f7f7 fad5 	bl	8009b68 <edge_ai_classify>
+ 80125be:	2800      	cmp	r0, #0
+ 80125c0:	d176      	bne.n	80126b0 <main+0x9a0>
+              UART_Printf("[AI] Hard: %.2f, Carpet: %.2f, Dusty: %.2f\r\n",
+ 80125c2:	9818      	ldr	r0, [sp, #96]	@ 0x60
+ 80125c4:	f7ed fff0 	bl	80005a8 <__aeabi_f2d>
+ 80125c8:	4682      	mov	sl, r0
+ 80125ca:	981a      	ldr	r0, [sp, #104]	@ 0x68
+ 80125cc:	468b      	mov	fp, r1
+ 80125ce:	f7ed ffeb 	bl	80005a8 <__aeabi_f2d>
+ 80125d2:	e9cd 0102 	strd	r0, r1, [sp, #8]
+ 80125d6:	9819      	ldr	r0, [sp, #100]	@ 0x64
+ 80125d8:	f7ed ffe6 	bl	80005a8 <__aeabi_f2d>
+ 80125dc:	4652      	mov	r2, sl
+ 80125de:	e9cd 0100 	strd	r0, r1, [sp]
+ 80125e2:	465b      	mov	r3, fp
+ 80125e4:	4827      	ldr	r0, [pc, #156]	@ (8012684 <main+0x974>)
+ 80125e6:	f7fe fcc5 	bl	8010f74 <UART_Printf>
+              if (result.Hard >= result.Carpet && result.Hard >= result.Dusty) {
+ 80125ea:	ed9d 7a18 	vldr	s14, [sp, #96]	@ 0x60
+ 80125ee:	eddd 7a19 	vldr	s15, [sp, #100]	@ 0x64
+ 80125f2:	eeb4 7ae7 	vcmpe.f32	s14, s15
+ 80125f6:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 80125fa:	db06      	blt.n	801260a <main+0x8fa>
+ 80125fc:	eddd 6a1a 	vldr	s13, [sp, #104]	@ 0x68
+ 8012600:	eeb4 7ae6 	vcmpe.f32	s14, s13
+ 8012604:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 8012608:	da42      	bge.n	8012690 <main+0x980>
+              } else if (result.Carpet >= result.Hard && result.Carpet >= result.Dusty) {
+ 801260a:	eeb4 7ae7 	vcmpe.f32	s14, s15
+ 801260e:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 8012612:	d806      	bhi.n	8012622 <main+0x912>
+ 8012614:	ed9d 7a1a 	vldr	s14, [sp, #104]	@ 0x68
+ 8012618:	eef4 7ac7 	vcmpe.f32	s15, s14
+ 801261c:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 8012620:	da4f      	bge.n	80126c2 <main+0x9b2>
+                  strcpy(g_current_floor, "Dusty");
+ 8012622:	4b19      	ldr	r3, [pc, #100]	@ (8012688 <main+0x978>)
+ 8012624:	e893 0003 	ldmia.w	r3, {r0, r1}
+ 8012628:	4b18      	ldr	r3, [pc, #96]	@ (801268c <main+0x97c>)
+ 801262a:	f8c8 0000 	str.w	r0, [r8]
+ 801262e:	8019      	strh	r1, [r3, #0]
+          edge_ai_buffer_ready = 0;
+ 8012630:	4a07      	ldr	r2, [pc, #28]	@ (8012650 <main+0x940>)
+ 8012632:	2300      	movs	r3, #0
+ 8012634:	7013      	strb	r3, [r2, #0]
+ 8012636:	e6b4      	b.n	80123a2 <main+0x692>
+ 8012638:	20000278 	.word	0x20000278
+ 801263c:	20000854 	.word	0x20000854
+ 8012640:	20000850 	.word	0x20000850
+ 8012644:	20000848 	.word	0x20000848
+ 8012648:	2000084c 	.word	0x2000084c
+ 801264c:	08027144 	.word	0x08027144
+ 8012650:	20000858 	.word	0x20000858
+ 8012654:	20000274 	.word	0x20000274
+ 8012658:	080271c4 	.word	0x080271c4
+ 801265c:	2000026c 	.word	0x2000026c
+ 8012660:	08026cac 	.word	0x08026cac
+ 8012664:	08026cbc 	.word	0x08026cbc
+ 8012668:	08026ccc 	.word	0x08026ccc
+ 801266c:	40020800 	.word	0x40020800
+ 8012670:	40020000 	.word	0x40020000
+ 8012674:	000f4240 	.word	0x000f4240
+ 8012678:	e0001000 	.word	0xe0001000
+ 801267c:	080271c8 	.word	0x080271c8
+ 8012680:	2000085c 	.word	0x2000085c
+ 8012684:	0802716c 	.word	0x0802716c
+ 8012688:	08026c20 	.word	0x08026c20
+ 801268c:	20000260 	.word	0x20000260
+                  strcpy(g_current_floor, "Hard");
+ 8012690:	4b11      	ldr	r3, [pc, #68]	@ (80126d8 <main+0x9c8>)
+ 8012692:	e893 0003 	ldmia.w	r3, {r0, r1}
+ 8012696:	4b11      	ldr	r3, [pc, #68]	@ (80126dc <main+0x9cc>)
+ 8012698:	f8c8 0000 	str.w	r0, [r8]
+ 801269c:	7019      	strb	r1, [r3, #0]
+ 801269e:	e7c7      	b.n	8012630 <main+0x920>
+          failCount = 0;
+ 80126a0:	2700      	movs	r7, #0
+ 80126a2:	e6b8      	b.n	8012416 <main+0x706>
+                 tempAovoid = 0;
+ 80126a4:	f04f 0900 	mov.w	r9, #0
+                 L_avoidance_sequence();
+ 80126a8:	f7fe fe18 	bl	80112dc <L_avoidance_sequence>
+              failCount = 0;
+ 80126ac:	464f      	mov	r7, r9
+ 80126ae:	e6b2      	b.n	8012416 <main+0x706>
+              UART_Printf("[AI] Classification FAILED\r\n");
+ 80126b0:	480b      	ldr	r0, [pc, #44]	@ (80126e0 <main+0x9d0>)
+ 80126b2:	f7fe fc5f 	bl	8010f74 <UART_Printf>
+              strcpy(g_current_floor, "Unknown");
+ 80126b6:	4b0b      	ldr	r3, [pc, #44]	@ (80126e4 <main+0x9d4>)
+ 80126b8:	e893 0003 	ldmia.w	r3, {r0, r1}
+ 80126bc:	e888 0003 	stmia.w	r8, {r0, r1}
+ 80126c0:	e7b6      	b.n	8012630 <main+0x920>
+                  strcpy(g_current_floor, "Carpet");
+ 80126c2:	4b09      	ldr	r3, [pc, #36]	@ (80126e8 <main+0x9d8>)
+ 80126c4:	e893 0003 	ldmia.w	r3, {r0, r1}
+ 80126c8:	4b04      	ldr	r3, [pc, #16]	@ (80126dc <main+0x9cc>)
+ 80126ca:	f8c8 0000 	str.w	r0, [r8]
+ 80126ce:	8019      	strh	r1, [r3, #0]
+ 80126d0:	0c09      	lsrs	r1, r1, #16
+ 80126d2:	7099      	strb	r1, [r3, #2]
+ 80126d4:	e7ac      	b.n	8012630 <main+0x920>
+ 80126d6:	bf00      	nop
+ 80126d8:	08026c10 	.word	0x08026c10
+ 80126dc:	20000260 	.word	0x20000260
+ 80126e0:	0802719c 	.word	0x0802719c
+ 80126e4:	080271bc 	.word	0x080271bc
+ 80126e8:	08026c18 	.word	0x08026c18
+>>>>>>> Stashed changes
 
 080125c4 <HAL_TIM_PeriodElapsedCallback>:
     if (htim->Instance == TIM6) {
@@ -39505,6 +40156,7 @@ void Error_Handler(void)
  80125ca:	d000      	beq.n	80125ce <HAL_TIM_PeriodElapsedCallback+0xa>
  80125cc:	4770      	bx	lr
 {
+<<<<<<< Updated upstream
  80125ce:	b570      	push	{r4, r5, r6, lr}
         if (!edge_ai_buffer_ready) {
  80125d0:	4c2d      	ldr	r4, [pc, #180]	@ (8012688 <HAL_TIM_PeriodElapsedCallback+0xc4>)
@@ -39513,6 +40165,128 @@ void Error_Handler(void)
  80125d4:	b084      	sub	sp, #16
         if (!edge_ai_buffer_ready) {
  80125d6:	b10b      	cbz	r3, 80125dc <HAL_TIM_PeriodElapsedCallback+0x18>
+=======
+ 80126f6:	b530      	push	{r4, r5, lr}
+ 80126f8:	b085      	sub	sp, #20
+        if (MPU6050_ReadAccel(&hi2c1, &ax, &ay, &az) == HAL_OK) {
+ 80126fa:	4831      	ldr	r0, [pc, #196]	@ (80127c0 <HAL_TIM_PeriodElapsedCallback+0xd4>)
+ 80126fc:	ab03      	add	r3, sp, #12
+ 80126fe:	aa02      	add	r2, sp, #8
+ 8012700:	a901      	add	r1, sp, #4
+ 8012702:	f000 f8f7 	bl	80128f4 <MPU6050_ReadAccel>
+ 8012706:	2800      	cmp	r0, #0
+ 8012708:	d156      	bne.n	80127b8 <HAL_TIM_PeriodElapsedCallback+0xcc>
+            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+ 801270a:	492e      	ldr	r1, [pc, #184]	@ (80127c4 <HAL_TIM_PeriodElapsedCallback+0xd8>)
+            imu_debug_counter++;
+ 801270c:	4c2e      	ldr	r4, [pc, #184]	@ (80127c8 <HAL_TIM_PeriodElapsedCallback+0xdc>)
+            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+ 801270e:	880a      	ldrh	r2, [r1, #0]
+            edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+ 8012710:	880b      	ldrh	r3, [r1, #0]
+            edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
+ 8012712:	f8b1 c000 	ldrh.w	ip, [r1]
+            imu_debug_counter++;
+ 8012716:	7825      	ldrb	r5, [r4, #0]
+            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+ 8012718:	eddf 7a2c 	vldr	s15, [pc, #176]	@ 80127cc <HAL_TIM_PeriodElapsedCallback+0xe0>
+ 801271c:	ed9d 6a01 	vldr	s12, [sp, #4]
+            edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+ 8012720:	eddd 6a02 	vldr	s13, [sp, #8]
+            edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
+ 8012724:	ed9d 7a03 	vldr	s14, [sp, #12]
+            imu_debug_counter++;
+ 8012728:	3501      	adds	r5, #1
+ 801272a:	b2ed      	uxtb	r5, r5
+ 801272c:	7025      	strb	r5, [r4, #0]
+            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+ 801272e:	b292      	uxth	r2, r2
+ 8012730:	4d27      	ldr	r5, [pc, #156]	@ (80127d0 <HAL_TIM_PeriodElapsedCallback+0xe4>)
+            edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+ 8012732:	b29b      	uxth	r3, r3
+            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+ 8012734:	ee26 5a27 	vmul.f32	s10, s12, s15
+            edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+ 8012738:	ee66 5aa7 	vmul.f32	s11, s13, s15
+            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+ 801273c:	eb02 0242 	add.w	r2, r2, r2, lsl #1
+            edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+ 8012740:	eb03 0343 	add.w	r3, r3, r3, lsl #1
+ 8012744:	eb05 0383 	add.w	r3, r5, r3, lsl #2
+            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+ 8012748:	eb05 0282 	add.w	r2, r5, r2, lsl #2
+ 801274c:	ed82 5a00 	vstr	s10, [r2]
+            edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
+ 8012750:	fa1f fc8c 	uxth.w	ip, ip
+            edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+ 8012754:	edc3 5a01 	vstr	s11, [r3, #4]
+            if (imu_debug_counter >= 10) {
+ 8012758:	7823      	ldrb	r3, [r4, #0]
+            edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
+ 801275a:	ee67 7a27 	vmul.f32	s15, s14, s15
+ 801275e:	eb0c 0c4c 	add.w	ip, ip, ip, lsl #1
+ 8012762:	eb05 058c 	add.w	r5, r5, ip, lsl #2
+            if (imu_debug_counter >= 10) {
+ 8012766:	2b09      	cmp	r3, #9
+            edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
+ 8012768:	edc5 7a02 	vstr	s15, [r5, #8]
+            if (imu_debug_counter >= 10) {
+ 801276c:	d90c      	bls.n	8012788 <HAL_TIM_PeriodElapsedCallback+0x9c>
+                imu_debug_ax = ax;
+ 801276e:	4a19      	ldr	r2, [pc, #100]	@ (80127d4 <HAL_TIM_PeriodElapsedCallback+0xe8>)
+                imu_debug_ay = ay;
+ 8012770:	4b19      	ldr	r3, [pc, #100]	@ (80127d8 <HAL_TIM_PeriodElapsedCallback+0xec>)
+                imu_debug_ax = ax;
+ 8012772:	ed82 6a00 	vstr	s12, [r2]
+                imu_debug_az = az;
+ 8012776:	4a19      	ldr	r2, [pc, #100]	@ (80127dc <HAL_TIM_PeriodElapsedCallback+0xf0>)
+                imu_debug_ay = ay;
+ 8012778:	edc3 6a00 	vstr	s13, [r3]
+                imu_debug_ready = 1;  // 출력 준비 완료
+ 801277c:	4b18      	ldr	r3, [pc, #96]	@ (80127e0 <HAL_TIM_PeriodElapsedCallback+0xf4>)
+                imu_debug_az = az;
+ 801277e:	ed82 7a00 	vstr	s14, [r2]
+                imu_debug_ready = 1;  // 출력 준비 완료
+ 8012782:	2201      	movs	r2, #1
+ 8012784:	701a      	strb	r2, [r3, #0]
+                imu_debug_counter = 0;
+ 8012786:	7020      	strb	r0, [r4, #0]
+            edge_ai_sample_index++;
+ 8012788:	880b      	ldrh	r3, [r1, #0]
+            edge_ai_slide_counter++;
+ 801278a:	4a16      	ldr	r2, [pc, #88]	@ (80127e4 <HAL_TIM_PeriodElapsedCallback+0xf8>)
+            edge_ai_sample_index++;
+ 801278c:	3301      	adds	r3, #1
+ 801278e:	b29b      	uxth	r3, r3
+ 8012790:	800b      	strh	r3, [r1, #0]
+            edge_ai_slide_counter++;
+ 8012792:	8813      	ldrh	r3, [r2, #0]
+ 8012794:	3301      	adds	r3, #1
+ 8012796:	b29b      	uxth	r3, r3
+ 8012798:	8013      	strh	r3, [r2, #0]
+            if (edge_ai_sample_index >= EDGE_AI_SAMPLE_COUNT) {
+ 801279a:	880b      	ldrh	r3, [r1, #0]
+ 801279c:	b29b      	uxth	r3, r3
+ 801279e:	2bc7      	cmp	r3, #199	@ 0xc7
+                edge_ai_sample_index = 0;
+ 80127a0:	bf84      	itt	hi
+ 80127a2:	2300      	movhi	r3, #0
+ 80127a4:	800b      	strhhi	r3, [r1, #0]
+            if (edge_ai_slide_counter >= EDGE_AI_SLIDE_INTERVAL) {
+ 80127a6:	8813      	ldrh	r3, [r2, #0]
+ 80127a8:	b29b      	uxth	r3, r3
+ 80127aa:	2b63      	cmp	r3, #99	@ 0x63
+ 80127ac:	d904      	bls.n	80127b8 <HAL_TIM_PeriodElapsedCallback+0xcc>
+                edge_ai_buffer_ready = 1;
+ 80127ae:	490e      	ldr	r1, [pc, #56]	@ (80127e8 <HAL_TIM_PeriodElapsedCallback+0xfc>)
+ 80127b0:	2001      	movs	r0, #1
+                edge_ai_slide_counter = 0;
+ 80127b2:	2300      	movs	r3, #0
+                edge_ai_buffer_ready = 1;
+ 80127b4:	7008      	strb	r0, [r1, #0]
+                edge_ai_slide_counter = 0;
+ 80127b6:	8013      	strh	r3, [r2, #0]
+>>>>>>> Stashed changes
 }
  80125d8:	b004      	add	sp, #16
  80125da:	bd70      	pop	{r4, r5, r6, pc}
@@ -39650,15 +40424,25 @@ uint8_t MPU6050_WhoAmI(I2C_HandleTypeDef *hi2c)
     HAL_StatusTypeDef status;
 
     status = HAL_I2C_Mem_Read(hi2c, MPU6050_ADDR, MPU6050_REG_WHO_AM_I, 1, &who_am_i, 1, 1000);
+<<<<<<< Updated upstream
  80126bc:	2601      	movs	r6, #1
+=======
+ 80127f8:	2501      	movs	r5, #1
+>>>>>>> Stashed changes
     uint8_t who_am_i = 0;
  80126be:	2300      	movs	r3, #0
     status = HAL_I2C_Mem_Read(hi2c, MPU6050_ADDR, MPU6050_REG_WHO_AM_I, 1, &who_am_i, 1, 1000);
+<<<<<<< Updated upstream
  80126c0:	f44f 777a 	mov.w	r7, #1000	@ 0x3e8
  80126c4:	f10d 0517 	add.w	r5, sp, #23
+=======
+ 80127fc:	f44f 777a 	mov.w	r7, #1000	@ 0x3e8
+ 8012800:	f10d 0617 	add.w	r6, sp, #23
+>>>>>>> Stashed changes
     uint8_t who_am_i = 0;
  80126c8:	f88d 3017 	strb.w	r3, [sp, #23]
     status = HAL_I2C_Mem_Read(hi2c, MPU6050_ADDR, MPU6050_REG_WHO_AM_I, 1, &who_am_i, 1, 1000);
+<<<<<<< Updated upstream
  80126cc:	e9cd 6701 	strd	r6, r7, [sp, #4]
  80126d0:	9500      	str	r5, [sp, #0]
  80126d2:	4633      	mov	r3, r6
@@ -39670,6 +40454,19 @@ uint8_t MPU6050_WhoAmI(I2C_HandleTypeDef *hi2c)
     if (status != HAL_OK) {
  80126de:	2800      	cmp	r0, #0
  80126e0:	d149      	bne.n	8012776 <MPU6050_Init+0xc6>
+=======
+ 8012808:	e9cd 5701 	strd	r5, r7, [sp, #4]
+ 801280c:	9600      	str	r6, [sp, #0]
+ 801280e:	462b      	mov	r3, r5
+ 8012810:	2275      	movs	r2, #117	@ 0x75
+ 8012812:	21d0      	movs	r1, #208	@ 0xd0
+ 8012814:	4620      	mov	r0, r4
+ 8012816:	f001 fae1 	bl	8013ddc <HAL_I2C_Mem_Read>
+
+    if (status != HAL_OK) {
+ 801281a:	2800      	cmp	r0, #0
+ 801281c:	d14a      	bne.n	80128b4 <MPU6050_Init+0xc8>
+>>>>>>> Stashed changes
         // I2C communication failed
         return 0x00;
     }
@@ -39677,6 +40474,7 @@ uint8_t MPU6050_WhoAmI(I2C_HandleTypeDef *hi2c)
     return who_am_i;
  80126e2:	f89d 3017 	ldrb.w	r3, [sp, #23]
     if (who_am_i != 0x68) {
+<<<<<<< Updated upstream
  80126e6:	2b68      	cmp	r3, #104	@ 0x68
  80126e8:	d145      	bne.n	8012776 <MPU6050_Init+0xc6>
     data = 0x00;
@@ -39791,12 +40589,131 @@ uint8_t MPU6050_WhoAmI(I2C_HandleTypeDef *hi2c)
  80127b2:	bf00      	nop
 
 080127b4 <MPU6050_ReadAccel>:
+=======
+ 8012822:	2b68      	cmp	r3, #104	@ 0x68
+ 8012824:	d146      	bne.n	80128b4 <MPU6050_Init+0xc8>
+    data = 0x18;
+ 8012826:	2318      	movs	r3, #24
+ 8012828:	f88d 3017 	strb.w	r3, [sp, #23]
+    status = HAL_I2C_Mem_Write(hi2c, MPU6050_ADDR, MPU6050_REG_PWR_MGMT_1, 1, &data, 1, 1000);
+ 801282c:	e9cd 5701 	strd	r5, r7, [sp, #4]
+ 8012830:	9600      	str	r6, [sp, #0]
+ 8012832:	462b      	mov	r3, r5
+ 8012834:	226b      	movs	r2, #107	@ 0x6b
+ 8012836:	21d0      	movs	r1, #208	@ 0xd0
+ 8012838:	4620      	mov	r0, r4
+ 801283a:	f001 fa33 	bl	8013ca4 <HAL_I2C_Mem_Write>
+    if (status != HAL_OK) return status;
+ 801283e:	4684      	mov	ip, r0
+ 8012840:	bbd0      	cbnz	r0, 80128b8 <MPU6050_Init+0xcc>
+    HAL_Delay(100);  // Wait for sensor to stabilize
+ 8012842:	2064      	movs	r0, #100	@ 0x64
+ 8012844:	f000 fcf0 	bl	8013228 <HAL_Delay>
+    data = 0x09;
+ 8012848:	2309      	movs	r3, #9
+ 801284a:	f88d 3017 	strb.w	r3, [sp, #23]
+    status = HAL_I2C_Mem_Write(hi2c, MPU6050_ADDR, MPU6050_REG_SMPLRT_DIV, 1, &data, 1, 1000);
+ 801284e:	e9cd 5701 	strd	r5, r7, [sp, #4]
+ 8012852:	9600      	str	r6, [sp, #0]
+ 8012854:	462b      	mov	r3, r5
+ 8012856:	2219      	movs	r2, #25
+ 8012858:	21d0      	movs	r1, #208	@ 0xd0
+ 801285a:	4620      	mov	r0, r4
+ 801285c:	f001 fa22 	bl	8013ca4 <HAL_I2C_Mem_Write>
+    if (status != HAL_OK) return status;
+ 8012860:	4684      	mov	ip, r0
+ 8012862:	bb48      	cbnz	r0, 80128b8 <MPU6050_Init+0xcc>
+    data = 0x03;
+ 8012864:	2303      	movs	r3, #3
+ 8012866:	f88d 3017 	strb.w	r3, [sp, #23]
+    status = HAL_I2C_Mem_Write(hi2c, MPU6050_ADDR, MPU6050_REG_CONFIG, 1, &data, 1, 1000);
+ 801286a:	e9cd 5701 	strd	r5, r7, [sp, #4]
+ 801286e:	9600      	str	r6, [sp, #0]
+ 8012870:	462b      	mov	r3, r5
+ 8012872:	221a      	movs	r2, #26
+ 8012874:	21d0      	movs	r1, #208	@ 0xd0
+ 8012876:	4620      	mov	r0, r4
+ 8012878:	f001 fa14 	bl	8013ca4 <HAL_I2C_Mem_Write>
+    if (status != HAL_OK) return status;
+ 801287c:	4684      	mov	ip, r0
+ 801287e:	b9d8      	cbnz	r0, 80128b8 <MPU6050_Init+0xcc>
+    data = 0x00;
+ 8012880:	f88d 0017 	strb.w	r0, [sp, #23]
+    status = HAL_I2C_Mem_Write(hi2c, MPU6050_ADDR, MPU6050_REG_ACCEL_CONFIG, 1, &data, 1, 1000);
+ 8012884:	e9cd 5701 	strd	r5, r7, [sp, #4]
+ 8012888:	9600      	str	r6, [sp, #0]
+ 801288a:	462b      	mov	r3, r5
+ 801288c:	221c      	movs	r2, #28
+ 801288e:	21d0      	movs	r1, #208	@ 0xd0
+ 8012890:	4620      	mov	r0, r4
+ 8012892:	f001 fa07 	bl	8013ca4 <HAL_I2C_Mem_Write>
+    if (status != HAL_OK) return status;
+ 8012896:	4684      	mov	ip, r0
+ 8012898:	b970      	cbnz	r0, 80128b8 <MPU6050_Init+0xcc>
+    status = HAL_I2C_Mem_Write(hi2c, MPU6050_ADDR, MPU6050_REG_GYRO_CONFIG, 1, &data, 1, 1000);
+ 801289a:	e9cd 5701 	strd	r5, r7, [sp, #4]
+ 801289e:	9600      	str	r6, [sp, #0]
+ 80128a0:	462b      	mov	r3, r5
+ 80128a2:	221b      	movs	r2, #27
+ 80128a4:	21d0      	movs	r1, #208	@ 0xd0
+ 80128a6:	4620      	mov	r0, r4
+    data = 0x00;
+ 80128a8:	f88d c017 	strb.w	ip, [sp, #23]
+    status = HAL_I2C_Mem_Write(hi2c, MPU6050_ADDR, MPU6050_REG_GYRO_CONFIG, 1, &data, 1, 1000);
+ 80128ac:	f001 f9fa 	bl	8013ca4 <HAL_I2C_Mem_Write>
+ 80128b0:	4684      	mov	ip, r0
+    if (status != HAL_OK) return status;
+ 80128b2:	e001      	b.n	80128b8 <MPU6050_Init+0xcc>
+        return HAL_ERROR;
+ 80128b4:	f04f 0c01 	mov.w	ip, #1
+}
+ 80128b8:	4660      	mov	r0, ip
+ 80128ba:	b007      	add	sp, #28
+ 80128bc:	bdf0      	pop	{r4, r5, r6, r7, pc}
+ 80128be:	bf00      	nop
+
+080128c0 <MPU6050_WhoAmI>:
+{
+ 80128c0:	b510      	push	{r4, lr}
+ 80128c2:	b086      	sub	sp, #24
+    status = HAL_I2C_Mem_Read(hi2c, MPU6050_ADDR, MPU6050_REG_WHO_AM_I, 1, &who_am_i, 1, 1000);
+ 80128c4:	f44f 717a 	mov.w	r1, #1000	@ 0x3e8
+ 80128c8:	f10d 0217 	add.w	r2, sp, #23
+ 80128cc:	2301      	movs	r3, #1
+ 80128ce:	e9cd 3101 	strd	r3, r1, [sp, #4]
+    uint8_t who_am_i = 0;
+ 80128d2:	2400      	movs	r4, #0
+    status = HAL_I2C_Mem_Read(hi2c, MPU6050_ADDR, MPU6050_REG_WHO_AM_I, 1, &who_am_i, 1, 1000);
+ 80128d4:	9200      	str	r2, [sp, #0]
+ 80128d6:	21d0      	movs	r1, #208	@ 0xd0
+ 80128d8:	2275      	movs	r2, #117	@ 0x75
+    uint8_t who_am_i = 0;
+ 80128da:	f88d 4017 	strb.w	r4, [sp, #23]
+    status = HAL_I2C_Mem_Read(hi2c, MPU6050_ADDR, MPU6050_REG_WHO_AM_I, 1, &who_am_i, 1, 1000);
+ 80128de:	f001 fa7d 	bl	8013ddc <HAL_I2C_Mem_Read>
+    if (status != HAL_OK) {
+ 80128e2:	b918      	cbnz	r0, 80128ec <MPU6050_WhoAmI+0x2c>
+    return who_am_i;
+ 80128e4:	f89d 0017 	ldrb.w	r0, [sp, #23]
+}
+ 80128e8:	b006      	add	sp, #24
+ 80128ea:	bd10      	pop	{r4, pc}
+        return 0x00;
+ 80128ec:	4620      	mov	r0, r4
+}
+ 80128ee:	b006      	add	sp, #24
+ 80128f0:	bd10      	pop	{r4, pc}
+ 80128f2:	bf00      	nop
+
+080128f4 <MPU6050_ReadAccel>:
+>>>>>>> Stashed changes
  * @param  hi2c: I2C handle
  * @param  ax, ay, az: Pointers to store values in g
  * @retval HAL status
  */
 HAL_StatusTypeDef MPU6050_ReadAccel(I2C_HandleTypeDef *hi2c, float *ax, float *ay, float *az)
 {
+<<<<<<< Updated upstream
  80127b4:	b570      	push	{r4, r5, r6, lr}
  80127b6:	b086      	sub	sp, #24
  80127b8:	461c      	mov	r4, r3
@@ -39819,12 +40736,37 @@ HAL_StatusTypeDef MPU6050_ReadAccel(I2C_HandleTypeDef *hi2c, float *ax, float *a
  80127d4:	bb20      	cbnz	r0, 8012820 <MPU6050_ReadAccel+0x6c>
     *ax = (int16_t)((buffer[0] << 8) | buffer[1]);
  80127d6:	f8bd c010 	ldrh.w	ip, [sp, #16]
+=======
+ 80128f4:	b570      	push	{r4, r5, r6, lr}
+ 80128f6:	b086      	sub	sp, #24
+ 80128f8:	461c      	mov	r4, r3
+    status = HAL_I2C_Mem_Read(hi2c, MPU6050_ADDR, MPU6050_REG_ACCEL_XOUT_H, 1, buffer, 6, 100);
+ 80128fa:	2306      	movs	r3, #6
+ 80128fc:	2564      	movs	r5, #100	@ 0x64
+ 80128fe:	9301      	str	r3, [sp, #4]
+ 8012900:	ab04      	add	r3, sp, #16
+ 8012902:	9502      	str	r5, [sp, #8]
+ 8012904:	9300      	str	r3, [sp, #0]
+{
+ 8012906:	460e      	mov	r6, r1
+ 8012908:	4615      	mov	r5, r2
+    status = HAL_I2C_Mem_Read(hi2c, MPU6050_ADDR, MPU6050_REG_ACCEL_XOUT_H, 1, buffer, 6, 100);
+ 801290a:	2301      	movs	r3, #1
+ 801290c:	223b      	movs	r2, #59	@ 0x3b
+ 801290e:	21d0      	movs	r1, #208	@ 0xd0
+ 8012910:	f001 fa64 	bl	8013ddc <HAL_I2C_Mem_Read>
+    if (status != HAL_OK) return status;
+ 8012914:	bb20      	cbnz	r0, 8012960 <MPU6050_ReadAccel+0x6c>
+    *ax = (int16_t)((buffer[0] << 8) | buffer[1]);
+ 8012916:	f8bd c010 	ldrh.w	ip, [sp, #16]
+>>>>>>> Stashed changes
 
     status = MPU6050_ReadAccelRaw(hi2c, &raw_ax, &raw_ay, &raw_az);
     if (status != HAL_OK) return status;
 
     // Convert to g units
     *ax = (float)raw_ax / ACCEL_SCALE_FACTOR;
+<<<<<<< Updated upstream
  80127da:	eddf 6a12 	vldr	s13, [pc, #72]	@ 8012824 <MPU6050_ReadAccel+0x70>
  80127de:	f8bd 1014 	ldrh.w	r1, [sp, #20]
  80127e2:	fa9c f3bc 	revsh.w	r3, ip
@@ -39861,12 +40803,51 @@ HAL_StatusTypeDef MPU6050_ReadAccel(I2C_HandleTypeDef *hi2c, float *ax, float *a
  8012824:	38800000 	.word	0x38800000
 
 08012828 <MPU6050_Read_Gyro>:
+=======
+ 801291a:	eddf 6a12 	vldr	s13, [pc, #72]	@ 8012964 <MPU6050_ReadAccel+0x70>
+ 801291e:	f8bd 1014 	ldrh.w	r1, [sp, #20]
+ 8012922:	fa9c f3bc 	revsh.w	r3, ip
+ 8012926:	ee07 3a90 	vmov	s15, r3
+    *ay = (int16_t)((buffer[2] << 8) | buffer[3]);
+ 801292a:	f8bd c012 	ldrh.w	ip, [sp, #18]
+    *ax = (float)raw_ax / ACCEL_SCALE_FACTOR;
+ 801292e:	eef8 7ae7 	vcvt.f32.s32	s15, s15
+ 8012932:	fa9c f3bc 	revsh.w	r3, ip
+ 8012936:	ee67 7aa6 	vmul.f32	s15, s15, s13
+ 801293a:	ee07 3a10 	vmov	s14, r3
+    *az = (int16_t)((buffer[4] << 8) | buffer[5]);
+ 801293e:	bacb      	revsh	r3, r1
+    *ax = (float)raw_ax / ACCEL_SCALE_FACTOR;
+ 8012940:	edc6 7a00 	vstr	s15, [r6]
+ 8012944:	ee07 3a90 	vmov	s15, r3
+    *ay = (float)raw_ay / ACCEL_SCALE_FACTOR;
+ 8012948:	eeb8 7ac7 	vcvt.f32.s32	s14, s14
+    *az = (float)raw_az / ACCEL_SCALE_FACTOR;
+ 801294c:	eef8 7ae7 	vcvt.f32.s32	s15, s15
+    *ay = (float)raw_ay / ACCEL_SCALE_FACTOR;
+ 8012950:	ee27 7a26 	vmul.f32	s14, s14, s13
+    *az = (float)raw_az / ACCEL_SCALE_FACTOR;
+ 8012954:	ee67 7aa6 	vmul.f32	s15, s15, s13
+    *ay = (float)raw_ay / ACCEL_SCALE_FACTOR;
+ 8012958:	ed85 7a00 	vstr	s14, [r5]
+    *az = (float)raw_az / ACCEL_SCALE_FACTOR;
+ 801295c:	edc4 7a00 	vstr	s15, [r4]
+
+    return HAL_OK;
+}
+ 8012960:	b006      	add	sp, #24
+ 8012962:	bd70      	pop	{r4, r5, r6, pc}
+ 8012964:	38800000 	.word	0x38800000
+
+08012968 <MPU6050_Read_Gyro>:
+>>>>>>> Stashed changes
     *Ax = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
     *Ay = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
     *Az = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
 }
 
 void MPU6050_Read_Gyro(int16_t *Gx, int16_t *Gy, int16_t *Gz) {
+<<<<<<< Updated upstream
  8012828:	b570      	push	{r4, r5, r6, lr}
 	uint8_t Rec_Data[6];
 	// GYRO_XOUT_H (0x43)부터 6바이트 (Gx, Gy, Gz)를 읽어옴
@@ -40006,18 +40987,74 @@ void calculate_gyro_bias(void) {
  8012908:	0802717c 	.word	0x0802717c
 
 0801290c <update_odometry>:
+=======
+ 8012968:	b570      	push	{r4, r5, r6, lr}
+	uint8_t Rec_Data[6];
+	// GYRO_XOUT_H (0x43)부터 6바이트 (Gx, Gy, Gz)를 읽어옴
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, GYRO_XOUT_H, 1, Rec_Data, 6, 100);
+ 801296a:	2306      	movs	r3, #6
+void MPU6050_Read_Gyro(int16_t *Gx, int16_t *Gy, int16_t *Gz) {
+ 801296c:	b086      	sub	sp, #24
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, GYRO_XOUT_H, 1, Rec_Data, 6, 100);
+ 801296e:	2564      	movs	r5, #100	@ 0x64
+ 8012970:	e9cd 3501 	strd	r3, r5, [sp, #4]
+ 8012974:	ab04      	add	r3, sp, #16
+void MPU6050_Read_Gyro(int16_t *Gx, int16_t *Gy, int16_t *Gz) {
+ 8012976:	4614      	mov	r4, r2
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, GYRO_XOUT_H, 1, Rec_Data, 6, 100);
+ 8012978:	9300      	str	r3, [sp, #0]
+void MPU6050_Read_Gyro(int16_t *Gx, int16_t *Gy, int16_t *Gz) {
+ 801297a:	4606      	mov	r6, r0
+ 801297c:	460d      	mov	r5, r1
+	HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, GYRO_XOUT_H, 1, Rec_Data, 6, 100);
+ 801297e:	2301      	movs	r3, #1
+ 8012980:	2243      	movs	r2, #67	@ 0x43
+ 8012982:	21d0      	movs	r1, #208	@ 0xd0
+ 8012984:	4808      	ldr	r0, [pc, #32]	@ (80129a8 <MPU6050_Read_Gyro+0x40>)
+ 8012986:	f001 fa29 	bl	8013ddc <HAL_I2C_Mem_Read>
+
+	*Gx = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
+ 801298a:	f8bd 3010 	ldrh.w	r3, [sp, #16]
+	*Gy = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
+ 801298e:	f8bd 2012 	ldrh.w	r2, [sp, #18]
+	*Gx = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
+ 8012992:	ba5b      	rev16	r3, r3
+ 8012994:	8033      	strh	r3, [r6, #0]
+	*Gz = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
+ 8012996:	f8bd 3014 	ldrh.w	r3, [sp, #20]
+	*Gy = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
+ 801299a:	ba52      	rev16	r2, r2
+	*Gz = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
+ 801299c:	ba5b      	rev16	r3, r3
+	*Gy = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
+ 801299e:	802a      	strh	r2, [r5, #0]
+	*Gz = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
+ 80129a0:	8023      	strh	r3, [r4, #0]
+}
+ 80129a2:	b006      	add	sp, #24
+ 80129a4:	bd70      	pop	{r4, r5, r6, pc}
+ 80129a6:	bf00      	nop
+ 80129a8:	20001400 	.word	0x20001400
+
+080129ac <update_odometry>:
+>>>>>>> Stashed changes
 
 // =========================================================================
 // 4. 오도메트리 업데이트 함수 (IMU 융합 적용)
 // =========================================================================
 void update_odometry(void)
 {
+<<<<<<< Updated upstream
  801290c:	b530      	push	{r4, r5, lr}
+=======
+ 80129ac:	b530      	push	{r4, r5, lr}
+>>>>>>> Stashed changes
 	const float PI = M_PI;
 	const int PERIOD = TIMER_PERIOD;
 
 	// 1. 엔코더 카운터 값 읽기
 	int current_enc_L = (int)__HAL_TIM_GET_COUNTER(&htim3);
+<<<<<<< Updated upstream
  801290e:	4b5e      	ldr	r3, [pc, #376]	@ (8012a88 <update_odometry+0x17c>)
 	int current_enc_R = (int)__HAL_TIM_GET_COUNTER(&htim8);
  8012910:	4a5e      	ldr	r2, [pc, #376]	@ (8012a8c <update_odometry+0x180>)
@@ -40055,21 +41092,68 @@ void update_odometry(void)
  8012932:	f340 80a2 	ble.w	8012a7a <update_odometry+0x16e>
 		delta_L_pulse -= PERIOD;
  8012936:	f5a3 3380 	sub.w	r3, r3, #65536	@ 0x10000
+=======
+ 80129ae:	4b5e      	ldr	r3, [pc, #376]	@ (8012b28 <update_odometry+0x17c>)
+	int current_enc_R = (int)__HAL_TIM_GET_COUNTER(&htim8);
+ 80129b0:	4a5e      	ldr	r2, [pc, #376]	@ (8012b2c <update_odometry+0x180>)
+	int current_enc_L = (int)__HAL_TIM_GET_COUNTER(&htim3);
+ 80129b2:	681b      	ldr	r3, [r3, #0]
+
+	// 2. 카운터 변화량 계산 (Delta Pulse) - 랩어라운드 처리 적용
+	int delta_L_pulse = current_enc_L - prev_enc_L;
+ 80129b4:	495e      	ldr	r1, [pc, #376]	@ (8012b30 <update_odometry+0x184>)
+	int current_enc_L = (int)__HAL_TIM_GET_COUNTER(&htim3);
+ 80129b6:	6a58      	ldr	r0, [r3, #36]	@ 0x24
+	int current_enc_R = (int)__HAL_TIM_GET_COUNTER(&htim8);
+ 80129b8:	6812      	ldr	r2, [r2, #0]
+	int delta_R_pulse = current_enc_R - prev_enc_R;
+ 80129ba:	4c5e      	ldr	r4, [pc, #376]	@ (8012b34 <update_odometry+0x188>)
+	int delta_L_pulse = current_enc_L - prev_enc_L;
+ 80129bc:	680b      	ldr	r3, [r1, #0]
+	int current_enc_R = (int)__HAL_TIM_GET_COUNTER(&htim8);
+ 80129be:	6a55      	ldr	r5, [r2, #36]	@ 0x24
+	int delta_R_pulse = current_enc_R - prev_enc_R;
+ 80129c0:	6822      	ldr	r2, [r4, #0]
+{
+ 80129c2:	ed2d 8b08 	vpush	{d8-d11}
+	int delta_L_pulse = current_enc_L - prev_enc_L;
+ 80129c6:	1ac3      	subs	r3, r0, r3
+
+	//  랩어라운드 처리
+	if (delta_L_pulse > (PERIOD / 2)) {
+ 80129c8:	f5b3 4f00 	cmp.w	r3, #32768	@ 0x8000
+{
+ 80129cc:	b083      	sub	sp, #12
+	int delta_R_pulse = current_enc_R - prev_enc_R;
+ 80129ce:	eba5 0202 	sub.w	r2, r5, r2
+	if (delta_L_pulse > (PERIOD / 2)) {
+ 80129d2:	f340 80a2 	ble.w	8012b1a <update_odometry+0x16e>
+		delta_L_pulse -= PERIOD;
+ 80129d6:	f5a3 3380 	sub.w	r3, r3, #65536	@ 0x10000
+>>>>>>> Stashed changes
 	} else if (delta_L_pulse < -(PERIOD / 2)) {
 		delta_L_pulse += PERIOD;
 	}
 
 	if (delta_R_pulse > (PERIOD / 2)) {
+<<<<<<< Updated upstream
  801293a:	f5b2 4f00 	cmp.w	r2, #32768	@ 0x8000
  801293e:	f340 8096 	ble.w	8012a6e <update_odometry+0x162>
 		delta_R_pulse -= PERIOD;
  8012942:	f5a2 3280 	sub.w	r2, r2, #65536	@ 0x10000
+=======
+ 80129da:	f5b2 4f00 	cmp.w	r2, #32768	@ 0x8000
+ 80129de:	f340 8096 	ble.w	8012b0e <update_odometry+0x162>
+		delta_R_pulse -= PERIOD;
+ 80129e2:	f5a2 3280 	sub.w	r2, r2, #65536	@ 0x10000
+>>>>>>> Stashed changes
 	prev_enc_L = current_enc_L;
 	prev_enc_R = current_enc_R;
 
 	// 3. 펄스 변화량을 실제 이동 거리(mm)로 변환
 	float distance_L_mm = (float)delta_L_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
 	float distance_R_mm = (float)delta_R_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+<<<<<<< Updated upstream
  8012946:	ee07 2a90 	vmov	s15, r2
 	float distance_L_mm = (float)delta_L_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
  801294a:	eddf 5a53 	vldr	s11, [pc, #332]	@ 8012a98 <update_odometry+0x18c>
@@ -40083,23 +41167,47 @@ void update_odometry(void)
  8012958:	ee07 3a90 	vmov	s15, r3
 	float distance_R_mm = (float)delta_R_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
  801295c:	eec7 6a25 	vdiv.f32	s13, s14, s11
+=======
+ 80129e6:	ee07 2a90 	vmov	s15, r2
+	float distance_L_mm = (float)delta_L_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+ 80129ea:	eddf 5a53 	vldr	s11, [pc, #332]	@ 8012b38 <update_odometry+0x18c>
+	float distance_R_mm = (float)delta_R_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+ 80129ee:	ed9f 6a53 	vldr	s12, [pc, #332]	@ 8012b3c <update_odometry+0x190>
+	prev_enc_L = current_enc_L;
+ 80129f2:	6008      	str	r0, [r1, #0]
+	float distance_R_mm = (float)delta_R_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+ 80129f4:	eeb8 7ae7 	vcvt.f32.s32	s14, s15
+	float distance_L_mm = (float)delta_L_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+ 80129f8:	ee07 3a90 	vmov	s15, r3
+	float distance_R_mm = (float)delta_R_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+ 80129fc:	eec7 6a25 	vdiv.f32	s13, s14, s11
+>>>>>>> Stashed changes
 	float delta_theta_enc = (distance_R_mm - distance_L_mm) / ROBOT_AXLE_LENGTH_MM;
 
 
 	// [IMU 융합 로직]
 	int16_t Gx_raw, Gy_raw, Gz_raw;
 	MPU6050_Read_Gyro(&Gx_raw, &Gy_raw, &Gz_raw);
+<<<<<<< Updated upstream
  8012960:	f10d 0206 	add.w	r2, sp, #6
  8012964:	a901      	add	r1, sp, #4
  8012966:	f10d 0002 	add.w	r0, sp, #2
 	prev_enc_R = current_enc_R;
  801296a:	6025      	str	r5, [r4, #0]
+=======
+ 8012a00:	f10d 0206 	add.w	r2, sp, #6
+ 8012a04:	a901      	add	r1, sp, #4
+ 8012a06:	f10d 0002 	add.w	r0, sp, #2
+	prev_enc_R = current_enc_R;
+ 8012a0a:	6025      	str	r5, [r4, #0]
+>>>>>>> Stashed changes
     // 최종 각도 변화
     float delta_theta_rad = delta_theta_fused;
 
 
 	// 4. 좌표 (X, Y) 및 방향 (Yaw) 업데이트 (Middle Point 적분 방식 적용)
 	float current_yaw_rad = g_robot_yaw * PI / 180.0f;
+<<<<<<< Updated upstream
  801296c:	4c4c      	ldr	r4, [pc, #304]	@ (8012aa0 <update_odometry+0x194>)
 	float distance_L_mm = (float)delta_L_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
  801296e:	eef8 7ae7 	vcvt.f32.s32	s15, s15
@@ -40161,12 +41269,76 @@ void update_odometry(void)
 	float avg_yaw_rad = current_yaw_rad + delta_theta_rad / 2.0f;
  80129e4:	eeb0 ba6a 	vmov.f32	s22, s21
  80129e8:	eea8 ba09 	vfma.f32	s22, s16, s18
+=======
+ 8012a0c:	4c4c      	ldr	r4, [pc, #304]	@ (8012b40 <update_odometry+0x194>)
+	float distance_L_mm = (float)delta_L_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+ 8012a0e:	eef8 7ae7 	vcvt.f32.s32	s15, s15
+	float current_yaw_rad = g_robot_yaw * PI / 180.0f;
+ 8012a12:	eddf 9a4c 	vldr	s19, [pc, #304]	@ 8012b44 <update_odometry+0x198>
+ 8012a16:	ed9f aa4c 	vldr	s20, [pc, #304]	@ 8012b48 <update_odometry+0x19c>
+	float distance_L_mm = (float)delta_L_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+ 8012a1a:	ee87 7aa5 	vdiv.f32	s14, s15, s11
+	float distance_R_mm = (float)delta_R_pulse / ENCODER_RESOLUTION * (2.0f * PI * WHEEL_RADIUS_MM);
+ 8012a1e:	ee66 7a86 	vmul.f32	s15, s13, s12
+	float delta_theta_enc = (distance_R_mm - distance_L_mm) / ROBOT_AXLE_LENGTH_MM;
+ 8012a22:	eddf 5a4a 	vldr	s11, [pc, #296]	@ 8012b4c <update_odometry+0x1a0>
+	float distance_center_mm = (distance_R_mm + distance_L_mm) / 2.0f;
+ 8012a26:	eef0 8a67 	vmov.f32	s17, s15
+	float delta_theta_enc = (distance_R_mm - distance_L_mm) / ROBOT_AXLE_LENGTH_MM;
+ 8012a2a:	eee7 7a46 	vfms.f32	s15, s14, s12
+	float distance_center_mm = (distance_R_mm + distance_L_mm) / 2.0f;
+ 8012a2e:	eee7 8a06 	vfma.f32	s17, s14, s12
+	float delta_theta_enc = (distance_R_mm - distance_L_mm) / ROBOT_AXLE_LENGTH_MM;
+ 8012a32:	ee87 8aa5 	vdiv.f32	s16, s15, s11
+	MPU6050_Read_Gyro(&Gx_raw, &Gy_raw, &Gz_raw);
+ 8012a36:	f7ff ff97 	bl	8012968 <MPU6050_Read_Gyro>
+	float angular_vel_gyro_dps = (float)Gz_raw / MPU6050_GYRO_SCALE;
+ 8012a3a:	f9bd 3006 	ldrsh.w	r3, [sp, #6]
+ 8012a3e:	ee07 3a10 	vmov	s14, r3
+ 8012a42:	eddf 6a43 	vldr	s13, [pc, #268]	@ 8012b50 <update_odometry+0x1a4>
+	float current_yaw_rad = g_robot_yaw * PI / 180.0f;
+ 8012a46:	edd4 7a00 	vldr	s15, [r4]
+	angular_vel_gyro_rps -= gyro_bias_Z;
+ 8012a4a:	4b42      	ldr	r3, [pc, #264]	@ (8012b54 <update_odometry+0x1a8>)
+ 8012a4c:	ed9f 6a42 	vldr	s12, [pc, #264]	@ 8012b58 <update_odometry+0x1ac>
+	                          ((1.0f - FUSION_ALPHA) * delta_theta_enc);
+ 8012a50:	ed9f 5a42 	vldr	s10, [pc, #264]	@ 8012b5c <update_odometry+0x1b0>
+	float angular_vel_gyro_dps = (float)Gz_raw / MPU6050_GYRO_SCALE;
+ 8012a54:	eeb8 7ac7 	vcvt.f32.s32	s14, s14
+	float current_yaw_rad = g_robot_yaw * PI / 180.0f;
+ 8012a58:	ee67 7aa9 	vmul.f32	s15, s15, s19
+	float angular_vel_gyro_dps = (float)Gz_raw / MPU6050_GYRO_SCALE;
+ 8012a5c:	eec7 5a26 	vdiv.f32	s11, s14, s13
+	float current_yaw_rad = g_robot_yaw * PI / 180.0f;
+ 8012a60:	eec7 aa8a 	vdiv.f32	s21, s15, s20
+	angular_vel_gyro_rps -= gyro_bias_Z;
+ 8012a64:	edd3 7a00 	vldr	s15, [r3]
+	float delta_theta_gyro = angular_vel_gyro_rps * ODOMETRY_DT;
+ 8012a68:	eddf 6a3d 	vldr	s13, [pc, #244]	@ 8012b60 <update_odometry+0x1b4>
+	float delta_theta_fused = (FUSION_ALPHA * delta_theta_gyro) +
+ 8012a6c:	ed9f 7a3d 	vldr	s14, [pc, #244]	@ 8012b64 <update_odometry+0x1b8>
+	angular_vel_gyro_rps -= gyro_bias_Z;
+ 8012a70:	eed5 7a86 	vfnms.f32	s15, s11, s12
+	                          ((1.0f - FUSION_ALPHA) * delta_theta_enc);
+ 8012a74:	ee28 8a05 	vmul.f32	s16, s16, s10
+	float delta_theta_gyro = angular_vel_gyro_rps * ODOMETRY_DT;
+ 8012a78:	ee67 7aa6 	vmul.f32	s15, s15, s13
+	float distance_center_mm = (distance_R_mm + distance_L_mm) / 2.0f;
+ 8012a7c:	eeb6 9a00 	vmov.f32	s18, #96	@ 0x3f000000  0.5
+	float delta_theta_fused = (FUSION_ALPHA * delta_theta_gyro) +
+ 8012a80:	eea7 8a87 	vfma.f32	s16, s15, s14
+
+	float avg_yaw_rad = current_yaw_rad + delta_theta_rad / 2.0f;
+ 8012a84:	eeb0 ba6a 	vmov.f32	s22, s21
+ 8012a88:	eea8 ba09 	vfma.f32	s22, s16, s18
+>>>>>>> Stashed changes
 
 	g_robot_x += delta_x;
 	g_robot_y += delta_y;
 
 	// Yaw 각도 업데이트 및 정규화
 	float next_yaw_rad = current_yaw_rad + delta_theta_rad;
+<<<<<<< Updated upstream
  80129ec:	ee38 8a2a 	vadd.f32	s16, s16, s21
 	float delta_x = distance_center_mm * cosf(avg_yaw_rad);
  80129f0:	eeb0 0a4b 	vmov.f32	s0, s22
@@ -40260,19 +41432,119 @@ void update_odometry(void)
  8012ad0:	43b40000 	.word	0x43b40000
 
 08012ad4 <HAL_MspInit>:
+=======
+ 8012a8c:	ee38 8a2a 	vadd.f32	s16, s16, s21
+	float delta_x = distance_center_mm * cosf(avg_yaw_rad);
+ 8012a90:	eeb0 0a4b 	vmov.f32	s0, s22
+ 8012a94:	f007 fec2 	bl	801a81c <cosf>
+	g_robot_yaw = next_yaw_rad * 180.0f / PI;
+ 8012a98:	ee28 8a0a 	vmul.f32	s16, s16, s20
+	float distance_center_mm = (distance_R_mm + distance_L_mm) / 2.0f;
+ 8012a9c:	ee68 8a89 	vmul.f32	s17, s17, s18
+	float delta_x = distance_center_mm * cosf(avg_yaw_rad);
+ 8012aa0:	eeb0 9a40 	vmov.f32	s18, s0
+	float delta_y = distance_center_mm * sinf(avg_yaw_rad);
+ 8012aa4:	eeb0 0a4b 	vmov.f32	s0, s22
+ 8012aa8:	f007 ff26 	bl	801a8f8 <sinf>
+	g_robot_yaw = next_yaw_rad * 180.0f / PI;
+ 8012aac:	eec8 7a29 	vdiv.f32	s15, s16, s19
+	g_robot_x += delta_x;
+ 8012ab0:	4a2d      	ldr	r2, [pc, #180]	@ (8012b68 <update_odometry+0x1bc>)
+	g_robot_y += delta_y;
+ 8012ab2:	4b2e      	ldr	r3, [pc, #184]	@ (8012b6c <update_odometry+0x1c0>)
+	g_robot_x += delta_x;
+ 8012ab4:	ed92 6a00 	vldr	s12, [r2]
+	g_robot_y += delta_y;
+ 8012ab8:	edd3 6a00 	vldr	s13, [r3]
+
+	while (g_robot_yaw >= 360.0f) g_robot_yaw -= 360.0f;
+ 8012abc:	ed9f 7a2c 	vldr	s14, [pc, #176]	@ 8012b70 <update_odometry+0x1c4>
+	g_robot_x += delta_x;
+ 8012ac0:	eea9 6a28 	vfma.f32	s12, s18, s17
+	g_robot_y += delta_y;
+ 8012ac4:	eee0 6a28 	vfma.f32	s13, s0, s17
+	while (g_robot_yaw >= 360.0f) g_robot_yaw -= 360.0f;
+ 8012ac8:	eef4 7ac7 	vcmpe.f32	s15, s14
+ 8012acc:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+	g_robot_x += delta_x;
+ 8012ad0:	ed82 6a00 	vstr	s12, [r2]
+	g_robot_y += delta_y;
+ 8012ad4:	edc3 6a00 	vstr	s13, [r3]
+	while (g_robot_yaw >= 360.0f) g_robot_yaw -= 360.0f;
+ 8012ad8:	db0e      	blt.n	8012af8 <update_odometry+0x14c>
+ 8012ada:	ee77 7ac7 	vsub.f32	s15, s15, s14
+ 8012ade:	eef4 7ac7 	vcmpe.f32	s15, s14
+ 8012ae2:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 8012ae6:	daf8      	bge.n	8012ada <update_odometry+0x12e>
+ 8012ae8:	edc4 7a00 	vstr	s15, [r4]
+	while (g_robot_yaw < 0.0f) g_robot_yaw += 360.0f;
+}
+ 8012aec:	b003      	add	sp, #12
+ 8012aee:	ecbd 8b08 	vpop	{d8-d11}
+ 8012af2:	bd30      	pop	{r4, r5, pc}
+	while (g_robot_yaw < 0.0f) g_robot_yaw += 360.0f;
+ 8012af4:	ee77 7a87 	vadd.f32	s15, s15, s14
+ 8012af8:	eef5 7ac0 	vcmpe.f32	s15, #0.0
+ 8012afc:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
+ 8012b00:	d4f8      	bmi.n	8012af4 <update_odometry+0x148>
+ 8012b02:	edc4 7a00 	vstr	s15, [r4]
+}
+ 8012b06:	b003      	add	sp, #12
+ 8012b08:	ecbd 8b08 	vpop	{d8-d11}
+ 8012b0c:	bd30      	pop	{r4, r5, pc}
+	} else if (delta_R_pulse < -(PERIOD / 2)) {
+ 8012b0e:	f512 4f00 	cmn.w	r2, #32768	@ 0x8000
+		delta_R_pulse += PERIOD;
+ 8012b12:	bfb8      	it	lt
+ 8012b14:	f502 3280 	addlt.w	r2, r2, #65536	@ 0x10000
+ 8012b18:	e765      	b.n	80129e6 <update_odometry+0x3a>
+	} else if (delta_L_pulse < -(PERIOD / 2)) {
+ 8012b1a:	f513 4f00 	cmn.w	r3, #32768	@ 0x8000
+		delta_L_pulse += PERIOD;
+ 8012b1e:	bfb8      	it	lt
+ 8012b20:	f503 3380 	addlt.w	r3, r3, #65536	@ 0x10000
+ 8012b24:	e759      	b.n	80129da <update_odometry+0x2e>
+ 8012b26:	bf00      	nop
+ 8012b28:	20001328 	.word	0x20001328
+ 8012b2c:	20001250 	.word	0x20001250
+ 8012b30:	20001458 	.word	0x20001458
+ 8012b34:	20001454 	.word	0x20001454
+ 8012b38:	447a0000 	.word	0x447a0000
+ 8012b3c:	433c7edd 	.word	0x433c7edd
+ 8012b40:	20001460 	.word	0x20001460
+ 8012b44:	40490fdb 	.word	0x40490fdb
+ 8012b48:	43340000 	.word	0x43340000
+ 8012b4c:	43200000 	.word	0x43200000
+ 8012b50:	41833333 	.word	0x41833333
+ 8012b54:	2000145c 	.word	0x2000145c
+ 8012b58:	3c8efa35 	.word	0x3c8efa35
+ 8012b5c:	3ca3d700 	.word	0x3ca3d700
+ 8012b60:	3dcccccd 	.word	0x3dcccccd
+ 8012b64:	3f7ae148 	.word	0x3f7ae148
+ 8012b68:	20001468 	.word	0x20001468
+ 8012b6c:	20001464 	.word	0x20001464
+ 8012b70:	43b40000 	.word	0x43b40000
+
+08012b74 <HAL_MspInit>:
+>>>>>>> Stashed changes
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
                                         /**
   * Initializes the Global MSP.
   */
 void HAL_MspInit(void)
 {
+<<<<<<< Updated upstream
  8012ad4:	b082      	sub	sp, #8
+=======
+ 8012b74:	b082      	sub	sp, #8
+>>>>>>> Stashed changes
 
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
 
   __HAL_RCC_SYSCFG_CLK_ENABLE();
+<<<<<<< Updated upstream
  8012ad6:	4b0d      	ldr	r3, [pc, #52]	@ (8012b0c <HAL_MspInit+0x38>)
  8012ad8:	2100      	movs	r1, #0
  8012ada:	9100      	str	r1, [sp, #0]
@@ -40295,12 +41567,37 @@ void HAL_MspInit(void)
 
   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
  8012b02:	2007      	movs	r0, #7
+=======
+ 8012b76:	4b0d      	ldr	r3, [pc, #52]	@ (8012bac <HAL_MspInit+0x38>)
+ 8012b78:	2100      	movs	r1, #0
+ 8012b7a:	9100      	str	r1, [sp, #0]
+ 8012b7c:	6c5a      	ldr	r2, [r3, #68]	@ 0x44
+ 8012b7e:	f442 4280 	orr.w	r2, r2, #16384	@ 0x4000
+ 8012b82:	645a      	str	r2, [r3, #68]	@ 0x44
+ 8012b84:	6c5a      	ldr	r2, [r3, #68]	@ 0x44
+ 8012b86:	f402 4280 	and.w	r2, r2, #16384	@ 0x4000
+ 8012b8a:	9200      	str	r2, [sp, #0]
+ 8012b8c:	9a00      	ldr	r2, [sp, #0]
+  __HAL_RCC_PWR_CLK_ENABLE();
+ 8012b8e:	9101      	str	r1, [sp, #4]
+ 8012b90:	6c1a      	ldr	r2, [r3, #64]	@ 0x40
+ 8012b92:	f042 5280 	orr.w	r2, r2, #268435456	@ 0x10000000
+ 8012b96:	641a      	str	r2, [r3, #64]	@ 0x40
+ 8012b98:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
+ 8012b9a:	f003 5380 	and.w	r3, r3, #268435456	@ 0x10000000
+ 8012b9e:	9301      	str	r3, [sp, #4]
+ 8012ba0:	9b01      	ldr	r3, [sp, #4]
+
+  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
+ 8012ba2:	2007      	movs	r0, #7
+>>>>>>> Stashed changes
   /* System interrupt init*/
 
   /* USER CODE BEGIN MspInit 1 */
 
   /* USER CODE END MspInit 1 */
 }
+<<<<<<< Updated upstream
  8012b04:	b002      	add	sp, #8
   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
  8012b06:	f000 bb51 	b.w	80131ac <HAL_NVIC_SetPriorityGrouping>
@@ -40308,12 +41605,22 @@ void HAL_MspInit(void)
  8012b0c:	40023800 	.word	0x40023800
 
 08012b10 <HAL_I2C_MspInit>:
+=======
+ 8012ba4:	b002      	add	sp, #8
+  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
+ 8012ba6:	f000 bb51 	b.w	801324c <HAL_NVIC_SetPriorityGrouping>
+ 8012baa:	bf00      	nop
+ 8012bac:	40023800 	.word	0x40023800
+
+08012bb0 <HAL_I2C_MspInit>:
+>>>>>>> Stashed changes
   * This function configures the hardware resources used in this example
   * @param hi2c: I2C handle pointer
   * @retval None
   */
 void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
 {
+<<<<<<< Updated upstream
  8012b10:	b530      	push	{r4, r5, lr}
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(hi2c->Instance==I2C1)
@@ -40331,12 +41638,32 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
  8012b24:	9406      	str	r4, [sp, #24]
   if(hi2c->Instance==I2C1)
  8012b26:	d001      	beq.n	8012b2c <HAL_I2C_MspInit+0x1c>
+=======
+ 8012bb0:	b530      	push	{r4, r5, lr}
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  if(hi2c->Instance==I2C1)
+ 8012bb2:	4b18      	ldr	r3, [pc, #96]	@ (8012c14 <HAL_I2C_MspInit+0x64>)
+ 8012bb4:	6802      	ldr	r2, [r0, #0]
+{
+ 8012bb6:	b089      	sub	sp, #36	@ 0x24
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 8012bb8:	2400      	movs	r4, #0
+  if(hi2c->Instance==I2C1)
+ 8012bba:	429a      	cmp	r2, r3
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 8012bbc:	e9cd 4402 	strd	r4, r4, [sp, #8]
+ 8012bc0:	e9cd 4404 	strd	r4, r4, [sp, #16]
+ 8012bc4:	9406      	str	r4, [sp, #24]
+  if(hi2c->Instance==I2C1)
+ 8012bc6:	d001      	beq.n	8012bcc <HAL_I2C_MspInit+0x1c>
+>>>>>>> Stashed changes
 
     /* USER CODE END I2C1_MspInit 1 */
 
   }
 
 }
+<<<<<<< Updated upstream
  8012b28:	b009      	add	sp, #36	@ 0x24
  8012b2a:	bd30      	pop	{r4, r5, pc}
     __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -40382,12 +41709,60 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
  8012b7c:	40020400 	.word	0x40020400
 
 08012b80 <HAL_TIM_Base_MspInit>:
+=======
+ 8012bc8:	b009      	add	sp, #36	@ 0x24
+ 8012bca:	bd30      	pop	{r4, r5, pc}
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+ 8012bcc:	4d12      	ldr	r5, [pc, #72]	@ (8012c18 <HAL_I2C_MspInit+0x68>)
+ 8012bce:	9400      	str	r4, [sp, #0]
+ 8012bd0:	6b2b      	ldr	r3, [r5, #48]	@ 0x30
+ 8012bd2:	f043 0302 	orr.w	r3, r3, #2
+ 8012bd6:	632b      	str	r3, [r5, #48]	@ 0x30
+ 8012bd8:	6b2b      	ldr	r3, [r5, #48]	@ 0x30
+ 8012bda:	f003 0302 	and.w	r3, r3, #2
+ 8012bde:	9300      	str	r3, [sp, #0]
+    GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_9;
+ 8012be0:	f44f 7210 	mov.w	r2, #576	@ 0x240
+ 8012be4:	2312      	movs	r3, #18
+ 8012be6:	e9cd 2302 	strd	r2, r3, [sp, #8]
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+ 8012bea:	9800      	ldr	r0, [sp, #0]
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 8012bec:	480b      	ldr	r0, [pc, #44]	@ (8012c1c <HAL_I2C_MspInit+0x6c>)
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+ 8012bee:	2203      	movs	r2, #3
+ 8012bf0:	2304      	movs	r3, #4
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 8012bf2:	a902      	add	r1, sp, #8
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+ 8012bf4:	e9cd 2305 	strd	r2, r3, [sp, #20]
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 8012bf8:	f000 fbfa 	bl	80133f0 <HAL_GPIO_Init>
+    __HAL_RCC_I2C1_CLK_ENABLE();
+ 8012bfc:	9401      	str	r4, [sp, #4]
+ 8012bfe:	6c2b      	ldr	r3, [r5, #64]	@ 0x40
+ 8012c00:	f443 1300 	orr.w	r3, r3, #2097152	@ 0x200000
+ 8012c04:	642b      	str	r3, [r5, #64]	@ 0x40
+ 8012c06:	6c2b      	ldr	r3, [r5, #64]	@ 0x40
+ 8012c08:	f403 1300 	and.w	r3, r3, #2097152	@ 0x200000
+ 8012c0c:	9301      	str	r3, [sp, #4]
+ 8012c0e:	9b01      	ldr	r3, [sp, #4]
+}
+ 8012c10:	b009      	add	sp, #36	@ 0x24
+ 8012c12:	bd30      	pop	{r4, r5, pc}
+ 8012c14:	40005400 	.word	0x40005400
+ 8012c18:	40023800 	.word	0x40023800
+ 8012c1c:	40020400 	.word	0x40020400
+
+08012c20 <HAL_TIM_Base_MspInit>:
+>>>>>>> Stashed changes
   * This function configures the hardware resources used in this example
   * @param htim_base: TIM_Base handle pointer
   * @retval None
   */
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 {
+<<<<<<< Updated upstream
  8012b80:	b530      	push	{r4, r5, lr}
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(htim_base->Instance==TIM1)
@@ -40405,29 +41780,60 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
  8012b94:	940a      	str	r4, [sp, #40]	@ 0x28
   if(htim_base->Instance==TIM1)
  8012b96:	d007      	beq.n	8012ba8 <HAL_TIM_Base_MspInit+0x28>
+=======
+ 8012c20:	b530      	push	{r4, r5, lr}
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  if(htim_base->Instance==TIM1)
+ 8012c22:	6803      	ldr	r3, [r0, #0]
+ 8012c24:	4a41      	ldr	r2, [pc, #260]	@ (8012d2c <HAL_TIM_Base_MspInit+0x10c>)
+{
+ 8012c26:	b08d      	sub	sp, #52	@ 0x34
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 8012c28:	2400      	movs	r4, #0
+  if(htim_base->Instance==TIM1)
+ 8012c2a:	4293      	cmp	r3, r2
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 8012c2c:	e9cd 4406 	strd	r4, r4, [sp, #24]
+ 8012c30:	e9cd 4408 	strd	r4, r4, [sp, #32]
+ 8012c34:	940a      	str	r4, [sp, #40]	@ 0x28
+  if(htim_base->Instance==TIM1)
+ 8012c36:	d007      	beq.n	8012c48 <HAL_TIM_Base_MspInit+0x28>
+>>>>>>> Stashed changes
     HAL_NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);
     /* USER CODE BEGIN TIM1_MspInit 1 */
 
     /* USER CODE END TIM1_MspInit 1 */
   }
   else if(htim_base->Instance==TIM2)
+<<<<<<< Updated upstream
  8012b98:	f1b3 4f80 	cmp.w	r3, #1073741824	@ 0x40000000
  8012b9c:	d021      	beq.n	8012be2 <HAL_TIM_Base_MspInit+0x62>
+=======
+ 8012c38:	f1b3 4f80 	cmp.w	r3, #1073741824	@ 0x40000000
+ 8012c3c:	d021      	beq.n	8012c82 <HAL_TIM_Base_MspInit+0x62>
+>>>>>>> Stashed changes
     HAL_NVIC_EnableIRQ(TIM2_IRQn);
     /* USER CODE BEGIN TIM2_MspInit 1 */
 
     /* USER CODE END TIM2_MspInit 1 */
   }
   else if(htim_base->Instance==TIM6)
+<<<<<<< Updated upstream
  8012b9e:	4a3c      	ldr	r2, [pc, #240]	@ (8012c90 <HAL_TIM_Base_MspInit+0x110>)
  8012ba0:	4293      	cmp	r3, r2
  8012ba2:	d05e      	beq.n	8012c62 <HAL_TIM_Base_MspInit+0xe2>
+=======
+ 8012c3e:	4a3c      	ldr	r2, [pc, #240]	@ (8012d30 <HAL_TIM_Base_MspInit+0x110>)
+ 8012c40:	4293      	cmp	r3, r2
+ 8012c42:	d05e      	beq.n	8012d02 <HAL_TIM_Base_MspInit+0xe2>
+>>>>>>> Stashed changes
     /* USER CODE BEGIN TIM6_MspInit 1 */
 
     /* USER CODE END TIM6_MspInit 1 */
   }
 
 }
+<<<<<<< Updated upstream
  8012ba4:	b00d      	add	sp, #52	@ 0x34
  8012ba6:	bd30      	pop	{r4, r5, pc}
     __HAL_RCC_TIM1_CLK_ENABLE();
@@ -40564,6 +41970,144 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
  8012c94:	40023800 	.word	0x40023800
  8012c98:	40020000 	.word	0x40020000
  8012c9c:	40020400 	.word	0x40020400
+=======
+ 8012c44:	b00d      	add	sp, #52	@ 0x34
+ 8012c46:	bd30      	pop	{r4, r5, pc}
+    __HAL_RCC_TIM1_CLK_ENABLE();
+ 8012c48:	4b3a      	ldr	r3, [pc, #232]	@ (8012d34 <HAL_TIM_Base_MspInit+0x114>)
+ 8012c4a:	9401      	str	r4, [sp, #4]
+ 8012c4c:	6c59      	ldr	r1, [r3, #68]	@ 0x44
+ 8012c4e:	f041 0101 	orr.w	r1, r1, #1
+ 8012c52:	6459      	str	r1, [r3, #68]	@ 0x44
+ 8012c54:	6c5b      	ldr	r3, [r3, #68]	@ 0x44
+ 8012c56:	f003 0301 	and.w	r3, r3, #1
+    HAL_NVIC_SetPriority(TIM1_BRK_TIM9_IRQn, 0, 0);
+ 8012c5a:	4622      	mov	r2, r4
+ 8012c5c:	4621      	mov	r1, r4
+    __HAL_RCC_TIM1_CLK_ENABLE();
+ 8012c5e:	9301      	str	r3, [sp, #4]
+    HAL_NVIC_SetPriority(TIM1_BRK_TIM9_IRQn, 0, 0);
+ 8012c60:	2018      	movs	r0, #24
+    __HAL_RCC_TIM1_CLK_ENABLE();
+ 8012c62:	9b01      	ldr	r3, [sp, #4]
+    HAL_NVIC_SetPriority(TIM1_BRK_TIM9_IRQn, 0, 0);
+ 8012c64:	f000 fb04 	bl	8013270 <HAL_NVIC_SetPriority>
+    HAL_NVIC_EnableIRQ(TIM1_BRK_TIM9_IRQn);
+ 8012c68:	2018      	movs	r0, #24
+ 8012c6a:	f000 fb3d 	bl	80132e8 <HAL_NVIC_EnableIRQ>
+    HAL_NVIC_SetPriority(TIM1_UP_TIM10_IRQn, 0, 0);
+ 8012c6e:	4622      	mov	r2, r4
+ 8012c70:	4621      	mov	r1, r4
+ 8012c72:	2019      	movs	r0, #25
+ 8012c74:	f000 fafc 	bl	8013270 <HAL_NVIC_SetPriority>
+    HAL_NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);
+ 8012c78:	2019      	movs	r0, #25
+ 8012c7a:	f000 fb35 	bl	80132e8 <HAL_NVIC_EnableIRQ>
+}
+ 8012c7e:	b00d      	add	sp, #52	@ 0x34
+ 8012c80:	bd30      	pop	{r4, r5, pc}
+    __HAL_RCC_TIM2_CLK_ENABLE();
+ 8012c82:	f503 330e 	add.w	r3, r3, #145408	@ 0x23800
+ 8012c86:	9402      	str	r4, [sp, #8]
+ 8012c88:	6c1a      	ldr	r2, [r3, #64]	@ 0x40
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 8012c8a:	482b      	ldr	r0, [pc, #172]	@ (8012d38 <HAL_TIM_Base_MspInit+0x118>)
+    __HAL_RCC_TIM2_CLK_ENABLE();
+ 8012c8c:	f042 0201 	orr.w	r2, r2, #1
+ 8012c90:	641a      	str	r2, [r3, #64]	@ 0x40
+ 8012c92:	6c1a      	ldr	r2, [r3, #64]	@ 0x40
+ 8012c94:	f002 0201 	and.w	r2, r2, #1
+ 8012c98:	9202      	str	r2, [sp, #8]
+ 8012c9a:	9a02      	ldr	r2, [sp, #8]
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+ 8012c9c:	9403      	str	r4, [sp, #12]
+ 8012c9e:	6b1a      	ldr	r2, [r3, #48]	@ 0x30
+ 8012ca0:	f042 0201 	orr.w	r2, r2, #1
+ 8012ca4:	631a      	str	r2, [r3, #48]	@ 0x30
+ 8012ca6:	6b1a      	ldr	r2, [r3, #48]	@ 0x30
+ 8012ca8:	f002 0201 	and.w	r2, r2, #1
+ 8012cac:	9203      	str	r2, [sp, #12]
+ 8012cae:	9a03      	ldr	r2, [sp, #12]
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+ 8012cb0:	9404      	str	r4, [sp, #16]
+ 8012cb2:	6b1a      	ldr	r2, [r3, #48]	@ 0x30
+ 8012cb4:	f042 0202 	orr.w	r2, r2, #2
+ 8012cb8:	631a      	str	r2, [r3, #48]	@ 0x30
+ 8012cba:	6b1b      	ldr	r3, [r3, #48]	@ 0x30
+ 8012cbc:	f003 0302 	and.w	r3, r3, #2
+ 8012cc0:	9304      	str	r3, [sp, #16]
+    GPIO_InitStruct.Pin = GPIO_PIN_1;
+ 8012cc2:	2202      	movs	r2, #2
+    GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+ 8012cc4:	2501      	movs	r5, #1
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 8012cc6:	a906      	add	r1, sp, #24
+    GPIO_InitStruct.Pin = GPIO_PIN_1;
+ 8012cc8:	2302      	movs	r3, #2
+ 8012cca:	e9cd 2306 	strd	r2, r3, [sp, #24]
+    GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+ 8012cce:	950a      	str	r5, [sp, #40]	@ 0x28
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+ 8012cd0:	9b04      	ldr	r3, [sp, #16]
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 8012cd2:	f000 fb8d 	bl	80133f0 <HAL_GPIO_Init>
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+ 8012cd6:	2302      	movs	r3, #2
+    GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_8;
+ 8012cd8:	f44f 62a0 	mov.w	r2, #1280	@ 0x500
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 8012cdc:	a906      	add	r1, sp, #24
+ 8012cde:	4817      	ldr	r0, [pc, #92]	@ (8012d3c <HAL_TIM_Base_MspInit+0x11c>)
+    GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+ 8012ce0:	950a      	str	r5, [sp, #40]	@ 0x28
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+ 8012ce2:	e9cd 2306 	strd	r2, r3, [sp, #24]
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+ 8012ce6:	e9cd 4408 	strd	r4, r4, [sp, #32]
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 8012cea:	f000 fb81 	bl	80133f0 <HAL_GPIO_Init>
+    HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
+ 8012cee:	4622      	mov	r2, r4
+ 8012cf0:	4621      	mov	r1, r4
+ 8012cf2:	201c      	movs	r0, #28
+ 8012cf4:	f000 fabc 	bl	8013270 <HAL_NVIC_SetPriority>
+    HAL_NVIC_EnableIRQ(TIM2_IRQn);
+ 8012cf8:	201c      	movs	r0, #28
+ 8012cfa:	f000 faf5 	bl	80132e8 <HAL_NVIC_EnableIRQ>
+}
+ 8012cfe:	b00d      	add	sp, #52	@ 0x34
+ 8012d00:	bd30      	pop	{r4, r5, pc}
+    __HAL_RCC_TIM6_CLK_ENABLE();
+ 8012d02:	4b0c      	ldr	r3, [pc, #48]	@ (8012d34 <HAL_TIM_Base_MspInit+0x114>)
+ 8012d04:	9405      	str	r4, [sp, #20]
+ 8012d06:	6c19      	ldr	r1, [r3, #64]	@ 0x40
+ 8012d08:	f041 0110 	orr.w	r1, r1, #16
+ 8012d0c:	6419      	str	r1, [r3, #64]	@ 0x40
+ 8012d0e:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
+ 8012d10:	f003 0310 	and.w	r3, r3, #16
+    HAL_NVIC_SetPriority(TIM6_DAC_IRQn, 0, 0);
+ 8012d14:	4622      	mov	r2, r4
+ 8012d16:	4621      	mov	r1, r4
+    __HAL_RCC_TIM6_CLK_ENABLE();
+ 8012d18:	9305      	str	r3, [sp, #20]
+    HAL_NVIC_SetPriority(TIM6_DAC_IRQn, 0, 0);
+ 8012d1a:	2036      	movs	r0, #54	@ 0x36
+    __HAL_RCC_TIM6_CLK_ENABLE();
+ 8012d1c:	9b05      	ldr	r3, [sp, #20]
+    HAL_NVIC_SetPriority(TIM6_DAC_IRQn, 0, 0);
+ 8012d1e:	f000 faa7 	bl	8013270 <HAL_NVIC_SetPriority>
+    HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
+ 8012d22:	2036      	movs	r0, #54	@ 0x36
+ 8012d24:	f000 fae0 	bl	80132e8 <HAL_NVIC_EnableIRQ>
+}
+ 8012d28:	b00d      	add	sp, #52	@ 0x34
+ 8012d2a:	bd30      	pop	{r4, r5, pc}
+ 8012d2c:	40010000 	.word	0x40010000
+ 8012d30:	40001000 	.word	0x40001000
+ 8012d34:	40023800 	.word	0x40023800
+ 8012d38:	40020000 	.word	0x40020000
+ 8012d3c:	40020400 	.word	0x40020400
+>>>>>>> Stashed changes
 
 08012ca0 <HAL_TIM_Encoder_MspInit>:
   * This function configures the hardware resources used in this example
@@ -41581,7 +43125,11 @@ __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
  8013152:	2000      	movs	r0, #0
  8013154:	f7ff ffc8 	bl	80130e8 <HAL_InitTick>
   HAL_MspInit();
+<<<<<<< Updated upstream
  8013158:	f7ff fcbc 	bl	8012ad4 <HAL_MspInit>
+=======
+ 80131f8:	f7ff fcbc 	bl	8012b74 <HAL_MspInit>
+>>>>>>> Stashed changes
 }
  801315c:	2000      	movs	r0, #0
  801315e:	bd08      	pop	{r3, pc}
@@ -43349,8 +44897,13 @@ static HAL_StatusTypeDef I2C_IsAcknowledgeFailed(I2C_HandleTypeDef *hi2c)
     hi2c->Lock = HAL_UNLOCKED;
  8013bbc:	f880 203c 	strb.w	r2, [r0, #60]	@ 0x3c
     HAL_I2C_MspInit(hi2c);
+<<<<<<< Updated upstream
  8013bc0:	f7fe ffa6 	bl	8012b10 <HAL_I2C_MspInit>
  8013bc4:	e762      	b.n	8013a8c <HAL_I2C_Init+0x18>
+=======
+ 8013c60:	f7fe ffa6 	bl	8012bb0 <HAL_I2C_MspInit>
+ 8013c64:	e762      	b.n	8013b2c <HAL_I2C_Init+0x18>
+>>>>>>> Stashed changes
   MODIFY_REG(hi2c->Instance->CCR, (I2C_CCR_FS | I2C_CCR_DUTY | I2C_CCR_CCR), I2C_SPEED(pclk1, hi2c->Init.ClockSpeed, hi2c->Init.DutyCycle));
  8013bc6:	f3c3 030b 	ubfx	r3, r3, #0, #12
  8013bca:	e79b      	b.n	8013b04 <HAL_I2C_Init+0x90>
@@ -46219,8 +47772,13 @@ __weak void HAL_TIM_TriggerCallback(TIM_HandleTypeDef *htim)
     htim->Lock = HAL_UNLOCKED;
  8014cf2:	f880 203c 	strb.w	r2, [r0, #60]	@ 0x3c
     HAL_TIM_Base_MspInit(htim);
+<<<<<<< Updated upstream
  8014cf6:	f7fd ff43 	bl	8012b80 <HAL_TIM_Base_MspInit>
  8014cfa:	e7db      	b.n	8014cb4 <HAL_TIM_Base_Init+0x10>
+=======
+ 8014d96:	f7fd ff43 	bl	8012c20 <HAL_TIM_Base_MspInit>
+ 8014d9a:	e7db      	b.n	8014d54 <HAL_TIM_Base_Init+0x10>
+>>>>>>> Stashed changes
     return HAL_ERROR;
  8014cfc:	2001      	movs	r0, #1
 }

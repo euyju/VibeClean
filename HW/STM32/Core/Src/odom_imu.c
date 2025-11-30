@@ -34,24 +34,6 @@ int prev_enc_R = 0;
 // 2. MPU6050 초기화 및 데이터 읽기 함수
 // =========================================================================
 
-// [수정됨] 함수 이름 변경: MPU6050_Init -> Odom_MPU_Init
-void Odom_MPU_Init(void) {
-    uint8_t check;
-    uint8_t data;
-
-    // WHO_AM_I register read
-    HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, 0x75, 1, &check, 1, 1000);
-
-    if (check == 104) {  // 0x68
-        data = 0;
-        // PWR_MGMT_1 설정: 슬립 모드 해제
-        HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, 0x6B, 1, &data, 1, 1000);
-
-        // 자이로 감도 설정: ±2000 deg/s 범위 설정 (Scale Factor: 16.4)
-        data = 0x18; // 0x18 = GYRO_CONFIG (0x1B)에서 FS_SEL=3 설정
-        HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, 0x1B, 1, &data, 1, 1000);
-    }
-}
 
 void MPU6050_Read_Accel(int16_t *Ax, int16_t *Ay, int16_t *Az) {
     uint8_t Rec_Data[6];

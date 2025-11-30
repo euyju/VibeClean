@@ -1,0 +1,121 @@
+18:26:36 **** Incremental Build of configuration Debug for project SoundTest ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DEI_CLASSIFIER_TFLITE_ENABLE_CMSIS_NN=1 -DEI_PORTING_STM32_CUBEAI=1 -DARM_MATH_CM4 -D__FPU_PRESENT=1 -DTF_LITE_STATIC_MEMORY=1 -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I"C:/Users/taejeong/STM32CubeIDE/sadStroy1129/VibeClean_feature-RGB-LED/HW/STM32/Edge-AI" -I"C:/Users/taejeong/STM32CubeIDE/sadStroy1129/VibeClean_feature-RGB-LED/HW/STM32/Edge-AI/edge-impulse-sdk" -I"C:/Users/taejeong/STM32CubeIDE/sadStroy1129/VibeClean_feature-RGB-LED/HW/STM32/Edge-AI/model-parameters" -I"C:/Users/taejeong/STM32CubeIDE/sadStroy1129/VibeClean_feature-RGB-LED/HW/STM32/Edge-AI/tflite-model" -IC:/Users/taejeong/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc -IC:/Users/taejeong/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -IC:/Users/taejeong/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/CMSIS/Device/ST/STM32F4xx/Include -IC:/Users/taejeong/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/CMSIS/Include -IC:/Users/82109/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc -IC:/Users/82109/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -IC:/Users/82109/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/CMSIS/Device/ST/STM32F4xx/Include -IC:/Users/82109/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/CMSIS/Include -IC:/Users/goldl/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc -IC:/Users/goldl/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -IC:/Users/goldl/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/CMSIS/Device/ST/STM32F4xx/Include -IC:/Users/goldl/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/CMSIS/Include -O2 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+In file included from C:/Users/taejeong/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:156,
+                 from C:/Users/taejeong/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h:29,
+                 from C:/Users/taejeong/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h:27,
+                 from ../Core/Inc/stm32f4xx_hal_conf.h:275,
+                 from C:/Users/taejeong/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+C:/Users/taejeong/STM32Cube/Repository/STM32Cube_FW_F4_V1.28.3/Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h:51: warning: "__FPU_PRESENT" redefined
+   51 | #define __FPU_PRESENT             1U       /*!< FPU present                                   */
+      | 
+<command-line>: note: this is the location of the previous definition
+../Core/Src/main.c: In function 'Run_Drive_Logic':
+../Core/Src/main.c:291:13: warning: implicit declaration of function 'move_forward_pwm' [-Wimplicit-function-declaration]
+  291 |             move_forward_pwm(BASE_SPEED);
+      |             ^~~~~~~~~~~~~~~~
+../Core/Src/main.c:292:13: warning: implicit declaration of function 'fan_forward_pwm' [-Wimplicit-function-declaration]
+  292 |             fan_forward_pwm(980);
+      |             ^~~~~~~~~~~~~~~
+../Core/Src/main.c:298:13: warning: implicit declaration of function 'stop_all_motors' [-Wimplicit-function-declaration]
+  298 |             stop_all_motors();
+      |             ^~~~~~~~~~~~~~~
+../Core/Src/main.c:309:13: warning: implicit declaration of function 'move_backward_pwm' [-Wimplicit-function-declaration]
+  309 |             move_backward_pwm(BASE_SPEED);
+      |             ^~~~~~~~~~~~~~~~~
+../Core/Src/main.c:322:17: warning: implicit declaration of function 'rotate_left_inplace' [-Wimplicit-function-declaration]
+  322 |                 rotate_left_inplace(TURN_SPEED);  // 이번엔 왼쪽 (Left)
+      |                 ^~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:324:17: warning: implicit declaration of function 'rotate_right_inplace' [-Wimplicit-function-declaration]
+  324 |                 rotate_right_inplace(TURN_SPEED); // 이번엔 오른쪽 (Right)
+      |                 ^~~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c: At top level:
+../Core/Src/main.c:505:6: warning: conflicting types for 'stop_all_motors'; have 'void(void)'
+  505 | void stop_all_motors(void)
+      |      ^~~~~~~~~~~~~~~
+../Core/Src/main.c:298:13: note: previous implicit declaration of 'stop_all_motors' with type 'void(void)'
+  298 |             stop_all_motors();
+      |             ^~~~~~~~~~~~~~~
+../Core/Src/main.c:516:6: warning: conflicting types for 'move_forward_pwm'; have 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  516 | void move_forward_pwm(uint16_t pwm)
+      |      ^~~~~~~~~~~~~~~~
+../Core/Src/main.c:291:13: note: previous implicit declaration of 'move_forward_pwm' with type 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  291 |             move_forward_pwm(BASE_SPEED);
+      |             ^~~~~~~~~~~~~~~~
+../Core/Src/main.c:525:6: warning: conflicting types for 'fan_forward_pwm'; have 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  525 | void fan_forward_pwm(uint16_t pwm)
+      |      ^~~~~~~~~~~~~~~
+../Core/Src/main.c:292:13: note: previous implicit declaration of 'fan_forward_pwm' with type 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  292 |             fan_forward_pwm(980);
+      |             ^~~~~~~~~~~~~~~
+../Core/Src/main.c:533:6: warning: conflicting types for 'move_backward_pwm'; have 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  533 | void move_backward_pwm(uint16_t pwm)
+      |      ^~~~~~~~~~~~~~~~~
+../Core/Src/main.c:309:13: note: previous implicit declaration of 'move_backward_pwm' with type 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  309 |             move_backward_pwm(BASE_SPEED);
+      |             ^~~~~~~~~~~~~~~~~
+../Core/Src/main.c:541:6: warning: conflicting types for 'rotate_right_inplace'; have 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  541 | void rotate_right_inplace(uint16_t pwm) // 오른쪽으로 제자리 회전 (좌/우 휠 반대방향)
+      |      ^~~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:324:17: note: previous implicit declaration of 'rotate_right_inplace' with type 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  324 |                 rotate_right_inplace(TURN_SPEED); // 이번엔 오른쪽 (Right)
+      |                 ^~~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:550:6: warning: conflicting types for 'rotate_left_inplace'; have 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  550 | void rotate_left_inplace(uint16_t pwm) // 왼쪽으로 제자리 회전
+      |      ^~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:322:17: note: previous implicit declaration of 'rotate_left_inplace' with type 'void(uint16_t)' {aka 'void(short unsigned int)'}
+  322 |                 rotate_left_inplace(TURN_SPEED);  // 이번엔 왼쪽 (Left)
+      |                 ^~~~~~~~~~~~~~~~~~~
+../Core/Src/main.c: In function 'Publish_Message':
+../Core/Src/main.c:973:44: warning: pointer targets in passing argument 4 of 'Send_AT_Command' differ in signedness [-Wpointer-sign]
+  973 |     Send_AT_Command(&huart3, &huart2, cmd, wizfi_rx_buffer, WIZFI360_MAX_RESPONSE_SIZE, 1000);
+      |                                            ^~~~~~~~~~~~~~~
+      |                                            |
+      |                                            char *
+../Core/Src/main.c:782:115: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+  782 | void Send_AT_Command(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term, const char *command, uint8_t *response_buffer, uint16_t buffer_size, uint32_t timeout)
+      |                                                                                                          ~~~~~~~~~^~~~~~~~~~~~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:1253:33: warning: unused variable 'd3' [-Wunused-variable]
+ 1253 |                           float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
+      |                                 ^~
+../Core/Src/main.c:1251:33: warning: unused variable 'd2' [-Wunused-variable]
+ 1251 |                           float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
+      |                                 ^~
+../Core/Src/main.c:1181:9: warning: unused variable 'start_msg' [-Wunused-variable]
+ 1181 |   char *start_msg = "STM32 WizFi360 MQTT Test Start! (PuTTY=USART2, WizFi360=USART3)\r\n";
+      |         ^~~~~~~~~
+../Core/Src/main.c:1178:8: warning: unused variable 'post_data_buffer' [-Wunused-variable]
+ 1178 |   char post_data_buffer[150]; //json 문자열 버퍼
+      |        ^~~~~~~~~~~~~~~~
+../Core/Src/main.c:1176:7: warning: unused variable 'tempAovoid' [-Wunused-variable]
+ 1176 |   int tempAovoid = 0; // 0 = right, 1 = left
+      |       ^~~~~~~~~~
+../Core/Src/main.c:1175:7: warning: unused variable 'failCount' [-Wunused-variable]
+ 1175 |   int failCount = 0;
+      |       ^~~~~~~~~
+../Core/Src/main.c:1089:14: warning: unused variable 'debug_msg' [-Wunused-variable]
+ 1089 |         char debug_msg[100]; // 디버깅 메시지 버퍼
+      |              ^~~~~~~~~
+../Core/Src/main.c:1088:21: warning: unused variable 'countR' [-Wunused-variable]
+ 1088 |         int countL, countR; //  엔코더 카운트 저장 변수
+      |                     ^~~~~~
+../Core/Src/main.c:1088:13: warning: unused variable 'countL' [-Wunused-variable]
+ 1088 |         int countL, countR; //  엔코더 카운트 저장 변수
+      |             ^~~~~~
+arm-none-eabi-g++ -o "SoundTest.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\taejeong\STM32CubeIDE\sadStroy1129\VibeClean_feature-RGB-LED\HW\STM32\STM32F446RETX_FLASH.ld" -Wl,-Map="SoundTest.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: SoundTest.elf
+ 
+arm-none-eabi-size  SoundTest.elf 
+arm-none-eabi-objdump -h -S SoundTest.elf  > "SoundTest.list"
+   text	   data	    bss	    dec	    hex	filename
+ 168828	   1388	   6176	 176392	  2b108	SoundTest.elf
+Finished building: default.size.stdout
+ 
+Finished building: SoundTest.list
+ 
+
+18:26:43 Build Finished. 0 errors, 23 warnings. (took 6s.710ms)
+

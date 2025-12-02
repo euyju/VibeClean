@@ -29,7 +29,6 @@
 #include "stm32f4xx_hal.h" // HAL 함수 사용
 #include "mpu6050.h"  // Edge-AI용 MPU6050 드라이버
 #include "edge_ai_wrapper.h"  // Edge Impulse SDK Wrapper 헤더
-#include "odom_imu.h"	//2D Mapping용 헤더파일
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -170,10 +169,6 @@ UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 TIM_HandleTypeDef htim2;
-//2D 맵핑용 위치변수
-extern float g_robot_x;     // 현재의 X 좌표
-extern float g_robot_y;     // 현재의 Y 좌표
-extern float g_robot_yaw;   // 현재의 방향 각도 (단위: 도 Degree)
 
 // Edge-AI 데이터 버퍼 (슬라이딩 윈도우 방식)
 float edge_ai_buffer[EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES];
@@ -823,15 +818,27 @@ void Publish_Message(void)
     char cmd[512];
     char json_message[400];
 
+    // 노면 상태에 따른 팬 속도 자동 설정
+    int fan_speed;
+    if (strcmp(g_current_floor, "Hard") == 0) {
+        fan_speed = 1;  // Hard -> 1단
+    } else if (strcmp(g_current_floor, "Carpet") == 0) {
+        fan_speed = 2;  // Carpet -> 2단
+    } else if (strcmp(g_current_floor, "Dusty") == 0) {
+        fan_speed = 3;  // Dusty -> 3단
+    } else {
+        fan_speed = 1;  // Unknown -> 1단
+    }
+
     // 실시간 센서 데이터와 AI 판별 결과를 포함한 JSON 생성
     snprintf(json_message, sizeof(json_message),
         "{\"currentFloor\":\"%s\",\"fanSpeed\":%d,"
-        "\"position\":{\"x\":%.2f,\"y\":%.2f},"
+        "\"position\":{\"x\":%d,\"y\":%d},"
         "\"sensor\":{\"x\":%.3f,\"y\":%.3f,\"z\":%.3f}}",
         g_current_floor,
-        g_fanSpeed > 0 ? g_fanSpeed : 1,
-        g_robot_x,
-        g_robot_y,
+        fan_speed,
+        0,
+        0,
         imu_debug_ax,
         imu_debug_ay,
         imu_debug_az);
@@ -1097,8 +1104,6 @@ int main(void)
 	  // ==========================================================
 	  // [4] 센서 및 AI 업데이트
 	  // ==========================================================
-      // x,y 좌표 계산
-	  update_odometry();
       // === RGB LED 상태 업데이트 (논블로킹 방식) ===
       update_led_state();
 

@@ -370,7 +370,7 @@ void set_motor_speed(uint8_t motor_id, uint16_t speed)
     } else if (motor_id == MOTOR_B) {
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed);
     } else if (motor_id == MOTOR_C) {
-        __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, speed);
+        __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, speed);
     }
 
 }
@@ -549,6 +549,14 @@ void set_led_priority_state(LED_Priority_State_t state)
   * @note 우선순위: STANDBY(최고) > OBSTACLE > NORMAL
   * @note 일반 모드: 베이스 색상(1000ms) ↔ 바닥 색상(500ms) 2:1 비율
   */
+
+void fan_forward_pwm(uint16_t pwm)
+{
+    set_motor_direction(MOTOR_C, FORWARD);
+
+    set_motor_speed(MOTOR_C, pwm);
+}
+
 void update_led_state(void)
 {
     uint32_t current_tick = HAL_GetTick();
@@ -627,7 +635,7 @@ void motor_control_init(void)
     // 1. PWM 출력 시작 (PA8: ENA, PA9: ENB)
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 
 
 
@@ -791,7 +799,7 @@ uint8_t MQTT_Init_All(
     // WiFi 접속
     Send_AT_Command(huart_wiz, huart_term,
         "AT+CWJAP=\"S24\",\"dial8787@@\"",
-        resp, sizeof(resp), 35000);
+        resp, sizeof(resp), 5000);
 
     // -------- MQTT 설정 --------
     if (!MQTT_SetConfig(huart_wiz, huart_term,
@@ -1077,6 +1085,8 @@ int main(void)
 	            last_pub_tick = now_tick;
 	        }
 
+	        fan_forward_pwm(990);
+
 
 	  // ==========================================================
 	  // [2] POWER OFF 체크 (조건 1)
@@ -1084,6 +1094,7 @@ int main(void)
 	  // OFF 상태면 모터 정지 후 다음 루프로 넘어감 (주행 로직 Skip)
 	        if (g_powerOn == 0) {
 	            stop_all_motors();
+	            set_led_priority_state(LED_STATE_STANDBY);  // 대기 상태 LED (빨간색 고정)
 	            // set_motor_speed(MOTOR_C, 0); // 팬도 끄기 (필요시)
 	            HAL_Delay(100);
 	            continue;
@@ -1092,17 +1103,19 @@ int main(void)
 	  // ==========================================================
 	  // [3] FAN SPEED 제어 (Fan 연결후 수정필요)
 	  // ==========================================================
-	        if (g_fanSpeed != -1) {
-	            // 수동 값(0~3)이 있으면 강제 적용
-	            int pwm_val = 0;
-	            if (g_fanSpeed == 1) pwm_val = 300;
-	            else if (g_fanSpeed == 2) pwm_val = 600;
-	            else if (g_fanSpeed == 3) pwm_val = 1000;
+//	        if (g_fanSpeed != -1) {
+//	            // 수동 값(0~3)이 있으면 강제 적용
+//	            int pwm_val = 0;
+//	            if (g_fanSpeed == 1) pwm_val = 300;
+//	            else if (g_fanSpeed == 2) pwm_val = 600;
+//	            else if (g_fanSpeed == 3) pwm_val = 1000;
+//
+//	            set_motor_speed(MOTOR_C, pwm_val);
+//	        } else {
+//	            // -1이면 노면 상태(g_current_floor)에 따라 자동 제어 (추후 구현)
+//	        }
 
-	            set_motor_speed(MOTOR_C, pwm_val);
-	        } else {
-	            // -1이면 노면 상태(g_current_floor)에 따라 자동 제어 (추후 구현)
-	        }
+
 
 	  // ==========================================================
 	  // [4] 센서 및 AI 업데이트
@@ -1173,7 +1186,9 @@ int main(void)
             }
             else
              {
-      // === 주행 코드 ===
+      // === 자동 모드: 장애물 회피 및 노면 감지 기반 주행 ===
+      set_led_priority_state(LED_STATE_NORMAL);  // 일반 동작 LED 상태로 설정
+
       // 전진 유지
       move_forward_pwm(BASE_SPEED);
 
@@ -1645,7 +1660,7 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 84-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 65535;
+  htim4.Init.Period = 999;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)
@@ -1853,7 +1868,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
+                          |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -1877,8 +1893,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB0 PB1 PB2 PB12 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12;
+  /*Configure GPIO pins : PB0 PB1 PB2 PB12
+                           PB13 PB14 PB15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
+                          |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

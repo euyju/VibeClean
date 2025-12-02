@@ -157,6 +157,7 @@ typedef enum {
 
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c3;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
@@ -218,6 +219,8 @@ static void MX_TIM2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_I2C3_Init(void);
+
 static void MX_USART3_UART_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM8_Init(void);
@@ -369,7 +372,7 @@ void set_motor_speed(uint8_t motor_id, uint16_t speed)
     if (speed > PWM_MAX_VALUE) speed = PWM_MAX_VALUE;
 
     if (motor_id == MOTOR_A) {
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed);
+//        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed);
     } else if (motor_id == MOTOR_B) {
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed);
     } else if (motor_id == MOTOR_C) {
@@ -628,7 +631,7 @@ void update_led_state(void)
 void motor_control_init(void)
 {
     // 1. PWM 출력 시작 (PA8: ENA, PA9: ENB)
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+//    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
     HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 
@@ -794,11 +797,11 @@ uint8_t MQTT_Init_All(
     // WiFi 접속
     Send_AT_Command(huart_wiz, huart_term,
         "AT+CWJAP=\"S24\",\"dial8787@@\"",
-        resp, sizeof(resp), 35000);
+        resp, sizeof(resp), 20000);
 
     // -------- MQTT 설정 --------
     if (!MQTT_SetConfig(huart_wiz, huart_term,
-                        "", "", "vibeclean01", 300,
+                        "", "", "HiPtj>h<", 300,
                         resp, sizeof(resp))) return 0;
 
     if (!MQTT_SetTopics(huart_wiz, huart_term,
@@ -981,6 +984,8 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM4_Init();
   MX_I2C1_Init();
+  MX_I2C3_Init();
+
   MX_USART3_UART_Init();
   MX_TIM3_Init();
   MX_TIM8_Init();
@@ -1141,70 +1146,70 @@ int main(void)
        // ==========================================================
 
        // g_modeManual이 1이면 수동, 그 외(0 또는 -1)는 자동
-            if (g_modeManual == 1)
-            {
-                // ------------------------------------------------------
-                // < MANUAL MODE > 장애물 감지 무시, 사용자 명령 수행
-                // ------------------------------------------------------
-                if (strcmp(g_direction, "FWD") == 0) {
-                    move_forward_pwm(BASE_SPEED);
-                }
-                else if (strcmp(g_direction, "BACK") == 0) {
-                    move_backward_pwm(BASE_SPEED);
-                }
-                else if (strcmp(g_direction, "LEFT") == 0) {
-                    rotate_left_inplace(TURN_SPEED);
-                }
-                else if (strcmp(g_direction, "RIGHT") == 0) {
-                    rotate_right_inplace(TURN_SPEED);
-                }
-                else {
-                    // "STOP" 이거나 "NULL" 이면 정지
-                    stop_all_motors();
-                }
-            }
-            else
-             {
+//            if (g_modeManual == 1)
+//            {
+//                // ------------------------------------------------------
+//                // < MANUAL MODE > 장애물 감지 무시, 사용자 명령 수행
+//                // ------------------------------------------------------
+//                if (strcmp(g_direction, "FWD") == 0) {
+//                    move_forward_pwm(BASE_SPEED);
+//                }
+//                else if (strcmp(g_direction, "BACK") == 0) {
+//                    move_backward_pwm(BASE_SPEED);
+//                }
+//                else if (strcmp(g_direction, "LEFT") == 0) {
+//                    rotate_left_inplace(TURN_SPEED);
+//                }
+//                else if (strcmp(g_direction, "RIGHT") == 0) {
+//                    rotate_right_inplace(TURN_SPEED);
+//                }
+//                else {
+//                    // "STOP" 이거나 "NULL" 이면 정지
+//                    stop_all_motors();
+//                }
+//            }
+//            else
+//             {
       // === 주행 코드 ===
       // 전진 유지
-      move_forward_pwm(BASE_SPEED);
+//      move_forward_pwm(BASE_SPEED);
 
       // 초음파 센서로 거리 측정
-      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
-      DWT_Delay_us(5000);
-      float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
-      DWT_Delay_us(5000);
-      float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
+//      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
+//      DWT_Delay_us(5000);
+//      float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
+//      DWT_Delay_us(5000);
+//      float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
 
       // UART_Printf("[USS] S1: %.1fcm | S2: %.1fcm | S3: %.1fcm\r\n", d1, d2, d3);
 
       // 장애물 감지 및 회피
-      if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
-                || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
-                || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
-          failCount++;
-          if (failCount >= 3) { // 연속 3회 이상이면 진짜 장애물
-              stop_all_motors();
-              HAL_Delay(50);
-
-              UART_Printf("[AVOID] Obstacle detected! Avoiding...\r\n");
-
-              if(tempAovoid == 0){
-                 R_avoidance_sequence();
-                 tempAovoid = 1;
-              }
-              else{
-                 L_avoidance_sequence();
-                 tempAovoid = 0;
-              }
-              failCount = 0;
-          }
-      } else {
-          failCount = 0;
-      }
-
-
-             }
+//      if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
+//                || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
+//                || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
+//          failCount++;
+//          if (failCount >= 3) { // 연속 3회 이상이면 진짜 장애물
+//              stop_all_motors();
+//              HAL_Delay(50);
+//
+//              UART_Printf("[AVOID] Obstacle detected! Avoiding...\r\n");
+//
+//              if(tempAovoid == 0){
+//                 R_avoidance_sequence();
+//                 tempAovoid = 1;
+//              }
+//              else{
+//                 L_avoidance_sequence();
+//                 tempAovoid = 0;
+//              }
+//              failCount = 0;
+//          }
+//      } else {
+//          failCount = 0;
+//      }
+//
+//
+//             }
 
 
             HAL_Delay(1);
@@ -1388,6 +1393,35 @@ static void MX_I2C1_Init(void)
 
 }
 
+static void MX_I2C3_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c3.Instance = I2C3;
+  hi2c3.Init.ClockSpeed = 400000;
+  hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c3.Init.OwnAddress1 = 0;
+  hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c3.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c3.Init.OwnAddress2 = 0;
+  hi2c3.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c3.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
+}
+
 /**
   * @brief TIM1 Initialization Function
   * @param None
@@ -1441,10 +1475,7 @@ static void MX_TIM1_Init(void)
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
   sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
+
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();

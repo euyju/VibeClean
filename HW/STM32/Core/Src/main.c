@@ -550,13 +550,6 @@ void set_led_priority_state(LED_Priority_State_t state)
   * @note 일반 모드: 베이스 색상(1000ms) ↔ 바닥 색상(500ms) 2:1 비율
   */
 
-void fan_forward_pwm(uint16_t pwm)
-{
-    set_motor_direction(MOTOR_C, FORWARD);
-
-    set_motor_speed(MOTOR_C, pwm);
-}
-
 void update_led_state(void)
 {
     uint32_t current_tick = HAL_GetTick();
@@ -807,7 +800,7 @@ uint8_t MQTT_Init_All(
                         resp, sizeof(resp))) return 0;
 
     if (!MQTT_SetTopics(huart_wiz, huart_term,
-                        "vibeclean/robot1/telemetry",
+                        "vibeclean/robot1/ai",
                         "vibeclean/robot1/control/#",
                         resp, sizeof(resp))) return 0;
 
@@ -828,30 +821,24 @@ void Publish_Message(void)
     char cmd[512];
     char json_message[400];
 
-    // 노면 상태에 따른 팬 속도 자동 설정
-    int fan_speed;
-    if (strcmp(g_current_floor, "Hard") == 0) {
-        fan_speed = 1;  // Hard -> 1단
-    } else if (strcmp(g_current_floor, "Carpet") == 0) {
-        fan_speed = 2;  // Carpet -> 2단
-    } else if (strcmp(g_current_floor, "Dusty") == 0) {
-        fan_speed = 3;  // Dusty -> 3단
-    } else {
-        fan_speed = 1;  // Unknown -> 1단
-    }
-
     // 실시간 센서 데이터와 AI 판별 결과를 포함한 JSON 생성
     snprintf(json_message, sizeof(json_message),
-        "{\"currentFloor\":\"%s\",\"fanSpeed\":%d,"
-        "\"position\":{\"x\":%d,\"y\":%d},"
-        "\"sensor\":{\"x\":%.3f,\"y\":%.3f,\"z\":%.3f}}",
-        g_current_floor,
-        fan_speed,
-        0,
-        0,
-        imu_debug_ax,
-        imu_debug_ay,
-        imu_debug_az);
+            "{"
+                "\"currentFloor\":\"%s\","
+                "\"fanSpeed\":%d,"
+                "\"sensor\":{"
+                    "\"x\":%.3f,"
+                    "\"y\":%.3f,"
+                    "\"z\":%.3f"
+                "}"
+            "}",
+            g_current_floor,
+            0,
+            imu_debug_ax,
+            imu_debug_ay,
+            imu_debug_az
+    );
+
 
     // topic은 이미 AT+MQTTTOPIC로 설정되어 있으므로 메시지만 전달
     snprintf(cmd, sizeof(cmd), "AT+MQTTPUB=\"%s\"", json_message);
@@ -1084,9 +1071,6 @@ int main(void)
 	            Publish_Message();
 	            last_pub_tick = now_tick;
 	        }
-
-	        fan_forward_pwm(990);
-
 
 	  // ==========================================================
 	  // [2] POWER OFF 체크 (조건 1)

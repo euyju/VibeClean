@@ -38,52 +38,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-// HC-SR04 핀 정의
-#define TRIG_PIN    GPIO_PIN_0
-#define TRIG_PORT    GPIOC
-#define ECHO_PIN    GPIO_PIN_1
-#define ECHO_PORT    GPIOA
-
-#define TRIG_PIN1    GPIO_PIN_1
-#define TRIG_PORT1    GPIOC
-#define ECHO_PIN1    GPIO_PIN_8
-#define ECHO_PORT1    GPIOB
-
-#define TRIG_PIN2    GPIO_PIN_2
-#define TRIG_PORT2    GPIOC
-#define ECHO_PIN2    GPIO_PIN_10
-#define ECHO_PORT2    GPIOB
-
-uint8_t rx_data[100];
-
-// 클럭 설정 (SystemClock_Config 기준 HCLK = 84MHz)
-// 1초 = 84,000,000 사이클 -> 1us = 84 사이클
-#define DWT_DELAY_UNIT (HAL_RCC_GetHCLKFreq() / 1000000)
-
-// HC-SR04 관련 상수
-#define SOUND_SPEED_CM_PER_US 0.0343 // 음속: 343m/s = 0.0343 cm/us
-#define MAX_TIMEOUT_US 6000 // 30ms (HC-SR04 최대 측정 거리 고려)  //[최적화] 6000으로 변경
-
-// 모터 1 (A) - ENA: TIM1_CH1 (PA8)
-// 방향 핀
-#define M1_IN1_PORT GPIOB
-#define M1_IN1_PIN  GPIO_PIN_0
-#define M1_IN2_PORT GPIOB
-#define M1_IN2_PIN  GPIO_PIN_1
-
-// 모터 2 (B) - ENB: TIM1_CH2 (PA9)
-// 방향 핀
-#define M2_IN1_PORT GPIOB
-#define M2_IN1_PIN  GPIO_PIN_2
-#define M2_IN2_PORT GPIOB
-#define M2_IN2_PIN  GPIO_PIN_12
-
-// 모터 3 (A) - ENA: TIM4_CH1 (Pb6)
-#define M3_IN1_PORT GPIOC
-#define M3_IN1_PIN  GPIO_PIN_3
-#define M3_IN2_PORT GPIOC
-#define M3_IN2_PIN  GPIO_PIN_4
-
 // RGB LED 핀 정의
 #define LED_R_PORT GPIOB
 #define LED_R_PIN  GPIO_PIN_13
@@ -103,40 +57,14 @@ uint8_t rx_data[100];
 #define RGB_WHITE       1, 1, 1
 
 // LED 상태 타이밍 (ms)
-#define LED_BLINK_INTERVAL_BASE    500   // 베이스 색상 표시 시간 (모드 색상)
-#define LED_BLINK_INTERVAL_FLOOR   500   // 바닥 색상 표시 시간
-#define LED_BLINK_INTERVAL_OBSTACLE 1000 // 장애물 회피 깜빡임
+#define LED_BLINK_INTERVAL_BASE    500
+#define LED_BLINK_INTERVAL_FLOOR   500
 
 // LED 우선순위 상태 정의
 typedef enum {
-    LED_STATE_NORMAL = 0,        // 일반 동작 (모드/바닥 교차 깜빡임)
-    LED_STATE_OBSTACLE = 1,      // 장애물 회피 (빨간색 깜빡임)
-    LED_STATE_STANDBY = 2        // 대기 (빨간색 고정)
+    LED_STATE_NORMAL = 0,
+    LED_STATE_STANDBY = 1
 } LED_Priority_State_t;
-
-// 모터 ID 및 방향 정의
-#define MOTOR_A     1
-#define MOTOR_B     2
-#define MOTOR_C     3
-
-#define FORWARD     1
-#define BACKWARD    2
-#define RIGHT    3 // 우회전
-#define LEFT      4 // 좌회전 (필요시)
-#define STOP        0
-
-// PWM 최대값 (CubeMX TIM1 ARR 설정에 따라 변경될 수 있음. 여기서는 1000 가정)
-#define PWM_MAX_VALUE 1000
-
-// 벽 감지 임계 거리 (센티미터 단위)
-#define WALL_DISTANCE_THRESHOLD 30.0f
-// 직진 속도 및 회전 속도 (PWM 값)
-#define BASE_SPEED          300
-#define TURN_SPEED          300
-// 회전 시간 상수 (90도 회전에 필요한 시간, 보정 필요)
-#define TURN_90_TIME_MS     3200 // (모터와 바퀴에 따라 크게 달라짐)
-// 유턴 시 전진/후진 거리 시간 (본체 폭만큼 이동하기 위한 시간, 보정 필요)
-#define BODY_MOVE_TIME_MS   800 // 예시 값 (본체 폭에 따라 조절)
 
 #define MPU6050_ADDR  (0x68 << 1)
 #define PWR_MGMT_1    0x6B
@@ -192,13 +120,10 @@ char mqtt_rx_buf[MQTT_RX_BUF_SIZE];
 int mqtt_rx_len = 0;
 
 // MQTT control 상태 변수
-int g_powerOn = -1;          // 0 = OFF, 1 = ON
-int g_fanSpeed = -1;         // 0~3
-int g_modeManual = -1;       // 0 = AUTO, 1 = MANUAL
-char g_direction[8] = "NULL";  // "FWD","BACK","LEFT","RIGHT","STOP"
+int g_powerOn = -1;
 
-// Edge-AI 판별 결과 저장 (실시간 업데이트)
-char g_current_floor[16] = "Unknown";  // "Hard", "Carpet", "Dusty", "Unknown"
+// Edge-AI 판별 결과 저장
+char g_current_floor[16] = "Unknown";
 
 // LED 제어 상태 변수
 LED_Priority_State_t g_led_priority_state = LED_STATE_NORMAL;
@@ -220,48 +145,20 @@ static void MX_TIM8_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_I2C3_Init(void);
 /* USER CODE BEGIN PFP */
-void DWT_Init(void);
-void DWT_Delay_us(uint32_t us);
-float HCSR04_Read(GPIO_TypeDef *trigPort, uint16_t trigPin,
-                  GPIO_TypeDef *echoPort, uint16_t echoPin);
+// UART 함수
 void UART_Printf(const char *format, ...);
 
-// MQTT 함수 선언
+// MQTT 함수
 void MQTT_ProcessResponseBuffer(uint8_t *buf, uint16_t len);
 
-// RGB LED 제어 함수 선언
+// RGB LED 제어 함수
 void set_rgb_led(uint8_t r, uint8_t g, uint8_t b);
 void update_led_state(void);
 void set_led_priority_state(LED_Priority_State_t state);
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-/**
-  * @brief DWT (Data Watchpoint and Trace) 초기화 함수
-  * @retval None
-  */
-void DWT_Init(void) {
-    // TRCENA 활성화 (DWT 활성화)
-    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-    // CYCCNT 카운터 초기화
-    DWT->CYCCNT = 0;
-    // CYCCNT 카운터 활성화
-    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
-}
-
-/**
-  * @brief DWT 기반 마이크로초 지연 함수
-  * @param us: 지연할 마이크로초
-  * @retval None
-  */
-void DWT_Delay_us(uint32_t us) {
-    uint32_t start_tick = DWT->CYCCNT;
-    uint32_t delay_ticks = us * DWT_DELAY_UNIT;
-    while ((DWT->CYCCNT - start_tick) < delay_ticks);
-}
 
 /**
   * @brief UART2를 이용한 printf 함수
@@ -274,247 +171,7 @@ void UART_Printf(const char *format, ...) {
     va_start(args, format);
     vsprintf(str, format, args);
     va_end(args);
-    // UART 전송 (Blocking 모드)
     HAL_UART_Transmit(&huart2, (uint8_t *)str, strlen(str), HAL_MAX_DELAY);
-}
-
-/**
-  * @brief HC-SR04 거리 측정 함수
-  * @retval 측정 거리 (cm), 실패 시 -1.0
-  */
-float HCSR04_Read(GPIO_TypeDef *trigPort, uint16_t trigPin,
-                  GPIO_TypeDef *echoPort, uint16_t echoPin)
-{
-    uint32_t start_time, end_time, duration_cycles;
-
-    HAL_GPIO_WritePin(trigPort, trigPin, GPIO_PIN_RESET);
-    DWT_Delay_us(2);
-
-    HAL_GPIO_WritePin(trigPort, trigPin, GPIO_PIN_SET);
-    DWT_Delay_us(10);
-    HAL_GPIO_WritePin(trigPort, trigPin, GPIO_PIN_RESET);
-
-    start_time = DWT->CYCCNT;
-    while (HAL_GPIO_ReadPin(echoPort, echoPin) == GPIO_PIN_RESET) {
-        if ((DWT->CYCCNT - start_time) > (MAX_TIMEOUT_US * DWT_DELAY_UNIT))
-            return -1.0f;
-    }
-
-    start_time = DWT->CYCCNT;
-    while (HAL_GPIO_ReadPin(echoPort, echoPin) == GPIO_PIN_SET) {
-        if ((DWT->CYCCNT - start_time) > (MAX_TIMEOUT_US * DWT_DELAY_UNIT))
-            return -1.0f;
-    }
-
-    end_time = DWT->CYCCNT;
-    duration_cycles = end_time - start_time;
-
-    float distance = ((float)duration_cycles / (float)DWT_DELAY_UNIT)
-                     * SOUND_SPEED_CM_PER_US / 2.0f;
-
-    return distance;
-}
-
-/* 안전한 방향 제어 함수 */
-void set_motor_direction(uint8_t motor_id, uint8_t direction)
-{
-    GPIO_TypeDef *in1_port = NULL, *in2_port = NULL;
-    uint16_t in1_pin = 0, in2_pin = 0;
-
-    if (motor_id == MOTOR_A) {
-        in1_port = M1_IN1_PORT;
-        in2_port = M1_IN2_PORT;
-        in1_pin  = M1_IN1_PIN;
-        in2_pin  = M1_IN2_PIN;
-    } else if (motor_id == MOTOR_B) {
-        in1_port = M2_IN1_PORT;
-        in2_port = M2_IN2_PORT;
-        in1_pin  = M2_IN1_PIN;
-        in2_pin  = M2_IN2_PIN;
-    }else if (motor_id == MOTOR_C) {
-        in1_port = M3_IN1_PORT;
-        in2_port = M3_IN2_PORT;
-        in1_pin  = M3_IN1_PIN;
-        in2_pin  = M3_IN2_PIN;
-    }
-    else {
-        return;
-    }
-
-    if (direction == FORWARD) {
-        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_SET);
-        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_RESET);
-
-    } else if (direction == BACKWARD) {
-        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_SET);
-    }
-    else if (direction == BACKWARD) {
-           HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_RESET);
-           HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_SET);
-       }
-    else { // STOP (coast)
-        HAL_GPIO_WritePin(in1_port, in1_pin, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(in2_port, in2_pin, GPIO_PIN_RESET);
-    }
-}
-
-
-/* 속도 설정은 그대로 사용하되 PWM_MAX와 TIM1 ARR 일치 확인 필요 */
-void set_motor_speed(uint8_t motor_id, uint16_t speed)
-{
-    if (speed > PWM_MAX_VALUE) speed = PWM_MAX_VALUE;
-
-    if (motor_id == MOTOR_A) {
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed);
-    } else if (motor_id == MOTOR_B) {
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed);
-    } else if (motor_id == MOTOR_C) {
-        __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, speed);
-    }
-
-}
-
-/* --- 모터 제어 유틸 함수 추가 --- */
-void stop_all_motors(void)
-{
-    set_motor_speed(MOTOR_A, 0);
-    set_motor_speed(MOTOR_B, 0);
-    set_motor_speed(MOTOR_C, 0);
-
-    set_motor_direction(MOTOR_A, STOP);
-    set_motor_direction(MOTOR_B, STOP);
-    set_motor_direction(MOTOR_C, STOP);
-}
-
-void move_forward_pwm(uint16_t pwm)
-{
-    set_motor_direction(MOTOR_A, FORWARD);
-    set_motor_direction(MOTOR_B, FORWARD);
-    set_motor_speed(MOTOR_A, pwm);
-    set_motor_speed(MOTOR_B, pwm);
-}
-
-void move_backward_pwm(uint16_t pwm)
-{
-    set_motor_direction(MOTOR_A, BACKWARD);
-    set_motor_direction(MOTOR_B, BACKWARD);
-    set_motor_speed(MOTOR_A, pwm);
-    set_motor_speed(MOTOR_B, pwm);
-}
-
-void rotate_right_inplace(uint16_t pwm) // 오른쪽으로 제자리 회전 (좌/우 휠 반대방향)
-{
-    // 왼쪽 앞바퀴 전진, 오른쪽 바퀴 후진 -> 우회전
-    set_motor_direction(MOTOR_A, FORWARD);   // 왼쪽
-    set_motor_direction(MOTOR_B, BACKWARD);  // 오른쪽
-    set_motor_speed(MOTOR_A, pwm);
-    set_motor_speed(MOTOR_B, pwm);
-}
-
-void rotate_left_inplace(uint16_t pwm) // 왼쪽으로 제자리 회전
-{
-    set_motor_direction(MOTOR_A, BACKWARD);
-    set_motor_direction(MOTOR_B, FORWARD);
-    set_motor_speed(MOTOR_A, pwm);
-    set_motor_speed(MOTOR_B, pwm);
-}
-
-/* 간단한 유턴: 제자리 180도 회전 (두번 90도) */
-void perform_u_turn(void)
-{
-    // 180도: 두 번 90도 회전
-    rotate_right_inplace(TURN_SPEED);
-    HAL_Delay(TURN_90_TIME_MS);
-    stop_all_motors();
-    HAL_Delay(100);
-
-    rotate_right_inplace(TURN_SPEED);
-    HAL_Delay(TURN_90_TIME_MS);
-    stop_all_motors();
-    HAL_Delay(100);
-}
-
-/* 장애물 발견 시 회피 시퀀스:
-   1) 정지
-   2) 백업(짧게)
-   3) 제자리 회전 90도 (우회전)
-   4) 전진 (몸체 폭 만큼)
-   5) 유턴(180)으로 라인 닫기(옵션)
-*/
-void R_avoidance_sequence(void)
-{
-    // LED 상태를 장애물 회피 모드로 설정 (빨간색 고정)
-    set_led_priority_state(LED_STATE_OBSTACLE);
-
-    // 1) 정지
-    stop_all_motors();
-    HAL_Delay(50);
-
-    // 2) 백업
-    move_backward_pwm(BASE_SPEED);
-    HAL_Delay(300); // 300ms 뒤로 (조정 필요)
-    stop_all_motors();
-    HAL_Delay(50);
-
-    // 3) 제자리 우회전 90도
-    rotate_right_inplace(TURN_SPEED);
-    HAL_Delay(TURN_90_TIME_MS);
-    stop_all_motors();
-    HAL_Delay(50);
-
-    // 4) 전진으로 통과
-    move_forward_pwm(BASE_SPEED);
-    HAL_Delay(BODY_MOVE_TIME_MS);
-    stop_all_motors();
-    HAL_Delay(50);
-
-    // 3) 제자리 우회전 90도
-        rotate_right_inplace(TURN_SPEED);
-        HAL_Delay(TURN_90_TIME_MS);
-        stop_all_motors();
-        HAL_Delay(50);
-
-    // 회피 완료 후 일반 모드로 복귀
-    set_led_priority_state(LED_STATE_NORMAL);
-}
-
-void L_avoidance_sequence(void)
-{
-    // LED 상태를 장애물 회피 모드로 설정 (빨간색 고정)
-    set_led_priority_state(LED_STATE_OBSTACLE);
-
-    // 1) 정지
-    stop_all_motors();
-    HAL_Delay(50);
-
-    // 2) 백업
-    move_backward_pwm(BASE_SPEED);
-    HAL_Delay(300); // 300ms 뒤로 (조정 필요)
-    stop_all_motors();
-    HAL_Delay(50);
-
-    // 3) 제자리 좌회전 90도
-    rotate_left_inplace(TURN_SPEED);
-    HAL_Delay(TURN_90_TIME_MS);
-    stop_all_motors();
-    HAL_Delay(50);
-
-    // 4) 전진으로 통과
-    move_forward_pwm(BASE_SPEED);
-    HAL_Delay(BODY_MOVE_TIME_MS);
-    stop_all_motors();
-    HAL_Delay(50);
-
-    // 3) 제자리 좌회전 90도
-        rotate_left_inplace(TURN_SPEED);
-        HAL_Delay(TURN_90_TIME_MS);
-        stop_all_motors();
-        HAL_Delay(50);
-
-
-    // 회피 완료 후 일반 모드로 복귀
-    set_led_priority_state(LED_STATE_NORMAL);
 }
 
 /**
@@ -619,32 +276,7 @@ void update_led_state(void)
     }
 }
 
-/**
-  * @brief 모터 제어를 위해 필요한 초기 설정을 수행합니다.
-  * @retval None
-  */
-void motor_control_init(void)
-{
-    // 1. PWM 출력 시작 (PA8: ENA, PA9: ENB)
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
-
-
-
-    // 2. 초기 모터 방향 설정 (정지)
-    set_motor_direction(MOTOR_A, STOP);
-    set_motor_direction(MOTOR_B, STOP);
-    set_motor_direction(MOTOR_C, STOP);
-
-    // 3. 초기 모터 속도 설정 (0)
-    set_motor_speed(MOTOR_A, 0);
-    set_motor_speed(MOTOR_B, 0);
-    set_motor_speed(MOTOR_C, 0);
-
-}
-
-// 현재 control 상태를 PuTTY(USART2)에 출력하는 디버그용 함수
+// MQTT 통신 함수
 void Send_AT_Command(UART_HandleTypeDef *huart_wiz, UART_HandleTypeDef *huart_term, const char *command, uint8_t *response_buffer, uint16_t buffer_size, uint32_t timeout)
 {
     // 1. 터미널(huart_term, PuTTY)로 전송할 명령 표시
@@ -954,12 +586,7 @@ void MQTT_ProcessResponseBuffer(uint8_t *buf, uint16_t len)
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
-//Putty 작동 테스트용 변수
-	int countL, countR; //  엔코더 카운트 저장 변수
-	char debug_msg[100]; // 디버깅 메시지 버퍼
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -991,19 +618,6 @@ int main(void)
   MX_TIM6_Init();
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
-  // DWT 초기화 (마이크로초 측정을 위해 필수)
-  DWT_Init();
-  UART_Printf("STM32 HC-SR04 Measurement Ready (Trig: PA0, Echo: PA1)\r\n");
-
-
-  motor_control_init(); // <- 반드시 호출 (PWM Start + 초기화)
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
-
-  //엔코더 카운팅 시작
-  HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
-  HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
-
-  // Edge-AI 초기화
   UART_Printf("\r\n=== VibeClean ===\r\n");
 
   // I2C 통신 테스트
@@ -1045,19 +659,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int failCount = 0;
-  int tempAovoid = 0; // 0 = right, 1 = left
+  uint32_t last_pub_tick = 0;
 
-  char post_data_buffer[150]; //json 문자열 버퍼
-  uint32_t last_pub_tick = 0; // 마지막 메시지 발행 시간 저장
-
-  char *start_msg = "STM32 WizFi360 MQTT Test Start! (PuTTY=USART2, WizFi360=USART3)\r\n";
-  //  HAL_UART_Transmit(&huart2, (uint8_t *)start_msg, strlen(start_msg), HAL_MAX_DELAY);
-
-  HAL_Delay(3000); // WizFi360 부팅 대기
-
-  //  Setup_WiFi_And_MQTT();
-  MQTT_Init_All(&huart3, &huart2);   // Wiz: huart1, Terminal: huart2
+  HAL_Delay(3000);
+  MQTT_Init_All(&huart3, &huart2);
   
   while (1)
   {
@@ -1073,36 +678,16 @@ int main(void)
 	        }
 
 	  // ==========================================================
-	  // [2] POWER OFF 체크 (조건 1)
+	  // [2] POWER OFF 체크
 	  // ==========================================================
-	  // OFF 상태면 모터 정지 후 다음 루프로 넘어감 (주행 로직 Skip)
 	        if (g_powerOn == 0) {
-	            stop_all_motors();
-	            set_led_priority_state(LED_STATE_STANDBY);  // 대기 상태 LED (빨간색 고정)
-	            // set_motor_speed(MOTOR_C, 0); // 팬도 끄기 (필요시)
+	            set_led_priority_state(LED_STATE_STANDBY);
 	            HAL_Delay(100);
 	            continue;
 	        }
 
 	  // ==========================================================
-	  // [3] FAN SPEED 제어 (Fan 연결후 수정필요)
-	  // ==========================================================
-//	        if (g_fanSpeed != -1) {
-//	            // 수동 값(0~3)이 있으면 강제 적용
-//	            int pwm_val = 0;
-//	            if (g_fanSpeed == 1) pwm_val = 300;
-//	            else if (g_fanSpeed == 2) pwm_val = 600;
-//	            else if (g_fanSpeed == 3) pwm_val = 1000;
-//
-//	            set_motor_speed(MOTOR_C, pwm_val);
-//	        } else {
-//	            // -1이면 노면 상태(g_current_floor)에 따라 자동 제어 (추후 구현)
-//	        }
-
-
-
-	  // ==========================================================
-	  // [4] 센서 및 AI 업데이트
+	  // [3] 센서 및 AI 업데이트
 	  // ==========================================================
       // === RGB LED 상태 업데이트 (논블로킹 방식) ===
       update_led_state();
@@ -1141,80 +726,7 @@ int main(void)
           edge_ai_buffer_ready = 0;
       }
 
-       // ==========================================================
-       // [5] 주행 모드 분기
-       // ==========================================================
-
-       // g_modeManual이 1이면 수동, 그 외(0 또는 -1)는 자동
-            if (g_modeManual == 1)
-            {
-                // ------------------------------------------------------
-                // < MANUAL MODE > 장애물 감지 무시, 사용자 명령 수행
-                // ------------------------------------------------------
-                if (strcmp(g_direction, "FWD") == 0) {
-                    move_forward_pwm(BASE_SPEED);
-                }
-                else if (strcmp(g_direction, "BACK") == 0) {
-                    move_backward_pwm(BASE_SPEED);
-                }
-                else if (strcmp(g_direction, "LEFT") == 0) {
-                    rotate_left_inplace(TURN_SPEED);
-                }
-                else if (strcmp(g_direction, "RIGHT") == 0) {
-                    rotate_right_inplace(TURN_SPEED);
-                }
-                else {
-                    // "STOP" 이거나 "NULL" 이면 정지
-                    stop_all_motors();
-                }
-            }
-            else
-             {
-      // === 자동 모드: 장애물 회피 및 노면 감지 기반 주행 ===
-      set_led_priority_state(LED_STATE_NORMAL);  // 일반 동작 LED 상태로 설정
-
-      // 전진 유지
-      move_forward_pwm(BASE_SPEED);
-
-      // 초음파 센서로 거리 측정
-      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
-      DWT_Delay_us(5000);
-      float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
-      DWT_Delay_us(5000);
-      float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
-
-      // UART_Printf("[USS] S1: %.1fcm | S2: %.1fcm | S3: %.1fcm\r\n", d1, d2, d3);
-
-      // 장애물 감지 및 회피
-      if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
-                || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
-                || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
-          failCount++;
-          if (failCount >= 3) { // 연속 3회 이상이면 진짜 장애물
-              stop_all_motors();
-              HAL_Delay(50);
-
-              UART_Printf("[AVOID] Obstacle detected! Avoiding...\r\n");
-
-              if(tempAovoid == 0){
-                 R_avoidance_sequence();
-                 tempAovoid = 1;
-              }
-              else{
-                 L_avoidance_sequence();
-                 tempAovoid = 0;
-              }
-              failCount = 0;
-          }
-      } else {
-          failCount = 0;
-      }
-
-
-             }
-
-
-            HAL_Delay(1);
+      HAL_Delay(1);
 //      // === MQTT 메시지 발행 (5초마다) ===    //위치이동하고 주석 처리하였습니다.
 //      uint32_t now_tick = HAL_GetTick();
 //      if (now_tick - last_pub_tick >= 1000) {
@@ -1222,92 +734,7 @@ int main(void)
 //          last_pub_tick = now_tick;
 //      }
 
-//     MPU6050_Read_Accel(&Ax, &Ay, &Az);
-//
-//         // g 단위 변환
-//         float ax_g = Ax / 16384.0f;
-//         float ay_g = Ay / 16384.0f;
-//         float az_g = Az / 16384.0f;
-//
-//         // Roll / Pitch 계산
-//         float roll  = atan2f(ay_g, az_g) * 180.0f / 3.14159265f;
-//         float pitch = atan2f(-ax_g, sqrtf(ay_g*ay_g + az_g*az_g)) * 180.0f / 3.14159265f;
-//
-//         // UART로 출력
-//         char buf[100];
-//         sprintf(buf, "Roll: %.2f  Pitch: %.2f\r\n", roll, pitch);
-//         HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 1000);
-//
-//         HAL_Delay(500);
-//      //전진 유지
-//     move_forward_pwm(BASE_SPEED);
-//
-//         d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
-//         DWT_Delay_us(5000);
-//         d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
-//         DWT_Delay_us(5000);
-//         d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
-//
-//         UART_Printf("S1: %.1f cm | S2: %.1f cm | S3: %.1f cm\r\n", d1, d2, d3);
-//
-//         // 센서값 모두 0이면 일시적인 에러로 간주
-//         if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
-//                   || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
-//                   || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
-//             failCount++;
-//             if (failCount > 5) { // 연속 3회 이상이면 진짜 장애물일 수도 있음
-//                 stop_all_motors();
-//                 HAL_Delay(50);
-//                 if(tempAovoid == 0){
-//                    R_avoidance_sequence();
-//                    tempAovoid = 1;
-//                 }
-//                 else{
-//                    L_avoidance_sequence();
-//                    tempAovoid = 0;
-//
-//                 }
-//                 failCount = 0;
-//             }
-//         } else {
-//             failCount = 0;
-//         }
-//
-//
-//         HAL_Delay(100);
-//
-//
-
      /* USER CODE BEGIN WHILE */
-
-//
-//      센서 1에서 거리 읽기
-//         distance1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
-//
-//         // 센서 2에서 거리 읽기
-//         distance2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
-//
-//         // 센서 2에서 거리 읽기
-//         distance3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
-//
-//         // 결과 출력
-//         if (distance1 > 0)
-//             UART_Printf("S1: %.2f cm  ", distance1);
-//         else
-//             UART_Printf("S1: Fail  ");
-//
-//         if (distance2 > 0)
-//             UART_Printf("S2: %.2f cm  ", distance2);
-//         else
-//             UART_Printf("S2: Fail\r\n");
-//
-//         if (distance3 > 0)
-//                      UART_Printf("S3: %.2f cm\r\n", distance3);
-//                  else
-//                      UART_Printf("S3: Fail\r\n");
-//
-//         HAL_Delay(500);
-    /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }

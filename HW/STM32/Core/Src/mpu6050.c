@@ -114,3 +114,34 @@ HAL_StatusTypeDef MPU6050_ReadAccel(I2C_HandleTypeDef *hi2c, float *ax, float *a
 
     return HAL_OK;
 }
+
+/**
+ * @brief  Read accelerometer data using DMA (non-blocking)
+ * @param  hi2c: I2C handle
+ * @param  buffer: 6-byte buffer to store raw accelerometer data
+ * @retval HAL status
+ */
+HAL_StatusTypeDef MPU6050_ReadAccel_DMA(I2C_HandleTypeDef *hi2c, uint8_t *buffer)
+{
+    // Read 6 bytes starting from ACCEL_XOUT_H using DMA
+    return HAL_I2C_Mem_Read_DMA(hi2c, MPU6050_ADDR, MPU6050_REG_ACCEL_XOUT_H, 1, buffer, 6);
+}
+
+/**
+ * @brief  Parse raw accelerometer data from DMA buffer
+ * @param  buffer: 6-byte buffer containing raw data
+ * @param  ax, ay, az: Pointers to store values in g
+ * @retval None
+ */
+void MPU6050_ParseAccelData(uint8_t *buffer, float *ax, float *ay, float *az)
+{
+    // Combine high and low bytes (big-endian)
+    int16_t raw_ax = (int16_t)((buffer[0] << 8) | buffer[1]);
+    int16_t raw_ay = (int16_t)((buffer[2] << 8) | buffer[3]);
+    int16_t raw_az = (int16_t)((buffer[4] << 8) | buffer[5]);
+
+    // Convert to g units
+    *ax = (float)raw_ax / ACCEL_SCALE_FACTOR;
+    *ay = (float)raw_ay / ACCEL_SCALE_FACTOR;
+    *az = (float)raw_az / ACCEL_SCALE_FACTOR;
+}

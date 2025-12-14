@@ -157,6 +157,7 @@ typedef enum {
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c3;
+DMA_HandleTypeDef hdma_i2c1_rx;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
@@ -176,6 +177,11 @@ float edge_ai_buffer[EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES];
 volatile uint16_t edge_ai_sample_index = 0;
 volatile uint8_t edge_ai_buffer_ready = 0;
 volatile uint16_t edge_ai_slide_counter = 0;  // 슬라이딩 인터벌 카운터
+
+// IMU DMA 관련 변수 (비동기 I2C 통신용)
+uint8_t imu_dma_buffer[6];           // DMA로 받은 6바이트 가속도 데이터
+volatile uint8_t imu_dma_ready = 0;  // DMA 완료 플래그
+volatile uint8_t imu_dma_busy = 0;   // DMA 전송 중 플래그
 
 // IMU 센서 디버깅용 변수
 volatile uint8_t imu_debug_counter = 0;  // 0.1초마다 출력하기 위한 카운터
@@ -209,6 +215,7 @@ uint8_t g_led_toggle_state = 0;  // 0 or 1 (교차 깜빡임용)
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM1_Init(void);
@@ -808,7 +815,7 @@ uint8_t MQTT_Init_All(
         return 0;
 
     if (!MQTT_ConnectBroker(huart_wiz, huart_term,
-                            "192.168.223.61", 1883,
+                            "10.96.250.61", 1883,
                             resp, sizeof(resp)))
         return 0;
 
@@ -980,6 +987,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_TIM2_Init();
   MX_TIM1_Init();
@@ -1827,6 +1835,22 @@ static void MX_USART3_UART_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -1925,40 +1949,63 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM6) {
-        float ax, ay, az;
+        // DMA가 사용 중이 아닐 때만 새로운 DMA 전송 시작
+        if (!imu_dma_busy) {
+            imu_dma_busy = 1;  // DMA 전송 시작 표시
 
-        // MPU6050에서 가속도 읽기
-        if (MPU6050_ReadAccel(&hi2c1, &ax, &ay, &az) == HAL_OK) {
-            // Edge-AI 버퍼에 저장(현재 ax는 1.0g 단위이므로, 다시 16384.0f를 곱함)
-            // 순환 버퍼 방식으로 저장 (슬라이딩 윈도우)
-            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
-            edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
-            edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
-
-            // 디버깅용 - 10번마다 한 번씩(0.1초) 센서값 저장
-            imu_debug_counter++;
-            if (imu_debug_counter >= 10) {
-                imu_debug_ax = ax;
-                imu_debug_ay = ay;
-                imu_debug_az = az;
-                imu_debug_ready = 1;  // 출력 준비 완료
-                imu_debug_counter = 0;
+            // DMA로 MPU6050 가속도 데이터 읽기 (비동기, 논블로킹)
+            if (MPU6050_ReadAccel_DMA(&hi2c1, imu_dma_buffer) != HAL_OK) {
+                // DMA 시작 실패 시 busy 플래그 해제
+                imu_dma_busy = 0;
             }
-
-            edge_ai_sample_index++;
-            edge_ai_slide_counter++;
-
-            // 버퍼가 가득 차면 순환 (슬라이딩 윈도우)
-            if (edge_ai_sample_index >= EDGE_AI_SAMPLE_COUNT) {
-                edge_ai_sample_index = 0;
-            }
-
-            // 1초(100개 샘플)마다 AI 판단 트리거
-            if (edge_ai_slide_counter >= EDGE_AI_SLIDE_INTERVAL) {
-                edge_ai_buffer_ready = 1;
-                edge_ai_slide_counter = 0;
-            }
+            // 실제 데이터 처리는 HAL_I2C_MemRxCpltCallback에서 수행
         }
+    }
+}
+
+/**
+  * @brief  I2C Memory Read DMA 완료 콜백 - IMU 데이터 처리
+  */
+void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c->Instance == I2C1) {
+        // DMA로 받은 데이터를 파싱하여 가속도 값 추출
+        float ax, ay, az;
+        MPU6050_ParseAccelData(imu_dma_buffer, &ax, &ay, &az);
+
+        // Edge-AI 버퍼에 저장 (ax는 1.0g 단위이므로, 16384.0f를 곱함)
+        // 순환 버퍼 방식으로 저장 (슬라이딩 윈도우)
+        edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+        edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+        edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
+
+        // 디버깅용 - 10번마다 한 번씩(0.1초) 센서값 저장
+        imu_debug_counter++;
+        if (imu_debug_counter >= 10) {
+            imu_debug_ax = ax;
+            imu_debug_ay = ay;
+            imu_debug_az = az;
+            imu_debug_ready = 1;  // 출력 준비 완료
+            imu_debug_counter = 0;
+        }
+
+        edge_ai_sample_index++;
+        edge_ai_slide_counter++;
+
+        // 버퍼가 가득 차면 순환 (슬라이딩 윈도우)
+        if (edge_ai_sample_index >= EDGE_AI_SAMPLE_COUNT) {
+            edge_ai_sample_index = 0;
+        }
+
+        // 1초(100개 샘플)마다 AI 판단 트리거
+        if (edge_ai_slide_counter >= EDGE_AI_SLIDE_INTERVAL) {
+            edge_ai_buffer_ready = 1;
+            edge_ai_slide_counter = 0;
+        }
+
+        // DMA 전송 완료, busy 플래그 해제
+        imu_dma_busy = 0;
+        imu_dma_ready = 1;
     }
 }
 

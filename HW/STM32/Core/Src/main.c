@@ -29,6 +29,8 @@
 #include "stm32f4xx_hal.h" // HAL 함수 사용
 #include "mpu6050.h"  // Edge-AI용 MPU6050 드라이버
 #include "edge_ai_wrapper.h"  // Edge Impulse SDK Wrapper 헤더
+#include "odom_imu.h"   //2D Mapping용 헤더파일
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -156,7 +158,6 @@ typedef enum {
 
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
-I2C_HandleTypeDef hi2c3;
 DMA_HandleTypeDef hdma_i2c1_rx;
 
 TIM_HandleTypeDef htim1;
@@ -164,6 +165,7 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim7;
 TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart2;
@@ -171,6 +173,11 @@ UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 TIM_HandleTypeDef htim2;
+
+//2D 맵핑용 위치변수
+extern volatile float g_robot_x;
+extern volatile float g_robot_y;
+extern volatile float g_robot_yaw;
 
 // Edge-AI 데이터 버퍼 (슬라이딩 윈도우 방식)
 float edge_ai_buffer[EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES];
@@ -225,7 +232,7 @@ static void MX_USART3_UART_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM8_Init(void);
 static void MX_TIM6_Init(void);
-static void MX_I2C3_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 void DWT_Init(void);
 void DWT_Delay_us(uint32_t us);
@@ -807,7 +814,7 @@ uint8_t MQTT_Init_All(
                         resp, sizeof(resp))) return 0;
 
     if (!MQTT_SetTopics(huart_wiz, huart_term,
-                        "vibeclean/robot1/ai",
+                        "vibeclean/robot1/ai2D",
                         "vibeclean/robot1/control/#",
                         resp, sizeof(resp))) return 0;
 
@@ -830,21 +837,27 @@ void Publish_Message(void)
 
     // 실시간 센서 데이터와 AI 판별 결과를 포함한 JSON 생성
     snprintf(json_message, sizeof(json_message),
-            "{"
-                "\"currentFloor\":\"%s\","
-                "\"fanSpeed\":%d,"
-                "\"sensor\":{"
-                    "\"x\":%.3f,"
-                    "\"y\":%.3f,"
-                    "\"z\":%.3f"
-                "}"
-            "}",
-            g_current_floor,
-            0,
-            imu_debug_ax,
-            imu_debug_ay,
-            imu_debug_az
-    );
+    		"{"
+    		        "\"currentFloor\":\"%s\","
+    		        "\"fanSpeed\":%d,"
+    		        "\"position\":{"
+    		            "\"x\":%.2f,"
+    		            "\"y\":%.2f"
+    		        "},"
+    		        "\"sensor\":{"
+    		            "\"x\":%.3f,"
+    		            "\"y\":%.3f,"
+    		            "\"z\":%.3f"
+    		        "}"
+    		    "}",
+    		    g_current_floor,
+    		    0,
+    		    g_robot_x,
+    		    g_robot_y,
+    		    imu_debug_ax,
+    		    imu_debug_ay,
+    		    imu_debug_az
+    		);
 
 
     // topic은 이미 AT+MQTTTOPIC로 설정되어 있으므로 메시지만 전달
@@ -997,8 +1010,16 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM8_Init();
   MX_TIM6_Init();
-  MX_I2C3_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
+  // [추가] TIM7 인터럽트 시작 (50Hz = 20ms 주기)
+     if (HAL_TIM_Base_Start_IT(&htim7) != HAL_OK) {
+         Error_Handler();
+     }
+     Odom_IMU_Init(&hi2c1, &htim3, &htim8);
+     UART_Printf("Odom & IMU System Initialized (Gyro Calibrated)\r\n");
+
+     UART_Printf("TIM7 Odometry Timer Started (50Hz)\r\n");
   // DWT 초기화 (마이크로초 측정을 위해 필수)
   DWT_Init();
   UART_Printf("STM32 HC-SR04 Measurement Ready (Trig: PA0, Echo: PA1)\r\n");
@@ -1385,7 +1406,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 400000;
+  hi2c1.Init.ClockSpeed = 100000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -1400,40 +1421,6 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
-
-}
-
-/**
-  * @brief I2C3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_I2C3_Init(void)
-{
-
-  /* USER CODE BEGIN I2C3_Init 0 */
-
-  /* USER CODE END I2C3_Init 0 */
-
-  /* USER CODE BEGIN I2C3_Init 1 */
-
-  /* USER CODE END I2C3_Init 1 */
-  hi2c3.Instance = I2C3;
-  hi2c3.Init.ClockSpeed = 400000;
-  hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c3.Init.OwnAddress1 = 0;
-  hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c3.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c3.Init.OwnAddress2 = 0;
-  hi2c3.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c3.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C3_Init 2 */
-
-  /* USER CODE END I2C3_Init 2 */
 
 }
 
@@ -1490,11 +1477,11 @@ static void MX_TIM1_Init(void)
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
   sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
   }
-  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -1650,9 +1637,9 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 84-1;
+  htim4.Init.Prescaler = 0;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 999;
+  htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)
@@ -1715,6 +1702,44 @@ static void MX_TIM6_Init(void)
   /* USER CODE BEGIN TIM6_Init 2 */
 
   /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 4999;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 199;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
 
 }
 
@@ -1961,6 +1986,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             // 실제 데이터 처리는 HAL_I2C_MemRxCpltCallback에서 수행
         }
     }
+
+    // TIM7 (50Hz) - 오도메트리 업데이트
+        if (htim->Instance == TIM7) {
+            // [1. Odometry 기능]
+            Odom_IMU_Update_IT();
+        }
 }
 
 /**

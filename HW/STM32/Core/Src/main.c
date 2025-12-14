@@ -29,7 +29,8 @@
 #include "stm32f4xx_hal.h" // HAL 함수 사용
 #include "mpu6050.h"  // Edge-AI용 MPU6050 드라이버
 #include "edge_ai_wrapper.h"  // Edge Impulse SDK Wrapper 헤더
-#include "odom_imu.h"	//2D Mapping용 헤더파일
+#include "odom_imu.h"   //2D Mapping용 헤더파일
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -157,13 +158,14 @@ typedef enum {
 
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
-I2C_HandleTypeDef hi2c3;
+DMA_HandleTypeDef hdma_i2c1_rx;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim7;
 TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart2;
@@ -171,16 +173,22 @@ UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 TIM_HandleTypeDef htim2;
+
 //2D 맵핑용 위치변수
-extern float g_robot_x;     // 현재의 X 좌표
-extern float g_robot_y;     // 현재의 Y 좌표
-extern float g_robot_yaw;   // 현재의 방향 각도 (단위: 도 Degree)
+extern volatile float g_robot_x;
+extern volatile float g_robot_y;
+extern volatile float g_robot_yaw;
 
 // Edge-AI 데이터 버퍼 (슬라이딩 윈도우 방식)
 float edge_ai_buffer[EDGE_AI_SAMPLE_COUNT * EDGE_AI_AXES];
 volatile uint16_t edge_ai_sample_index = 0;
 volatile uint8_t edge_ai_buffer_ready = 0;
 volatile uint16_t edge_ai_slide_counter = 0;  // 슬라이딩 인터벌 카운터
+
+// IMU DMA 관련 변수 (비동기 I2C 통신용)
+uint8_t imu_dma_buffer[6];           // DMA로 받은 6바이트 가속도 데이터
+volatile uint8_t imu_dma_ready = 0;  // DMA 완료 플래그
+volatile uint8_t imu_dma_busy = 0;   // DMA 전송 중 플래그
 
 // IMU 센서 디버깅용 변수
 volatile uint8_t imu_debug_counter = 0;  // 0.1초마다 출력하기 위한 카운터
@@ -214,17 +222,17 @@ uint8_t g_led_toggle_state = 0;  // 0 or 1 (교차 깜빡임용)
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_I2C1_Init(void);
-static void MX_I2C3_Init(void);
-
 static void MX_USART3_UART_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM8_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 void DWT_Init(void);
 void DWT_Delay_us(uint32_t us);
@@ -372,11 +380,11 @@ void set_motor_speed(uint8_t motor_id, uint16_t speed)
     if (speed > PWM_MAX_VALUE) speed = PWM_MAX_VALUE;
 
     if (motor_id == MOTOR_A) {
-//        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed);
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed);
     } else if (motor_id == MOTOR_B) {
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed);
     } else if (motor_id == MOTOR_C) {
-        __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, speed);
+        __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, speed);
     }
 
 }
@@ -555,6 +563,7 @@ void set_led_priority_state(LED_Priority_State_t state)
   * @note 우선순위: STANDBY(최고) > OBSTACLE > NORMAL
   * @note 일반 모드: 베이스 색상(1000ms) ↔ 바닥 색상(500ms) 2:1 비율
   */
+
 void update_led_state(void)
 {
     uint32_t current_tick = HAL_GetTick();
@@ -631,9 +640,9 @@ void update_led_state(void)
 void motor_control_init(void)
 {
     // 1. PWM 출력 시작 (PA8: ENA, PA9: ENB)
-//    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 
 
 
@@ -797,15 +806,15 @@ uint8_t MQTT_Init_All(
     // WiFi 접속
     Send_AT_Command(huart_wiz, huart_term,
         "AT+CWJAP=\"S24\",\"dial8787@@\"",
-        resp, sizeof(resp), 20000);
+        resp, sizeof(resp), 5000);
 
     // -------- MQTT 설정 --------
     if (!MQTT_SetConfig(huart_wiz, huart_term,
-                        "", "", "HiPtj>h<", 300,
+                        "", "", "STM32_AI", 300,
                         resp, sizeof(resp))) return 0;
 
     if (!MQTT_SetTopics(huart_wiz, huart_term,
-                        "vibeclean/robot1/telemetry",
+                        "vibeclean/robot1/ai2D",
                         "vibeclean/robot1/control/#",
                         resp, sizeof(resp))) return 0;
 
@@ -813,7 +822,7 @@ uint8_t MQTT_Init_All(
         return 0;
 
     if (!MQTT_ConnectBroker(huart_wiz, huart_term,
-                            "192.168.178.61", 1883,
+                            "10.96.250.61", 1883,
                             resp, sizeof(resp)))
         return 0;
 
@@ -828,16 +837,28 @@ void Publish_Message(void)
 
     // 실시간 센서 데이터와 AI 판별 결과를 포함한 JSON 생성
     snprintf(json_message, sizeof(json_message),
-        "{\"currentFloor\":\"%s\",\"fanSpeed\":%d,"
-        "\"position\":{\"x\":%.2f,\"y\":%.2f},"
-        "\"sensor\":{\"x\":%.3f,\"y\":%.3f,\"z\":%.3f}}",
-        g_current_floor,
-        g_fanSpeed > 0 ? g_fanSpeed : 1,
-        g_robot_x,
-        g_robot_y,
-        imu_debug_ax,
-        imu_debug_ay,
-        imu_debug_az);
+    		"{"
+    		        "\"currentFloor\":\"%s\","
+    		        "\"fanSpeed\":%d,"
+    		        "\"position\":{"
+    		            "\"x\":%.2f,"
+    		            "\"y\":%.2f"
+    		        "},"
+    		        "\"sensor\":{"
+    		            "\"x\":%.3f,"
+    		            "\"y\":%.3f,"
+    		            "\"z\":%.3f"
+    		        "}"
+    		    "}",
+    		    g_current_floor,
+    		    0,
+    		    g_robot_x,
+    		    g_robot_y,
+    		    imu_debug_ax,
+    		    imu_debug_ay,
+    		    imu_debug_az
+    		);
+
 
     // topic은 이미 AT+MQTTTOPIC로 설정되어 있으므로 메시지만 전달
     snprintf(cmd, sizeof(cmd), "AT+MQTTPUB=\"%s\"", json_message);
@@ -979,18 +1000,26 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_TIM2_Init();
   MX_TIM1_Init();
   MX_TIM4_Init();
   MX_I2C1_Init();
-  MX_I2C3_Init();
-
   MX_USART3_UART_Init();
   MX_TIM3_Init();
   MX_TIM8_Init();
   MX_TIM6_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
+  // [추가] TIM7 인터럽트 시작 (50Hz = 20ms 주기)
+     if (HAL_TIM_Base_Start_IT(&htim7) != HAL_OK) {
+         Error_Handler();
+     }
+     Odom_IMU_Init(&hi2c1, &htim3, &htim8);
+     UART_Printf("Odom & IMU System Initialized (Gyro Calibrated)\r\n");
+
+     UART_Printf("TIM7 Odometry Timer Started (50Hz)\r\n");
   // DWT 초기화 (마이크로초 측정을 위해 필수)
   DWT_Init();
   UART_Printf("STM32 HC-SR04 Measurement Ready (Trig: PA0, Echo: PA1)\r\n");
@@ -1072,13 +1101,13 @@ int main(void)
 	            last_pub_tick = now_tick;
 	        }
 
-
 	  // ==========================================================
 	  // [2] POWER OFF 체크 (조건 1)
 	  // ==========================================================
 	  // OFF 상태면 모터 정지 후 다음 루프로 넘어감 (주행 로직 Skip)
 	        if (g_powerOn == 0) {
 	            stop_all_motors();
+	            set_led_priority_state(LED_STATE_STANDBY);  // 대기 상태 LED (빨간색 고정)
 	            // set_motor_speed(MOTOR_C, 0); // 팬도 끄기 (필요시)
 	            HAL_Delay(100);
 	            continue;
@@ -1087,23 +1116,23 @@ int main(void)
 	  // ==========================================================
 	  // [3] FAN SPEED 제어 (Fan 연결후 수정필요)
 	  // ==========================================================
-	        if (g_fanSpeed != -1) {
-	            // 수동 값(0~3)이 있으면 강제 적용
-	            int pwm_val = 0;
-	            if (g_fanSpeed == 1) pwm_val = 300;
-	            else if (g_fanSpeed == 2) pwm_val = 600;
-	            else if (g_fanSpeed == 3) pwm_val = 1000;
+//	        if (g_fanSpeed != -1) {
+//	            // 수동 값(0~3)이 있으면 강제 적용
+//	            int pwm_val = 0;
+//	            if (g_fanSpeed == 1) pwm_val = 300;
+//	            else if (g_fanSpeed == 2) pwm_val = 600;
+//	            else if (g_fanSpeed == 3) pwm_val = 1000;
+//
+//	            set_motor_speed(MOTOR_C, pwm_val);
+//	        } else {
+//	            // -1이면 노면 상태(g_current_floor)에 따라 자동 제어 (추후 구현)
+//	        }
 
-	            set_motor_speed(MOTOR_C, pwm_val);
-	        } else {
-	            // -1이면 노면 상태(g_current_floor)에 따라 자동 제어 (추후 구현)
-	        }
+
 
 	  // ==========================================================
 	  // [4] 센서 및 AI 업데이트
 	  // ==========================================================
-      // x,y 좌표 계산
-	  update_odometry();
       // === RGB LED 상태 업데이트 (논블로킹 방식) ===
       update_led_state();
 
@@ -1146,70 +1175,72 @@ int main(void)
        // ==========================================================
 
        // g_modeManual이 1이면 수동, 그 외(0 또는 -1)는 자동
-//            if (g_modeManual == 1)
-//            {
-//                // ------------------------------------------------------
-//                // < MANUAL MODE > 장애물 감지 무시, 사용자 명령 수행
-//                // ------------------------------------------------------
-//                if (strcmp(g_direction, "FWD") == 0) {
-//                    move_forward_pwm(BASE_SPEED);
-//                }
-//                else if (strcmp(g_direction, "BACK") == 0) {
-//                    move_backward_pwm(BASE_SPEED);
-//                }
-//                else if (strcmp(g_direction, "LEFT") == 0) {
-//                    rotate_left_inplace(TURN_SPEED);
-//                }
-//                else if (strcmp(g_direction, "RIGHT") == 0) {
-//                    rotate_right_inplace(TURN_SPEED);
-//                }
-//                else {
-//                    // "STOP" 이거나 "NULL" 이면 정지
-//                    stop_all_motors();
-//                }
-//            }
-//            else
-//             {
-      // === 주행 코드 ===
+            if (g_modeManual == 1)
+            {
+                // ------------------------------------------------------
+                // < MANUAL MODE > 장애물 감지 무시, 사용자 명령 수행
+                // ------------------------------------------------------
+                if (strcmp(g_direction, "FWD") == 0) {
+                    move_forward_pwm(BASE_SPEED);
+                }
+                else if (strcmp(g_direction, "BACK") == 0) {
+                    move_backward_pwm(BASE_SPEED);
+                }
+                else if (strcmp(g_direction, "LEFT") == 0) {
+                    rotate_left_inplace(TURN_SPEED);
+                }
+                else if (strcmp(g_direction, "RIGHT") == 0) {
+                    rotate_right_inplace(TURN_SPEED);
+                }
+                else {
+                    // "STOP" 이거나 "NULL" 이면 정지
+                    stop_all_motors();
+                }
+            }
+            else
+             {
+      // === 자동 모드: 장애물 회피 및 노면 감지 기반 주행 ===
+      set_led_priority_state(LED_STATE_NORMAL);  // 일반 동작 LED 상태로 설정
+
       // 전진 유지
-//      move_forward_pwm(BASE_SPEED);
+      move_forward_pwm(BASE_SPEED);
 
       // 초음파 센서로 거리 측정
-//      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
-//      DWT_Delay_us(5000);
-//      float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
-//      DWT_Delay_us(5000);
-//      float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
+      float d1 = HCSR04_Read(TRIG_PORT, TRIG_PIN, ECHO_PORT, ECHO_PIN);
+      DWT_Delay_us(5000);
+      float d2 = HCSR04_Read(TRIG_PORT1, TRIG_PIN1, ECHO_PORT1, ECHO_PIN1);
+      DWT_Delay_us(5000);
+      float d3 = HCSR04_Read(TRIG_PORT2, TRIG_PIN2, ECHO_PORT2, ECHO_PIN2);
 
       // UART_Printf("[USS] S1: %.1fcm | S2: %.1fcm | S3: %.1fcm\r\n", d1, d2, d3);
 
       // 장애물 감지 및 회피
-//      if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
-//                || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
-//                || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
-//          failCount++;
-//          if (failCount >= 3) { // 연속 3회 이상이면 진짜 장애물
-//              stop_all_motors();
-//              HAL_Delay(50);
-//
-//              UART_Printf("[AVOID] Obstacle detected! Avoiding...\r\n");
-//
-//              if(tempAovoid == 0){
-//                 R_avoidance_sequence();
-//                 tempAovoid = 1;
-//              }
-//              else{
-//                 L_avoidance_sequence();
-//                 tempAovoid = 0;
-//              }
-//              failCount = 0;
-//          }
-//      } else {
-//          failCount = 0;
-//      }
-//
-//
-//             }
+      if ((d1 > 1 && d1 <= WALL_DISTANCE_THRESHOLD)
+                || (d2 > 1 && d2 <= WALL_DISTANCE_THRESHOLD)
+                || (d3 > 1 && d3 <= WALL_DISTANCE_THRESHOLD)) {
+          failCount++;
+          if (failCount >= 3) { // 연속 3회 이상이면 진짜 장애물
+              stop_all_motors();
+              HAL_Delay(50);
+
+              UART_Printf("[AVOID] Obstacle detected! Avoiding...\r\n");
+
+              if(tempAovoid == 0){
+                 R_avoidance_sequence();
+                 tempAovoid = 1;
+              }
+              else{
+                 L_avoidance_sequence();
+                 tempAovoid = 0;
+              }
+              failCount = 0;
+          }
+      } else {
+          failCount = 0;
+      }
+
+
+             }
 
 
             HAL_Delay(1);
@@ -1375,7 +1406,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 400000;
+  hi2c1.Init.ClockSpeed = 100000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -1384,35 +1415,6 @@ static void MX_I2C1_Init(void)
   hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
   if (HAL_I2C_Init(&hi2c1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C1_Init 2 */
-
-  /* USER CODE END I2C1_Init 2 */
-
-}
-
-static void MX_I2C3_Init(void)
-{
-
-  /* USER CODE BEGIN I2C1_Init 0 */
-
-  /* USER CODE END I2C1_Init 0 */
-
-  /* USER CODE BEGIN I2C1_Init 1 */
-
-  /* USER CODE END I2C1_Init 1 */
-  hi2c3.Instance = I2C3;
-  hi2c3.Init.ClockSpeed = 400000;
-  hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c3.Init.OwnAddress1 = 0;
-  hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c3.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c3.Init.OwnAddress2 = 0;
-  hi2c3.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c3.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c3) != HAL_OK)
   {
     Error_Handler();
   }
@@ -1475,7 +1477,10 @@ static void MX_TIM1_Init(void)
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
   sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
@@ -1632,7 +1637,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 84-1;
+  htim4.Init.Prescaler = 0;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 65535;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -1697,6 +1702,44 @@ static void MX_TIM6_Init(void)
   /* USER CODE BEGIN TIM6_Init 2 */
 
   /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 4999;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 199;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
 
 }
 
@@ -1817,6 +1860,22 @@ static void MX_USART3_UART_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -1842,7 +1901,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
+                          |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -1866,8 +1926,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB0 PB1 PB2 PB12 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12;
+  /*Configure GPIO pins : PB0 PB1 PB2 PB12
+                           PB13 PB14 PB15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_12
+                          |GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -1912,40 +1974,69 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM6) {
-        float ax, ay, az;
+        // DMA가 사용 중이 아닐 때만 새로운 DMA 전송 시작
+        if (!imu_dma_busy) {
+            imu_dma_busy = 1;  // DMA 전송 시작 표시
 
-        // MPU6050에서 가속도 읽기
-        if (MPU6050_ReadAccel(&hi2c1, &ax, &ay, &az) == HAL_OK) {
-            // Edge-AI 버퍼에 저장(현재 ax는 1.0g 단위이므로, 다시 16384.0f를 곱함)
-            // 순환 버퍼 방식으로 저장 (슬라이딩 윈도우)
-            edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
-            edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
-            edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
-
-            // 디버깅용 - 10번마다 한 번씩(0.1초) 센서값 저장
-            imu_debug_counter++;
-            if (imu_debug_counter >= 10) {
-                imu_debug_ax = ax;
-                imu_debug_ay = ay;
-                imu_debug_az = az;
-                imu_debug_ready = 1;  // 출력 준비 완료
-                imu_debug_counter = 0;
+            // DMA로 MPU6050 가속도 데이터 읽기 (비동기, 논블로킹)
+            if (MPU6050_ReadAccel_DMA(&hi2c1, imu_dma_buffer) != HAL_OK) {
+                // DMA 시작 실패 시 busy 플래그 해제
+                imu_dma_busy = 0;
             }
-
-            edge_ai_sample_index++;
-            edge_ai_slide_counter++;
-
-            // 버퍼가 가득 차면 순환 (슬라이딩 윈도우)
-            if (edge_ai_sample_index >= EDGE_AI_SAMPLE_COUNT) {
-                edge_ai_sample_index = 0;
-            }
-
-            // 1초(100개 샘플)마다 AI 판단 트리거
-            if (edge_ai_slide_counter >= EDGE_AI_SLIDE_INTERVAL) {
-                edge_ai_buffer_ready = 1;
-                edge_ai_slide_counter = 0;
-            }
+            // 실제 데이터 처리는 HAL_I2C_MemRxCpltCallback에서 수행
         }
+    }
+
+    // TIM7 (50Hz) - 오도메트리 업데이트
+        if (htim->Instance == TIM7) {
+            // [1. Odometry 기능]
+            Odom_IMU_Update_IT();
+        }
+}
+
+/**
+  * @brief  I2C Memory Read DMA 완료 콜백 - IMU 데이터 처리
+  */
+void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c->Instance == I2C1) {
+        // DMA로 받은 데이터를 파싱하여 가속도 값 추출
+        float ax, ay, az;
+        MPU6050_ParseAccelData(imu_dma_buffer, &ax, &ay, &az);
+
+        // Edge-AI 버퍼에 저장 (ax는 1.0g 단위이므로, 16384.0f를 곱함)
+        // 순환 버퍼 방식으로 저장 (슬라이딩 윈도우)
+        edge_ai_buffer[edge_ai_sample_index * 3 + 0] = ax * 16384.0f;
+        edge_ai_buffer[edge_ai_sample_index * 3 + 1] = ay * 16384.0f;
+        edge_ai_buffer[edge_ai_sample_index * 3 + 2] = az * 16384.0f;
+
+        // 디버깅용 - 10번마다 한 번씩(0.1초) 센서값 저장
+        imu_debug_counter++;
+        if (imu_debug_counter >= 10) {
+            imu_debug_ax = ax;
+            imu_debug_ay = ay;
+            imu_debug_az = az;
+            imu_debug_ready = 1;  // 출력 준비 완료
+            imu_debug_counter = 0;
+        }
+
+        edge_ai_sample_index++;
+        edge_ai_slide_counter++;
+
+        // 버퍼가 가득 차면 순환 (슬라이딩 윈도우)
+        if (edge_ai_sample_index >= EDGE_AI_SAMPLE_COUNT) {
+            edge_ai_sample_index = 0;
+        }
+
+        // 1초(100개 샘플)마다 AI 판단 트리거
+        if (edge_ai_slide_counter >= EDGE_AI_SLIDE_INTERVAL) {
+            edge_ai_buffer_ready = 1;
+            edge_ai_slide_counter = 0;
+        }
+
+        // DMA 전송 완료, busy 플래그 해제
+        imu_dma_busy = 0;
+        imu_dma_ready = 1;
     }
 }
 

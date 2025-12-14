@@ -27,4 +27,8 @@ HAL_StatusTypeDef MPU6050_ReadAccel(I2C_HandleTypeDef *hi2c, float *ax, float *a
 HAL_StatusTypeDef MPU6050_ReadAccelRaw(I2C_HandleTypeDef *hi2c, int16_t *ax, int16_t *ay, int16_t *az);
 uint8_t MPU6050_WhoAmI(I2C_HandleTypeDef *hi2c);
 
+// DMA-based Function Prototypes (non-blocking)
+HAL_StatusTypeDef MPU6050_ReadAccel_DMA(I2C_HandleTypeDef *hi2c, uint8_t *buffer);
+void MPU6050_ParseAccelData(uint8_t *buffer, float *ax, float *ay, float *az);
+
 #endif /* INC_MPU6050_H_ */
